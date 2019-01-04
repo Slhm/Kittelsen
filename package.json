@@ -1,0 +1,12 @@
+{
+  "name": "satanBot",
+  "version": "1.0.0",
+  "description": "satanBot in the flesh",
+  "main": "bot.js",
+  "author": "noekk",
+  "dependencies": {
+    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+    "discord.js": "^11.4.2",
+    "winston": "2.4.4"
+  }
+}
