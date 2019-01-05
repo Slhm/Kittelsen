@@ -59,3 +59,9 @@ typings/
 
 # next.js build output
 .next
+
+# Discord bot token
+auth.json
+
+# Webstorm IDE files
+.idea/*
