@@ -122,41 +122,44 @@ function handleCommands(input, inp, cmd, arguments, args) {
       input.channel.send('The future is vegan, my dude');
       break;
     case 'memes':
-      input.channel.send("fetching meme, just a sec");
-      fetchMeme(input, memeArrayID[0], arguments[0], arguments[1]);
-      /*
-      for(let i = 0; i <= memeArray.length; i++){
-          if (memeArray[i] === args[1]) {
+      //input.channel.send("fetching meme, just a sec");
+      //fetchMeme(input, memeArrayID[0], arguments[0], arguments[1]);
 
-              input.channel.send("fetching meme, just a sec");
-              //fetchMeme(input, "101470", "svarte faens: ", "svupp");
-              fetchMeme(input, memeArrayID[i], arguments[0], arguments[1]);
-              break;
-          }
+      for (let i = 0; i <= memeArray.length; i++) {
+        if (memeArray[i] === args[1]) {
+
+          input.channel.send("fetching meme, just a sec");
+          //fetchMeme(input, "101470", "svarte faens: ", "svupp");
+          fetchMeme(input, memeArrayID[i], arguments[0], arguments[1]);
+          break;
+        } else if (i >= memeArray.length) {
+          input.channel.send("Couldnt find that. Try one of these: \n" +
+            memeArray + "\n" +
+            "Syntax example: !memes aliens 'top text' 'bottom text'");
+          break;
+        }
       }
-      input.channel.send("Couldnt find that. Try one of these: \n" +
-                          memeArray + "\n" +
-                          "or ping noekk to add more options");
-      */
+
+
       break;
     case 'fullwidth':
       let fullArg = inp.split('!fullwidth')[1];
       fullArg === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(fullW(fullArg));
       break;
     case 'freedom':
-      if(!args[1]){
+      if (!args[1]) {
         input.channel.send("Freedom units to metric calculator.\n" +
           "These convertions are available so far:\n" +
           "mph to mps\n" +
           "F to C\n" +
           "syntax example: 30F C");
         break;
-      }else if (args[1].endsWith("F") && args[2] === "C") {
+      } else if (args[1].endsWith("F") && args[2] === "C") {
         let F = args[1].slice(0, -1);
         let tmp = Math.round(((F - 32) * 5 / 9) * 10) / 10;
         input.channel.send(args[1] + " in non-freedomUnits is: " + tmp + "C");
       } else if (args[1].endsWith("mph") && args[2] === "mps") {
-        let mph = args[1].slice(0,-3);
+        let mph = args[1].slice(0, -3);
         let ms = Math.round(mph * 0.44704 * 10) / 10;
         input.channel.send(args[1] + " in non-freedomUnits is: " + ms + " meters/second");
       }
