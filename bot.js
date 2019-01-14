@@ -17,7 +17,9 @@ music.push(
   "Japanesey mathy rocky https://www.youtube.com/watch?v=Tc1yD9H7Rb8",
   "Shameless self plug. https://floatingnomore.bandcamp.com/",
   "ｍｅｌａｎｃｈｏｌｙ ｉｓ ｅｔｅｒｎａｌ: https://www.youtube.com/watch?v=co5gy_2uOEY",
-  "ᛞᚢ ᚲᚨᚾ ᛁᚲᚲᛖ ᛚᛖᛊᛖ ᛞᛖᛏᛏᛖ ᚢᚨᚾᛊᛖᛏᛏ, ᛗᛖᚾ ᛖᚾᛊᛚᚨᚹᛖᛞ ᛖᚱ ᚲᚢᛚᛏ: https://youtu.be/Rcssy33l04Y?t=31"
+  "ᛞᚢ ᚲᚨᚾ ᛁᚲᚲᛖ ᛚᛖᛊᛖ ᛞᛖᛏᛏᛖ ᚢᚨᚾᛊᛖᛏᛏ, ᛗᛖᚾ ᛖᚾᛊᛚᚨᚹᛖᛞ ᛖᚱ ᚲᚢᛚᛏ: https://youtu.be/Rcssy33l04Y?t=31",
+  "brutus for fucking ever https://www.youtube.com/watch?v=1Z-0j4mRbB0",
+  "all hail the mighty emperor https://www.youtube.com/watch?v=4FYwz2-_G_4"
 );
 
 //Memes
@@ -84,11 +86,7 @@ client.on('message', input => {
   }
 });
 
-/*
-var promise = new Promise(function(resolve, reject){
-    resolve(1);
-});
-*/
+
 function handleCommands(input, inp, cmd, arguments, args) {
   switch (cmd) {
     case 'commands':
@@ -145,17 +143,24 @@ function handleCommands(input, inp, cmd, arguments, args) {
       let fullArg = inp.split('!fullwidth')[1];
       fullArg === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(fullW(fullArg));
       break;
-    case 'freedomUnits':
-      if (args[1].endsWith("F") && args[2] === "C") {
+    case 'freedom':
+      if(!args[1]){
+        input.channel.send("Freedom units to metric calculator.\n" +
+          "These convertions are available so far:\n" +
+          "mph to mps\n" +
+          "F to C\n" +
+          "syntax example: 30F C");
+        break;
+      }else if (args[1].endsWith("F") && args[2] === "C") {
         let F = args[1].slice(0, -1);
-        let tmp = ((F - 32) * 5 / 9);
+        let tmp = Math.round(((F - 32) * 5 / 9) * 10) / 10;
         input.channel.send(args[1] + " in non-freedomUnits is: " + tmp + "C");
-      } else if (args[1].endsWith("mph") && args[2] === "ms") {
+      } else if (args[1].endsWith("mph") && args[2] === "mps") {
         let mph = args[1].slice(0,-3);
-        let ms = mph * 0.44704;
-        input.channel.send(args[1] + " in non-freedomUnits is: " + ms + "meters/second");
+        let ms = Math.round(mph * 0.44704 * 10) / 10;
+        input.channel.send(args[1] + " in non-freedomUnits is: " + ms + " meters/second");
       }
-      else input.channel.send("all i do so far is F to C\n Syntax example: 34F C");
+      else input.channel.send("try again. Syntax example: 34F C");
       break;
     case 'poll':
       /*
