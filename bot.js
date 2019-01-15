@@ -25,7 +25,7 @@ let music = [
 
 
 //8Ball
-let eightBall = ["Without a doubt.", "Yes.", "Fuck yes.", "Most likely.", "Pretty sure, yeah.", "I think so?", "Absolutely", "i don't know, dude. ask someone else", "This one dude in siberia knows the answer",
+let eightBall = ["Without a doubt.", "Yes.", "Fuck yes.", "Most likely.", "Pretty sure, yeah.", "I think so?", "Absolutely", "i don't know, dude. ask someone else",
   "My calculations says no.", "No.", "Don't count on it.", "This rng thing here says no.", "what? idk", "Probably not"];
 
 // Logger settings
