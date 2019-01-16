@@ -113,9 +113,9 @@ function handleCommands(input, inp, cmd, arguments, args) {
     case 'commands':
       input.channel.send('Available commands so far are: \n' +
         '!8         -      magic 8ball\n' +
-        '!music     -      satanBot sends random good music.' + music.length + ' tracks in the collection atm. adding more eventually' + '\n' +
-        '!cheers    -      satanBot says cheers!\n' +
-        '!future    -      satanBot tells about the future\n' +
+        '!music     -      bot sends random good music.' + music.length + ' tracks in the collection atm. adding more eventually' + '\n' +
+        '!cheers    -      bot says cheers!\n' +
+        '!future    -      bot tells about the future\n' +
         '!ping      -      ping time\n' +
         '!fullwidth -      returns text in fullwidth\n' +
         '!poll      -      creates a poll\n' +

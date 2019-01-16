@@ -1,7 +1,7 @@
 {
-  "name": "satanBot",
+  "name": "kittelsen",
   "version": "1.0.0",
-  "description": "satanBot in the flesh",
+  "description": "discord bot",
   "main": "bot.js",
   "author": "noekk",
   "dependencies": {
