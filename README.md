@@ -1,2 +1,2 @@
-# satanBot
-Discord bot named satanBot
+# Kittelsen
+Discord bot based in js/node
