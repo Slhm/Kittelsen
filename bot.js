@@ -24,9 +24,7 @@ let music = [
 ];
 
 
-//8Ball
-let eightBall = ["Without a doubt.", "Yes.", "Fuck yes.", "Most likely.", "Pretty sure, yeah.", "I think so?", "Absolutely", "i don't know, dude. ask someone else",
-  "My calculations says no.", "No.", "Don't count on it.", "This rng thing here says no.", "what? idk", "Probably not"];
+
 
 // Logger settings
 logger.remove(logger.transports.Console);
@@ -61,7 +59,8 @@ client.on('ready', async () => {
 });
 
 client.on('message', async input => {
-  if (input.author.bot) return;
+  //if (input.author.bot) return;
+  if (input.author.bot && !input.content.startsWith("!8")) return;
   if (input.channel.type === "dm") return;
   let prefix = "!";
   let inp = input.content;
@@ -158,8 +157,7 @@ function handleCommands(input, inp, cmd, arguments, args) {
       client.commands.get('poll').run(client, input, args, arguments);
       break;
     case '8':
-      let ans = eightBall[Math.floor(Math.random() * eightBall.length)];
-      input.channel.send(ans);
+      client.commands.get('8').run(client, input, args);
       break;
     case 'todo':
       input.channel.send('TODO items are\n' +
