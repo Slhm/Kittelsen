@@ -24,8 +24,6 @@ let music = [
 ];
 
 
-
-
 // Logger settings
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
@@ -143,6 +141,27 @@ function handleCommands(input, inp, cmd, arguments, args) {
       break;
     case 'memes':
       client.commands.get('memes').run(client, input, args, arguments);
+      break;
+    case 'pfp':
+      if (args[1]) {
+        input.channel.send({
+          files: [
+            {
+              attachment: input.mentions.users.first().displayAvatarURL,
+              name: "avatar.png"
+            }
+          ]
+        });
+      } else {
+        input.channel.send({
+          files: [
+            {
+              attachment: input.author.displayAvatarURL,
+              name: "avatar.png"
+            }
+          ]
+        });
+      }
       break;
     case 'fullwidth':
       args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(fullW(inp.split('!fullwidth')[1]));
