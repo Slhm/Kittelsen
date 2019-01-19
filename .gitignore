@@ -65,3 +65,5 @@ auth.json
 
 # Webstorm IDE files
 .idea/*
+
+package-lock.json

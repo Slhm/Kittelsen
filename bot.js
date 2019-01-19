@@ -3,8 +3,10 @@ const client = new Discord.Client();
 const logger = require('winston');
 const auth = require('./auth.json').token;
 const imgflip = require('./auth.json').imgflip;
+const dbp = require('./auth.json').drunkDB;
 const fetch = require('node-fetch');
 const fs = require('fs');
+const mysql = require('mysql');
 client.commands = new Discord.Collection();
 
 
@@ -50,6 +52,28 @@ fs.readdir("./cmds/", (err, files) => {
     client.commands.set(props.help.name, props);
   })
 });
+
+var con = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: dbp,
+  database: "drunkdb"
+});
+
+con.connect(e => {
+  if(e) throw e;
+  console.log("connected to drunkDB - eight");
+});
+
+/*con.query('SELECT num FROM eight WHERE id = 11', (e, rows) => {
+  if(e) throw e;
+  console.log("num: " + rows[0].num);
+  if(rows){
+    con.query('UPDATE eight SET num = 2 WHERE id = 11');
+    console.log("putta inn en greia da vøtt");
+  }
+});*/
+
 client.on('ready', async () => {
   logger.info('Connected!');
   logger.info('Logged in as: ' + client.user.tag + ' - (' + client.user.id + ')');
@@ -67,20 +91,6 @@ client.on('message', async input => {
     var args = inp.substr(prefix.length).split(' ');
     var cmd = args[0];
 
-    /*
-    //REGEX STUFF. MIGHT CHANGE TO IT EVENTUALLY
-    //let arguments = inp.substring(prefix.length + cmd.length);
-
-    arguments = arguments.split("'*'");
-    for (let i = 0; i <= arguments.length; i++) {
-      if (arguments[i] === "" || arguments[i] === " ") arguments.splice(i, 0);
-    }
-    arguments = arguments[0].split("'*'");
-
-    //This is much prettier, but couldn't get it to work.
-    //let regex = /("[a-zA-Z\s]+")/gm;
-    //let arguments = regex.exec(inp.substr(prefix.length + cmd.length));
-    */
 
     const arguments = (inp) => {
       let tmpString = "";
@@ -133,8 +143,8 @@ function handleCommands(input, inp, cmd, arguments, args) {
       input.channel.send(msc);
       break;
     case 'cheers':
-      input.channel.send('Cheers, ' + input.author.username + '!');
-      //input.channel.send('array: ' + arguments);
+      client.commands.get('cheers').run(client, input, args, con);
+      //input.channel.send('Cheers, ' + input.author.username + '!');
       break;
     case 'future':
       input.channel.send('The future is vegan, my dude');
@@ -143,25 +153,8 @@ function handleCommands(input, inp, cmd, arguments, args) {
       client.commands.get('memes').run(client, input, args, arguments);
       break;
     case 'pfp':
-      if (args[1]) {
-        input.channel.send({
-          files: [
-            {
-              attachment: input.mentions.users.first().displayAvatarURL,
-              name: "avatar.png"
-            }
-          ]
-        });
-      } else {
-        input.channel.send({
-          files: [
-            {
-              attachment: input.author.displayAvatarURL,
-              name: "avatar.png"
-            }
-          ]
-        });
-      }
+      pfp(input, args);
+      //.catch(input.channel.send("<@!306056522020945922> you fucked something up. check the logs"))
       break;
     case 'fullwidth':
       args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(fullW(inp.split('!fullwidth')[1]));
@@ -176,7 +169,7 @@ function handleCommands(input, inp, cmd, arguments, args) {
       client.commands.get('poll').run(client, input, args, arguments);
       break;
     case '8':
-      client.commands.get('8').run(client, input, args);
+      client.commands.get('8').run(client, input, args, con);
       break;
     case 'todo':
       input.channel.send('TODO items are\n' +
@@ -188,6 +181,31 @@ function handleCommands(input, inp, cmd, arguments, args) {
   }
 }
 
+
+const pfp = async (input, args) => {
+  let m = await input.channel.send("fetching avatar ...");
+  if (args[1]) {
+    await input.channel.send({
+      files: [
+        {
+          attachment: input.mentions.users.first().displayAvatarURL,
+          name: "avatar.png"
+        }
+      ]
+    });
+  }
+  else {
+    await input.channel.send({
+      files: [
+        {
+          attachment: input.author.displayAvatarURL,
+          name: "avatar.png"
+        }
+      ]
+    });
+  }
+  m.delete();
+};
 
 function fullW(input) {
   let tmpString = "";
@@ -235,3 +253,21 @@ function eldF(input) {
 
 
 client.login(auth);
+
+
+
+
+/*
+//REGEX STUFF. MIGHT CHANGE TO IT EVENTUALLY
+//let arguments = inp.substring(prefix.length + cmd.length);
+
+arguments = arguments.split("'*'");
+for (let i = 0; i <= arguments.length; i++) {
+  if (arguments[i] === "" || arguments[i] === " ") arguments.splice(i, 0);
+}
+arguments = arguments[0].split("'*'");
+
+//This is much prettier, but couldn't get it to work.
+//let regex = /("[a-zA-Z\s]+")/gm;
+//let arguments = regex.exec(inp.substr(prefix.length + cmd.length));
+*/

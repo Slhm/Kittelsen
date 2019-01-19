@@ -15,6 +15,10 @@ module.exports.run = async (client, input, args) => {
     let mph = args[1].slice(0, -3);
     let mps = Math.round(mph * 0.44704 * 10) / 10;
     input.channel.send(args[1] + " in non-freedomUnits is: " + mps + " meters/second");
+  }else if(args[1].endsWith("lbs")){
+    let lbs = args[1].slice(0,-3);
+    let kg = Math.round(lbs * 0.4535924 * 10) / 10;
+    input.channel.send(args[1] + " in non-freedomUnits is: " + kg + "kg");
   }
   else input.channel.send("try again. Syntax: NUMBER[F/mph]");
 
