@@ -4,6 +4,7 @@ const logger = require('winston');
 const auth = require('./auth.json').token;
 const imgflip = require('./auth.json').imgflip;
 const dbp = require('./auth.json').drunkDB;
+const ownerId = require('./auth.json').ownerId;
 const fetch = require('node-fetch');
 const fs = require('fs');
 const mysql = require('mysql');
@@ -52,6 +53,11 @@ fs.readdir("./cmds/", (err, files) => {
     client.commands.set(props.help.name, props);
   })
 });
+
+/*process.on('SIGTERM', () => {
+
+  server.close();
+});*/
 
 var con = mysql.createConnection({
   host: "localhost",
@@ -170,6 +176,9 @@ function handleCommands(input, inp, cmd, arguments, args) {
       break;
     case '8':
       client.commands.get('8').run(client, input, args, con);
+      break;
+    case 'ø':
+      input.channel.send({files: ["./resources/oe.jpg"]});
       break;
     case 'todo':
       input.channel.send('TODO items are\n' +

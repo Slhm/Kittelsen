@@ -11,6 +11,7 @@ module.exports.run = async (client, input, args, con) => {
       let q;
 
       if (rows.length < 1) {
+        tmpVal = 1;
         q = 'INSERT INTO cheers (id, amount) VALUES (' + input.mentions.users.first().id + "," + 1 + ")";
       } else {
         tmpVal = parseInt(rows[0].amount) + 1;
