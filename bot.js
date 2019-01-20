@@ -59,17 +59,38 @@ fs.readdir("./cmds/", (err, files) => {
   server.close();
 });*/
 
-var con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: dbp,
-  database: "drunkdb"
-});
+let con;
 
-con.connect(e => {
-  if (e) throw e;
-  console.log("connected to drunkDB - eight");
-});
+function handleDisconnect(){
+
+
+  con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: dbp,
+    database: "drunkdb"
+  });
+
+  con.connect(e => {
+    if (e){
+      console.log("error connecting to db");
+      setTimeout(handleDisconnect, 2000);
+    }
+    console.log("connected to drunkDB - eight");
+  });
+
+  con.on('error', (e) =>{
+    console.log("db error", e);
+    if(e.code === 'PROTOCOL_CONNECTION_LOST'){
+      handleDisconnect();
+    }else {
+      throw e;
+    }
+  })
+}
+
+handleDisconnect();
+
 
 /*con.query('SELECT num FROM eight WHERE id = 11', (e, rows) => {
   if(e) throw e;
@@ -197,6 +218,9 @@ function handleCommands(input, inp, cmd, arguments, args) {
           console.log(e);
         });
       break;
+    case 'sa':
+      if(isOwner(input)) client.user.setActivity(arguments[0]);
+      break;
     case 'todo':
       input.channel.send('TODO items are\n' +
         'Commands: \n' +
@@ -208,8 +232,10 @@ function handleCommands(input, inp, cmd, arguments, args) {
 }
 
 const shutdown = async (input) => {
-  if(input.author.id === ownerId){
+  if(isOwner(input)){
+    console.log("Shutdown signal recieved.");
   input.channel.send("shutting down..")
+    .then(() => con.end())
     .then(() => client.destroy());
   }else{
     input.channel.send("nice try :)");
@@ -217,7 +243,8 @@ const shutdown = async (input) => {
 };
 
 const reboot = async (input) => {
-  if(input.author.id === ownerId) {
+  if(isOwner(input)) {
+    console.log("Reboot signal recieved.");
     input.channel.send("rebooting...")
       .then(() => client.destroy())
       .then(() => client.login(auth));
@@ -251,6 +278,11 @@ const pfp = async (input, args) => {
   }
   m.delete();
 };
+
+function isOwner(input){
+  if(input.author.id === ownerId) return true;
+  else return false;
+}
 
 function fullW(input) {
   let tmpString = "";
