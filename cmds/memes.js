@@ -7,7 +7,7 @@ let memeArrayID = [155067746, 124822590, 102156234, 87743020];
 
 module.exports.run = async (client, input, args, arguments) => {
 
-  console.log("memes my dude");
+  //console.log("memes my dude");
   for(let i = 0; i <= 3; i++) {
     if (!arguments[i]) arguments[i] = " ";
   }

@@ -67,7 +67,7 @@ var con = mysql.createConnection({
 });
 
 con.connect(e => {
-  if(e) throw e;
+  if (e) throw e;
   console.log("connected to drunkDB - eight");
 });
 
@@ -116,8 +116,13 @@ client.on('message', async input => {
       }
       return tmpArray;
     };
-    handleCommands(input, inp, cmd, arguments(inp), args);
+    try {
+      handleCommands(input, inp, cmd, arguments(inp), args);
+    } catch (e) {
+      console.log(e);
+    }
   }
+
 });
 
 
@@ -180,6 +185,18 @@ function handleCommands(input, inp, cmd, arguments, args) {
     case 'ø':
       input.channel.send({files: ["./resources/oe.jpg"]});
       break;
+    case 'shutdown':
+      shutdown(input)
+        .catch(e => {
+          console.log(e);
+        });
+      break;
+    case 'reboot':
+      reboot(input)
+        .catch(e => {
+          console.log(e);
+        });
+      break;
     case 'todo':
       input.channel.send('TODO items are\n' +
         'Commands: \n' +
@@ -189,6 +206,25 @@ function handleCommands(input, inp, cmd, arguments, args) {
         'Add database to save amount of cheers users have given eachother, and to save music entries\n');
   }
 }
+
+const shutdown = async (input) => {
+  if(input.author.id === ownerId){
+  input.channel.send("shutting down..")
+    .then(() => client.destroy());
+  }else{
+    input.channel.send("nice try :)");
+  }
+};
+
+const reboot = async (input) => {
+  if(input.author.id === ownerId) {
+    input.channel.send("rebooting...")
+      .then(() => client.destroy())
+      .then(() => client.login(auth));
+  }else{
+    input.channel.send("nice try :)");
+  }
+};
 
 
 const pfp = async (input, args) => {
@@ -262,8 +298,6 @@ function eldF(input) {
 
 
 client.login(auth);
-
-
 
 
 /*

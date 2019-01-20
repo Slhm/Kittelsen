@@ -4,7 +4,7 @@ const Discord = require('discord.js');
 
 
 module.exports.run = async (client, input, args, arguments) => {
-  console.log("poll my dude");
+  //console.log("poll my dude");
 
   const emb = new Discord.RichEmbed()
     .setFooter("poll by " + input.author.username)
