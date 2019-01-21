@@ -1,10 +1,32 @@
 module.exports.run = async (client, input, args, con) => {
 
   let tmpVal = 0;
-  //console.log(input.mentions.users.first().id);
 
-  //if (input.mentions == null || args[1] === null || !input.mentions) {
-  if (input.mentions.users.first()) {
+  if(args[1] === "leaderboard"){
+    let lb = "";
+    let members = input.guild.members;
+    let i = 1;
+
+    await con.query('SELECT * FROM cheers ORDER BY amount DESC', (e, rows) => {
+
+      rows.forEach( (row) => {
+        members.forEach( (member) => {
+          if(row.id === parseInt(member.user.id)){
+            lb += "[" + i + "]   " + "#" + member.user.username + ":\n" +
+              "          Amount of cheers: " + row.amount + "\n";
+            i++;
+          }
+        })
+      });
+      //lb += i+1 + ": " + input.guild.members.get(row.id).username + " - " + row.amount + "\n";
+      /*input.channel.send(" ```css\n" +
+        "[1]   #hiehie\n" +
+        "         Amount of satan: 2\n" +
+        "``` ")*/
+      input.channel.send("**Cheers Leader Board:** \n" + "```css\n" + lb + "\n```");
+    })
+  }
+  else if (input.mentions.users.first()) {
     await con.query('SELECT * FROM cheers WHERE id = ' + input.mentions.users.first().id, (e, rows) => {
       if (e) throw e;
 

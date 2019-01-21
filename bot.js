@@ -61,7 +61,7 @@ fs.readdir("./cmds/", (err, files) => {
 
 let con;
 
-function handleDisconnect(){
+function handleDisconnect() {
 
 
   con = mysql.createConnection({
@@ -72,18 +72,18 @@ function handleDisconnect(){
   });
 
   con.connect(e => {
-    if (e){
+    if (e) {
       console.log("error connecting to db");
       setTimeout(handleDisconnect, 2000);
     }
     console.log("connected to drunkDB - eight");
   });
 
-  con.on('error', (e) =>{
+  con.on('error', (e) => {
     console.log("db error", e);
-    if(e.code === 'PROTOCOL_CONNECTION_LOST'){
+    if (e.code === 'PROTOCOL_CONNECTION_LOST') {
       handleDisconnect();
-    }else {
+    } else {
       throw e;
     }
   })
@@ -143,7 +143,10 @@ client.on('message', async input => {
       console.log(e);
     }
   }
+});
 
+client.on('error', (e) => {
+  console.error("Error in client: " + e);
 });
 
 
@@ -219,7 +222,7 @@ function handleCommands(input, inp, cmd, arguments, args) {
         });
       break;
     case 'sa':
-      if(isOwner(input)) client.user.setActivity(arguments[0]);
+      if (isOwner(input)) client.user.setActivity(arguments[0]);
       break;
     case 'todo':
       input.channel.send('TODO items are\n' +
@@ -232,23 +235,23 @@ function handleCommands(input, inp, cmd, arguments, args) {
 }
 
 const shutdown = async (input) => {
-  if(isOwner(input)){
+  if (isOwner(input)) {
     console.log("Shutdown signal recieved.");
-  input.channel.send("shutting down..")
-    .then(() => con.end())
-    .then(() => client.destroy());
-  }else{
+    input.channel.send("shutting down..")
+      .then(() => con.end())
+      .then(() => client.destroy());
+  } else {
     input.channel.send("nice try :)");
   }
 };
 
 const reboot = async (input) => {
-  if(isOwner(input)) {
+  if (isOwner(input)) {
     console.log("Reboot signal recieved.");
     input.channel.send("rebooting...")
       .then(() => client.destroy())
       .then(() => client.login(auth));
-  }else{
+  } else {
     input.channel.send("nice try :)");
   }
 };
@@ -279,9 +282,8 @@ const pfp = async (input, args) => {
   m.delete();
 };
 
-function isOwner(input){
-  if(input.author.id === ownerId) return true;
-  else return false;
+function isOwner(input) {
+  return input.author.id === ownerId
 }
 
 function fullW(input) {
