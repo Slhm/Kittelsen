@@ -18,11 +18,6 @@ module.exports.run = async (client, input, args, con) => {
           }
         })
       });
-      //lb += i+1 + ": " + input.guild.members.get(row.id).username + " - " + row.amount + "\n";
-      /*input.channel.send(" ```css\n" +
-        "[1]   #hiehie\n" +
-        "         Amount of satan: 2\n" +
-        "``` ")*/
       input.channel.send("**Cheers Leader Board:** \n" + "```css\n" + lb + "\n```");
     })
   }
@@ -44,8 +39,6 @@ module.exports.run = async (client, input, args, con) => {
       input.channel.send(input.mentions.users.first().username + " has received " + tmpVal + " cheers so far!");
     });
   } else {
-
-
     input.channel.send("Cheers, " + input.author.username + "!");
   }
 };

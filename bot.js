@@ -54,11 +54,6 @@ fs.readdir("./cmds/", (err, files) => {
   })
 });
 
-/*process.on('SIGTERM', () => {
-
-  server.close();
-});*/
-
 let con;
 
 function handleDisconnect() {
@@ -90,16 +85,6 @@ function handleDisconnect() {
 }
 
 handleDisconnect();
-
-
-/*con.query('SELECT num FROM eight WHERE id = 11', (e, rows) => {
-  if(e) throw e;
-  console.log("num: " + rows[0].num);
-  if(rows){
-    con.query('UPDATE eight SET num = 2 WHERE id = 11');
-    console.log("putta inn en greia da vøtt");
-  }
-});*/
 
 client.on('ready', async () => {
   logger.info('Connected!');
@@ -179,7 +164,6 @@ function handleCommands(input, inp, cmd, arguments, args) {
       break;
     case 'cheers':
       client.commands.get('cheers').run(client, input, args, con);
-      //input.channel.send('Cheers, ' + input.author.username + '!');
       break;
     case 'future':
       input.channel.send('The future is vegan, my dude');
@@ -187,8 +171,8 @@ function handleCommands(input, inp, cmd, arguments, args) {
     case 'memes':
       client.commands.get('memes').run(client, input, args, arguments);
       break;
-    case 'pfp':
-      pfp(input, args);
+    case 'pp':
+      pp(input, args);
       //.catch(input.channel.send("<@!306056522020945922> you fucked something up. check the logs"))
       break;
     case 'fullwidth':
@@ -208,6 +192,11 @@ function handleCommands(input, inp, cmd, arguments, args) {
       break;
     case 'ø':
       input.channel.send({files: ["./resources/oe.jpg"]});
+      break;
+
+    case 'ban' :
+      let tmp = "**" + input.mentions.users.first().username + " has been banned for life by " + input.author.username + "**"
+      input.channel.send(tmp.toUpperCase());
       break;
     case 'shutdown':
       shutdown(input)
@@ -257,7 +246,7 @@ const reboot = async (input) => {
 };
 
 
-const pfp = async (input, args) => {
+const pp = async (input, args) => {
   let m = await input.channel.send("fetching avatar ...");
   if (args[1]) {
     await input.channel.send({
