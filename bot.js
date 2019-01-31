@@ -26,6 +26,8 @@ let music = [
   "all hail the mighty emperor https://www.youtube.com/watch?v=4FYwz2-_G_4"
 ];
 
+let imVegan = false;
+
 
 // Logger settings
 logger.remove(logger.transports.Console);
@@ -138,22 +140,8 @@ client.on('error', (e) => {
 function handleCommands(input, inp, cmd, arguments, args) {
   switch (cmd) {
     case 'commands':
-      input.channel.send('Available commands so far are: \n' +
-        '!8         -      magic 8ball\n' +
-        '!music     -      bot sends random good music.' + music.length + ' tracks in the collection atm. adding more eventually' + '\n' +
-        '!cheers    -      bot says cheers!\n' +
-        '!future    -      bot tells about the future\n' +
-        '!ping      -      ping time\n' +
-        '!fullwidth -      returns text in fullwidth\n' +
-        '!poll      -      creates a poll\n' +
-        '!satan\n' +
-        '!todo      -      lists todo items'
-      );
-      break;
-    case 'ping':
-      let d = new Date();
-      let ping = input.createdTimestamp - d.getTime();
-      input.channel.send("Ping is: " + ping + "ms");
+    case 'help':
+      input.channel.send('Available commands are in: ' + input.guild.channels.get('534443945942581249').toString());
       break;
     case 'satan':
       input.channel.send("Satan wa totemo kawaīdesu ^w^", {files: ["./resources/satanKawaii.gif"]});
@@ -165,6 +153,10 @@ function handleCommands(input, inp, cmd, arguments, args) {
     case 'cheers':
       client.commands.get('cheers').run(client, input, args, con);
       break;
+    case 'cozy':
+    case 'cosy':
+      client.commands.get('cozy').run(client,input,args,con);
+      break;
     case 'future':
       input.channel.send('The future is vegan, my dude');
       break;
@@ -172,6 +164,7 @@ function handleCommands(input, inp, cmd, arguments, args) {
       client.commands.get('memes').run(client, input, args, arguments);
       break;
     case 'pp':
+    case 'pfp':
       pp(input, args);
       //.catch(input.channel.send("<@!306056522020945922> you fucked something up. check the logs"))
       break;
@@ -189,6 +182,11 @@ function handleCommands(input, inp, cmd, arguments, args) {
       break;
     case '8':
       client.commands.get('8').run(client, input, args, con);
+      break;
+    case 'ping':
+      let d = new Date();
+      let ping = input.createdTimestamp - d.getTime();
+      input.channel.send("Ping is: " + ping + "ms");
       break;
     case 'ø':
       input.channel.send({files: ["./resources/oe.jpg"]});
@@ -213,13 +211,26 @@ function handleCommands(input, inp, cmd, arguments, args) {
     case 'sa':
       if (isOwner(input)) client.user.setActivity(arguments[0]);
       break;
-    case 'todo':
-      input.channel.send('TODO items are\n' +
-        'Commands: \n' +
-        'cozy - send random cozy picture/music/something\n' +
-        'memes - send random quality meme. need a good api first\n' +
-        'Implementations: \n' +
-        'Add database to save amount of cheers users have given eachother, and to save music entries\n');
+    case 'imVegan':
+      imVegan = (args[1] === "on" && isOwner(input));
+      if(imVegan) imVeganFunc(true, input);
+      else imVeganFunc(false,input);
+      break;
+  }
+}
+
+function imVeganFunc(on, input) {
+
+  let isOn = on;
+
+  if(isOn){
+    let r = Math.floor(Math.random() * 26 * 60 * 60 * 1000);
+    input.channel.send("imVegan is turned on :)");
+    let i = setTimeout(() => {
+      input.channel.send("im vegan");
+      imVeganFunc(isOn, input);
+      }, r
+    );
   }
 }
 
@@ -248,6 +259,8 @@ const reboot = async (input) => {
 
 const pp = async (input, args) => {
   let m = await input.channel.send("fetching avatar ...");
+  let image = input.guild.users
+
   if (args[1]) {
     await input.channel.send({
       files: [
@@ -322,6 +335,19 @@ function eldF(input) {
 
 client.login(auth);
 
+
+/*
+'Available commands so far are: \n' +
+        '!8         -      magic 8ball\n' +
+        '!music     -      bot sends random good music.' + music.length + ' tracks in the collection atm. adding more eventually' + '\n' +
+        '!cheers    -      bot says cheers!\n' +
+        '!future    -      bot tells about the future\n' +
+        '!ping      -      ping time\n' +
+        '!fullwidth -      returns text in fullwidth\n' +
+        '!poll      -      creates a poll\n' +
+        '!satan\n' +
+        '!todo      -      lists todo items'
+ */
 
 /*
 //REGEX STUFF. MIGHT CHANGE TO IT EVENTUALLY
