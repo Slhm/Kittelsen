@@ -1,5 +1,17 @@
 module.exports.run = async (client, input, args, con) => {
 
+
+  let ch = [
+    "cheered so hard it was heard way down the hallway. some say the echo is still down there somewhere.",
+    "punched the shit out of their glasses so it all broke, but it was all worth it for a magnificent cheer",
+    "cheered.",
+    "cheered, and it was cool.",
+    "cheered their tiny apple juice glasses together. it's something i guess.",
+    "tried to cheer, but they missed. i guess it counts anyways, fuck it.",
+    "cheered quietly.",
+    "cheered REALLY FUCKING LOUDLY."
+  ];
+
   let tmpVal = 0;
 
   if(args[1] === "leaderboard"){
@@ -36,7 +48,8 @@ module.exports.run = async (client, input, args, con) => {
       }
 
       con.query(q);
-      input.channel.send(input.mentions.users.first().username + " has received " + tmpVal + " cheers so far!");
+      let r = Math.floor(Math.random() * ch.length);
+      input.channel.send(input.author.username + " and " + input.mentions.users.first().username + " " +  ch[r] + "\n" + input.mentions.users.first() + " has received " + tmpVal + " cheers so far!");
     });
   } else {
     input.channel.send("Cheers, " + input.author.username + "!");

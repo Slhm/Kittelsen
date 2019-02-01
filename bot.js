@@ -129,6 +129,8 @@ client.on('message', async input => {
     } catch (e) {
       console.log(e);
     }
+  }else if(imVegan && (inp.startsWith("im") || inp.startsWith("i'm"))){
+    input.channel.send("im vegan");
   }
 });
 
@@ -169,9 +171,11 @@ function handleCommands(input, inp, cmd, arguments, args) {
       //.catch(input.channel.send("<@!306056522020945922> you fucked something up. check the logs"))
       break;
     case 'fullwidth':
+    case 'aesthetic':
       args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(fullW(inp.split('!fullwidth')[1]));
       break;
     case 'futhark':
+    case 'runes':
       args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(eldF(inp.split('!futhark')[1]));
       break;
     case 'freedom':
@@ -191,9 +195,8 @@ function handleCommands(input, inp, cmd, arguments, args) {
     case 'ø':
       input.channel.send({files: ["./resources/oe.jpg"]});
       break;
-
     case 'ban' :
-      let tmp = "**" + input.mentions.users.first().username + " has been banned for life by " + input.author.username + "**"
+      let tmp = "**" + input.mentions.users.first().username + " has been banned for life by " + input.author.username + "**";
       input.channel.send(tmp.toUpperCase());
       break;
     case 'shutdown':
@@ -212,9 +215,11 @@ function handleCommands(input, inp, cmd, arguments, args) {
       if (isOwner(input)) client.user.setActivity(arguments[0]);
       break;
     case 'imVegan':
-      imVegan = (args[1] === "on" && isOwner(input));
-      if(imVegan) imVeganFunc(true, input);
-      else imVeganFunc(false,input);
+      if((args[1] === "on" && isOwner(input))) imVeganFunc(true, input);
+      else imVeganFunc(false, input);
+      break;
+    case 'vcj':
+      imVegan = !imVegan;
       break;
   }
 }
@@ -258,14 +263,16 @@ const reboot = async (input) => {
 
 
 const pp = async (input, args) => {
+
   let m = await input.channel.send("fetching avatar ...");
-  let image = input.guild.users
+  let user = input.mentions.users.first();
+  if(!user) await client.fetchUser(args[1]).then((u) => {user = u; console.log("user: " + user + ", user.avatarshit: " + user.displayAvatarURL)}).catch((e) => e.stack);
 
   if (args[1]) {
     await input.channel.send({
       files: [
         {
-          attachment: input.mentions.users.first().displayAvatarURL,
+          attachment: user.displayAvatarURL,
           name: "avatar.png"
         }
       ]
