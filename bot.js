@@ -98,6 +98,11 @@ client.on('message', async input => {
   //if (input.author.bot) return;
   if (input.author.bot && !input.content.startsWith("!8")) return;
   if (input.channel.type === "dm") return;
+  if (input.guild.id === '458029332141572120'){
+    console.log("isMod: " + isMod(input) + ", isCool: " + isCool(input));
+    if (!isMod(input) && !isCool(input)) return;
+  }
+  console.log("username: " + input.author.username + ", roleId: " + input.member.roles.last());
   let prefix = "!";
   let inp = input.content;
 
@@ -129,7 +134,7 @@ client.on('message', async input => {
     } catch (e) {
       console.log(e);
     }
-  }else if(imVegan && (inp.startsWith("im") || inp.startsWith("i'm"))){
+  } else if (imVegan && (inp.startsWith("im") || inp.startsWith("i'm"))) {
     input.channel.send("im vegan");
   }
 });
@@ -157,7 +162,7 @@ function handleCommands(input, inp, cmd, arguments, args) {
       break;
     case 'cozy':
     case 'cosy':
-      client.commands.get('cozy').run(client,input,args,con);
+      client.commands.get('cozy').run(client, input, args, con, arguments);
       break;
     case 'future':
       input.channel.send('The future is vegan, my dude');
@@ -168,15 +173,18 @@ function handleCommands(input, inp, cmd, arguments, args) {
     case 'pp':
     case 'pfp':
       pp(input, args);
-      //.catch(input.channel.send("<@!306056522020945922> you fucked something up. check the logs"))
       break;
     case 'fullwidth':
-    case 'aesthetic':
       args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(fullW(inp.split('!fullwidth')[1]));
       break;
+    case 'aesthetic':
+      args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(fullW(inp.split('!aesthetic')[1]));
+      break;
     case 'futhark':
-    case 'runes':
       args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(eldF(inp.split('!futhark')[1]));
+      break;
+    case 'runes':
+      args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(eldF(inp.split('!runes')[1]));
       break;
     case 'freedom':
       args === "" ? input.channel.send("you need a number and unit type after the command, my dude") : client.commands.get('freedom').run(client, input, args);
@@ -212,28 +220,50 @@ function handleCommands(input, inp, cmd, arguments, args) {
         });
       break;
     case 'sa':
-      if (isOwner(input)) client.user.setActivity(arguments[0]);
+      if (isOwner(input) && args[1] === "-p") client.user.setActivity(arguments[0], {type: "PLAYING"});
+      else if (isOwner(input) && args[1] === "-w") client.user.setActivity(arguments[0], {type: "WATCHING"});
+      else if (isOwner(input) && args[1] === "-l") client.user.setActivity(arguments[0], {type: "LISTENING"});
       break;
     case 'imVegan':
-      if((args[1] === "on" && isOwner(input))) imVeganFunc(true, input);
-      else imVeganFunc(false, input);
+    case 'imvegan':
+      if ((args[1] === "on" && isOwner(input))) {
+        imVeganFunc(true, input);
+        input.react('✅');
+      } else if (args[1] === "off") {
+        imVeganFunc(false, input);
+        input.react("❌");
+      } else {
+        input.react('👍');
+      }
       break;
     case 'vcj':
+      if (imVegan) input.react('❌');
+      else input.react('✅');
       imVegan = !imVegan;
       break;
   }
+}
+
+
+function isCool(input){
+  //id: <@&458031022563393536>
+  return input.member.roles.has('458031022563393536');
+}
+
+function isMod(input){
+  //id: <@&458030682988609538>
+  return input.member.roles.has('458030682988609538');
 }
 
 function imVeganFunc(on, input) {
 
   let isOn = on;
 
-  if(isOn){
-    let r = Math.floor(Math.random() * 26 * 60 * 60 * 1000);
-    input.channel.send("imVegan is turned on :)");
+  if (isOn) {
+    let r = Math.floor(Math.random() * 40 * 60 * 60 * 1000); //
     let i = setTimeout(() => {
-      input.channel.send("im vegan");
-      imVeganFunc(isOn, input);
+        input.channel.send("im vegan");
+        imVeganFunc(isOn, input);
       }, r
     );
   }
@@ -266,7 +296,10 @@ const pp = async (input, args) => {
 
   let m = await input.channel.send("fetching avatar ...");
   let user = input.mentions.users.first();
-  if(!user) await client.fetchUser(args[1]).then((u) => {user = u; console.log("user: " + user + ", user.avatarshit: " + user.displayAvatarURL)}).catch((e) => e.stack);
+  if (!user) await client.fetchUser(args[1]).then((u) => {
+    user = u;
+    console.log("user: " + user + ", user.avatarshit: " + user.displayAvatarURL)
+  }).catch((e) => e.stack);
 
   if (args[1]) {
     await input.channel.send({
