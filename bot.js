@@ -99,10 +99,10 @@ client.on('message', async input => {
   if (input.author.bot && !input.content.startsWith("!8")) return;
   if (input.channel.type === "dm") return;
   if (input.guild.id === '458029332141572120'){
-    console.log("isMod: " + isMod(input) + ", isCool: " + isCool(input));
+    //console.log("isMod: " + isMod(input) + ", isCool: " + isCool(input));
     if (!isMod(input) && !isCool(input)) return;
   }
-  console.log("username: " + input.author.username + ", roleId: " + input.member.roles.last());
+  //console.log("username: " + input.author.username + ", roleId: " + input.member.roles.last());
   let prefix = "!";
   let inp = input.content;
 
