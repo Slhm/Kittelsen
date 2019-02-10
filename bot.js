@@ -95,12 +95,11 @@ client.on('ready', async () => {
 });
 
 client.on('message', async input => {
-  //if (input.author.bot) return;
   if (input.author.bot && !input.content.startsWith("!8")) return;
   if (input.channel.type === "dm") return;
-  if (input.guild.id === '458029332141572120'){
+  if (input.guild.id === '458029332141572120') {
     //console.log("isMod: " + isMod(input) + ", isCool: " + isCool(input));
-    if (!isMod(input) && !isCool(input)) return;
+    if (!isMod(input) && !isCool(input) && !isKittelsen(input)) return;
   }
   //console.log("username: " + input.author.username + ", roleId: " + input.member.roles.last());
   let prefix = "!";
@@ -148,7 +147,9 @@ function handleCommands(input, inp, cmd, arguments, args) {
   switch (cmd) {
     case 'commands':
     case 'help':
-      input.channel.send('Available commands are in: ' + input.guild.channels.get('534443945942581249').toString());
+      if (input.guild.id === '458029332141572120') {
+        input.channel.send('Available commands are in: ' + input.guild.channels.get('534443945942581249').toString());
+      }
       break;
     case 'satan':
       input.channel.send("Satan wa totemo kawaīdesu ^w^", {files: ["./resources/satanKawaii.gif"]});
@@ -227,7 +228,7 @@ function handleCommands(input, inp, cmd, arguments, args) {
     case 'imVegan':
     case 'imvegan':
       if ((args[1] === "on" && isOwner(input))) {
-        imVeganFunc(true, input);
+        imVeganFunc(true, input, args);
         input.react('✅');
       } else if (args[1] === "off") {
         imVeganFunc(false, input);
@@ -245,24 +246,40 @@ function handleCommands(input, inp, cmd, arguments, args) {
 }
 
 
-function isCool(input){
+function isCool(input) {
   //id: <@&458031022563393536>
   return input.member.roles.has('458031022563393536');
 }
 
-function isMod(input){
+function isMod(input) {
   //id: <@&458030682988609538>
   return input.member.roles.has('458030682988609538');
 }
 
-function imVeganFunc(on, input) {
+function isKittelsen(input) {
+  return input.author.id === '418100748451315713';
+}
+
+function imVeganFunc(on, input, args) {
+
+  let ch = "";
+
+  /*if (args[2]) {
+    try {
+      ch = input.channels.get(args[2]);
+    } catch (e) {
+      console.log(e);
+    }
+  }*/
 
   let isOn = on;
 
   if (isOn) {
     let r = Math.floor(Math.random() * 40 * 60 * 60 * 1000); //
     let i = setTimeout(() => {
-        input.channel.send("im vegan");
+        //if(!ch) input.channel.send("im vegan");
+        //else client.channels.get('458029595145404452').send("im vegaaaaaaaaaaan");
+        client.channels.find("name", "talk-things").send("im vegan.");
         imVeganFunc(isOn, input);
       }, r
     );
@@ -271,7 +288,7 @@ function imVeganFunc(on, input) {
 
 const shutdown = async (input) => {
   if (isOwner(input)) {
-    console.log("Shutdown signal recieved.");
+    console.log("Shutdown signal received.");
     input.channel.send("shutting down..")
       .then(() => con.end())
       .then(() => client.destroy());

@@ -2,8 +2,8 @@ const fetch = require('node-fetch');
 const imgflip = require('../auth.json').imgflip;
 
 //Memes
-let memeArray = ["pikachu", "exit", "spongebob", "buttons"];
-let memeArrayID = [155067746, 124822590, 102156234, 87743020];
+let memeArray = ["pikachu", "exit", "spongebob", "buttons", "truth", "win", "kermit"];
+let memeArrayID = [155067746, 124822590, 102156234, 87743020,123999232, 101910402,84341851];
 
 module.exports.run = async (client, input, args, arguments) => {
 
@@ -43,7 +43,7 @@ module.exports.help = {
 const fetchMeme = async (input, type, _text0, _text1, _text2, box) => {
 
   //let text = "&text0="+_text0+"&text1="+_text1+"&text2="+_text2;
-  let text = "&boxes[0][text]="+_text0+"&boxes[1][text]="+_text1+"[height]=548";
+  let text = "&boxes[0][text]="+_text0+"&boxes[1][text]="+_text1;
   if(_text2) text += "&boxes[2][text]="+_text2;
   return fetch('https://api.imgflip.com/caption_image?' +
     'username=' + imgflip.user +

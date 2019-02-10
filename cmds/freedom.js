@@ -30,7 +30,7 @@ module.exports.run = async (client, input, args) => {
   }else if(args[1].endsWith("C")){
     let c = args[1].slice(0,-1);
     let f = Math.round((c * 9/5) + 35);
-    input.channel.send(args[1] + "in freedoms is: " + f);
+    input.channel.send(args[1] + "in freedoms is: " + f  + "F");
   }
   else input.channel.send("try again. Syntax: NUMBER[F/mph]");
 
