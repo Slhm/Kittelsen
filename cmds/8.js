@@ -28,7 +28,7 @@ module.exports.run = async (client, input, args, con) => {
         if(e) throw e;
         let tmp = parseInt(rows[0].num);
         con.query('UPDATE eight SET num = ' + tmp+1 + ' WHERE id = 11');
-        console.log(rows[0].num);
+        //console.log(rows[0].num);
         input.channel.send("<@!306056522020945922> nice, it happened. there's a 0.3% ((1/18)^2) chance of this happening. it has happened: " + tmp + " times before.");
       });
       double = false;
