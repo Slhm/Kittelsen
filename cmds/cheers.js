@@ -9,7 +9,11 @@ module.exports.run = async (client, input, args, con) => {
     "cheered their tiny apple juice glasses together. it's something i guess.",
     "tried to cheer, but they missed. i guess it counts anyways, fuck it.",
     "cheered quietly.",
-    "cheered REALLY FUCKING LOUDLY."
+    "cheered REALLY FUCKING LOUDLY.",
+    "cheered at a moderate volume. it was an extraordinarily ordinary cheer.",
+    "cheered their bath salts bags together, and then spazzed out and ODed probably",
+    "are so high that even if they tried to cheer or some shit, they would probably forget what they were doing before the glasses hit. but it still counts in my book",
+    "are dead from alcohol poisoning."
   ];
 
   let tmpVal = 0;

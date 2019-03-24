@@ -2,8 +2,8 @@ const fetch = require('node-fetch');
 const imgflip = require('../auth.json').imgflip;
 
 //Memes
-let memeArray = ["pikachu", "exit", "spongebob", "buttons", "truth", "win", "kermit"];
-let memeArrayID = [155067746, 124822590, 102156234, 87743020,123999232, 101910402,84341851];
+let memeArray = ["pikachu", "exit", "spongebob", "buttons", "truth", "win", "kermit", "depDonald"];
+let memeArrayID = [155067746, 124822590, 102156234, 87743020,123999232, 101910402,84341851, 173067708];
 
 module.exports.run = async (client, input, args, arguments) => {
 
@@ -16,8 +16,8 @@ module.exports.run = async (client, input, args, arguments) => {
   for (let i = 0; i <= memeArray.length; i++) {
     if (memeArray[i] === args[1]) {
 
-      if(args[1] === "pikachu" || args[1] === "exit"){
-        let box = args[1] === "pikachu" ? "pikachu" : "exit";
+      if(args[1] === "pikachu" || args[1] === "exit" || args[1] === "depDonald"){
+        let box = args[1];
         await fetchMeme(input, memeArrayID[i], arguments[0], arguments[1], arguments[2], box);
         break;
       }else{

@@ -26,6 +26,12 @@ let music = [
   "all hail the mighty emperor https://www.youtube.com/watch?v=4FYwz2-_G_4"
 ];
 
+let banArray = ["HAS BEEN BANNED FOR LIFE",
+                "HAS BEEN DEMOLISHED INTO THE PAVEMENT, AND ALSO BANNED", "hAs BeEn BaNnEd LolL",
+                "was eradicated out of our bleak fucking existance", "got fucking banned, yay",
+                "said AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆHHHHHHHHHHHHHHHHH as they \"fell\" off a cliff",
+                "was forced out the moon door, wooooooooo"];
+
 let imVegan = false;
 
 
@@ -91,7 +97,7 @@ handleDisconnect();
 client.on('ready', async () => {
   logger.info('Connected!');
   logger.info('Logged in as: ' + client.user.tag + ' - (' + client.user.id + ')');
-  client.user.setActivity("with a luigi board");
+  client.user.setActivity("God");
 });
 
 client.on('message', async input => {
@@ -154,6 +160,9 @@ function handleCommands(input, inp, cmd, arguments, args) {
     case 'satan':
       input.channel.send("Satan wa totemo kawaīdesu ^w^", {files: ["./resources/satanKawaii.gif"]});
       break;
+    case 'ud':
+      client.commands.get('ud').run(client, input);
+      break;
     case 'music':
       let msc = music[Math.floor(Math.random() * music.length)];
       input.channel.send(msc);
@@ -205,8 +214,8 @@ function handleCommands(input, inp, cmd, arguments, args) {
       input.channel.send({files: ["./resources/oe.jpg"]});
       break;
     case 'ban' :
-      let tmp = "**" + input.mentions.users.first().username + " has been banned for life by " + input.author.username + "**";
-      input.channel.send(tmp.toUpperCase());
+      let b = banArray[Math.floor(Math.random() * banArray.length)];
+      input.channel.send(b);
       break;
     case 'shutdown':
       shutdown(input)
@@ -245,7 +254,6 @@ function handleCommands(input, inp, cmd, arguments, args) {
   }
 }
 
-
 function isCool(input) {
   //id: <@&458031022563393536>
   return input.member.roles.has('458031022563393536');
@@ -259,6 +267,7 @@ function isMod(input) {
 function isKittelsen(input) {
   return input.author.id === '418100748451315713';
 }
+
 
 function imVeganFunc(on, input, args) {
 
