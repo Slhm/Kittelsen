@@ -15,9 +15,11 @@ module.exports.run = async (client, input, args, arguments) => {
   console.log(arguments[0]);
   let msg = await input.channel.send(emb);
   //let lastMsg = input.channel.lastMessageID;
+  //let m1 = input.message.emojis.first().name;
   await msg.react("👍");
   await msg.react("👎");
-  await input.delete(input.message_id);
+
+  //await input.delete(input.message_id);
   //await input.channels.channel_id(input.channel.channel_id).messages.message_id(lastMsg).react("👍");
   /*
   msg.react("👍");

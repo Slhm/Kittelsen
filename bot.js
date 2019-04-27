@@ -113,7 +113,7 @@ client.on('message', async input => {
 
   if (inp.startsWith(prefix)) {
     var args = inp.substr(prefix.length).split(' ');
-    var cmd = args[0];
+    var cmd = args[0].toLowerCase();
 
 
     const arguments = (inp) => {
@@ -215,7 +215,7 @@ function handleCommands(input, inp, cmd, arguments, args) {
       break;
     case 'ban' :
       let b = banArray[Math.floor(Math.random() * banArray.length)];
-      input.channel.send(b);
+      input.channel.send(input.mentions.users.first() + b);
       break;
     case 'shutdown':
       shutdown(input)
@@ -234,7 +234,6 @@ function handleCommands(input, inp, cmd, arguments, args) {
       else if (isOwner(input) && args[1] === "-w") client.user.setActivity(arguments[0], {type: "WATCHING"});
       else if (isOwner(input) && args[1] === "-l") client.user.setActivity(arguments[0], {type: "LISTENING"});
       break;
-    case 'imVegan':
     case 'imvegan':
       if ((args[1] === "on" && isOwner(input))) {
         imVeganFunc(true, input, args);

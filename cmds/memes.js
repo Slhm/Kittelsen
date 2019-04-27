@@ -2,10 +2,12 @@ const fetch = require('node-fetch');
 const imgflip = require('../auth.json').imgflip;
 
 //Memes
-let memeArray = ["pikachu", "exit", "spongebob", "buttons", "truth", "win", "kermit", "depDonald"];
+let memeArray = ["pikachu", "exit", "spongebob", "buttons", "truth", "win", "kermit", "depdonald"];
 let memeArrayID = [155067746, 124822590, 102156234, 87743020,123999232, 101910402,84341851, 173067708];
 
 module.exports.run = async (client, input, args, arguments) => {
+
+  args[1] = args[1].toLowerCase();
 
   //console.log("memes my dude");
   for(let i = 0; i <= 3; i++) {
@@ -16,7 +18,7 @@ module.exports.run = async (client, input, args, arguments) => {
   for (let i = 0; i <= memeArray.length; i++) {
     if (memeArray[i] === args[1]) {
 
-      if(args[1] === "pikachu" || args[1] === "exit" || args[1] === "depDonald"){
+      if(args[1] === "pikachu" || args[1] === "exit" || args[1] === "depdonald"){
         let box = args[1];
         await fetchMeme(input, memeArrayID[i], arguments[0], arguments[1], arguments[2], box);
         break;
@@ -25,7 +27,7 @@ module.exports.run = async (client, input, args, arguments) => {
         break;
       }
     } else if (i >= memeArray.length) {
-      input.channel.send("Couldnt find that. Try one of these: \n" +
+      input.channel.send("Couldnt find that. Available ones: \n" +
         memeArray + "\n" +
         "Syntax example: !memes aliens 'top text' 'bottom text'");
       break;
