@@ -27,10 +27,10 @@ let music = [
 ];
 
 let banArray = ["HAS BEEN BANNED FOR LIFE",
-                "HAS BEEN DEMOLISHED INTO THE PAVEMENT, AND ALSO BANNED", "hAs BeEn BaNnEd LolL",
+                "HAS BEEN DEMOLISHED INTO THE PAVEMENT, AND ALSO BANNED", "hAs BeEn BaNnEd LolLll",
                 "was eradicated out of our bleak fucking existance", "got fucking banned, yay",
                 "said AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆHHHHHHHHHHHHHHHHH as they \"fell\" off a cliff",
-                "was forced out the moon door, wooooooooo"];
+                "was forced out the moon door, wooooooooo", "is no longer with us :("];
 
 let imVegan = false;
 
@@ -114,6 +114,7 @@ client.on('message', async input => {
   if (inp.startsWith(prefix)) {
     var args = inp.substr(prefix.length).split(' ');
     var cmd = args[0].toLowerCase();
+    var text  = args[1];
 
 
     const arguments = (inp) => {
@@ -135,7 +136,7 @@ client.on('message', async input => {
       return tmpArray;
     };
     try {
-      handleCommands(input, inp, cmd, arguments(inp), args);
+      handleCommands(input, inp, cmd, arguments(inp), args, text);
     } catch (e) {
       console.log(e);
     }
@@ -149,7 +150,7 @@ client.on('error', (e) => {
 });
 
 
-function handleCommands(input, inp, cmd, arguments, args) {
+function handleCommands(input, inp, cmd, arguments, args, text) {
   switch (cmd) {
     case 'commands':
     case 'help':
@@ -197,6 +198,7 @@ function handleCommands(input, inp, cmd, arguments, args) {
       args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(eldF(inp.split('!runes')[1]));
       break;
     case 'freedom':
+    case 'convert':
       args === "" ? input.channel.send("you need a number and unit type after the command, my dude") : client.commands.get('freedom').run(client, input, args);
       break;
     case 'poll':
