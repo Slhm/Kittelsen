@@ -14,28 +14,20 @@ module.exports.run = async (client, input, args, arguments) => {
 
   console.log(arguments[0]);
   let msg = await input.channel.send(emb);
-  //let lastMsg = input.channel.lastMessageID;
-  //let m1 = input.message.emojis.first().name;
-  await msg.react("👍");
-  await msg.react("👎");
 
-  //await input.delete(input.message_id);
-  //await input.channels.channel_id(input.channel.channel_id).messages.message_id(lastMsg).react("👍");
-  /*
-  msg.react("👍");
-  msg.react("👎");
-  */
+  let emojis = input.content.split(arguments[0])[1];
+  console.log("emojis: " + emojis);
+  let emojiList = emojis.split(" ");
+  emojiList.splice(0,1);
+  for(let i = 0; i < emojiList.length; i++){
+    if(emojiList[i].includes("<")) await msg.react(emojiList[i].match(/[0-9]+/).toString());
+    else await msg.react(emojiList[i]);
+  }
 
-
-
-  //input.channel.send(input.author.username + " created a poll on: \n\n" + "**" + arguments + "**");
-  //input.react("👍");
-  //let botObj = get().users.user_id('418100748451315713');
-  //botObj.last_message_id
-
-  //message.author.id.react('👍');
-  //input.channel.reactions(':thumbsup:');
-
+  if(emojiList.length === 0) {
+    await msg.react("👍");
+    await msg.react("👎");
+  }
 };
 
 module.exports.help = {
