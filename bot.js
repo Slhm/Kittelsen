@@ -175,6 +175,9 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
     case 'cosy':
       client.commands.get('cozy').run(client, input, args, con, arguments);
       break;
+    case 'ama':
+      client.commands.get('ama').run(client, input, args, con, arguments);
+      break;
     case 'future':
       input.channel.send('The future is vegan, my dude');
       break;
@@ -269,6 +272,10 @@ function isKittelsen(input) {
   return input.author.id === '418100748451315713';
 }
 
+function isOwner(input) {
+  return input.author.id === ownerId
+}
+
 
 function imVeganFunc(on, input, args) {
 
@@ -351,9 +358,6 @@ const pp = async (input, args) => {
   m.delete();
 };
 
-function isOwner(input) {
-  return input.author.id === ownerId
-}
 
 function fullW(input) {
   let tmpString = "";
@@ -368,6 +372,7 @@ function fullW(input) {
   return tmpString;
 }
 
+//eldF encrypt
 function eldF(input) {
   let tmpString = "";
   let tmpValue;
@@ -375,16 +380,19 @@ function eldF(input) {
   input = input.toLowerCase();
 
 
-  const eldFArray = ["ᚨ", "ᛒ", "ᚲ", "ᛞ", "ᛖ", "ᚠ", "ᚷ", "ᚻ", "ᛁ", "ᛃ", "ᚲ", "ᛚ", "ᛗ", "ᚾ", "ᛟ", "ᛈ", "ᚲ", "ᚱ", "ᛊ", "ᛏ", "ᚢ", "ᚹ", "ᚹ", "ᚲᛊ", "ᛁ", "ᛉ", "ᚦ"];
+  let eldFArray = ["ᚨ", "ᛒ", "ᚲ", "ᛞ", "ᛖ", "ᚠ", "ᚷ", "ᚻ", "ᛁ", "ᛃ", "ᚲ", "ᛚ", "ᛗ", "ᚾ", "ᛟ", "ᛈ", "ᚲ", "ᚱ", "ᛊ", "ᛏ", "ᚢ", "ᚹ", "ᚹ", "ᚲᛊ", "ᛁ", "ᛉ", "ᚦ", "ᛜ"];
 
   for (let i = 0; i < input.length; i++) {
     tmpValue = input.charCodeAt(i) - 97;
 
-
     if (i !== input.length) {
       tmpValue2 = input.charCodeAt(i + 1) - 97;
       if (tmpValue === 19 && tmpValue2 === 7) {
-        tmpString += "ᚦ";
+        tmpString += eldFArray[26];
+        i++;
+        continue;
+      }else if(tmpValue === 13 && tmpValue2 === 6){
+        tmpString += eldFArray[27];
         i++;
         continue;
       }

@@ -2,19 +2,19 @@ const ownerId = require('../auth.json').ownerId;
 
 module.exports.run = async (client, input, args, con, arguments) => {
 
-  if (args[1] === "-i") {
+  if (args[1] === "-i" || args[1] === "insert" || args[1] === "add") {
     await con.query('INSERT INTO cozy (link, addedBy) VALUES (\"' + arguments[0] + '\", \"' + input.author.username + '\")', (e, rows) => {
       input.channel.send("more coziness added successfully :3");
     });
-  }else if(args[1] === "-l"){
+  }else if(args[1] === "-l" || args[1] === "list"){
     await con.query('SELECT * FROM cozy', (e, rows) => {
       let list  = "";
       rows.forEach((row, i) => {
         list += i+1 + ": " + "<" + row.link + ">" + " added by: " + row.addedBy + "\n";
       });
-      input.channel.send("items in db: \n" + list);
+      input.channel.send("items in table: \n" + list);
     })
-  }else if(isOwner(input) && args[1] === "rm"){
+  }else if(isOwner(input) && (args[1] === "rm" || args[1] === "delete")){
     await con.query('DELETE FROM cozy WHERE id = ' + args[2], (e,rows) => {
       if(e) input.channel.send("error: " + e);
       else{
