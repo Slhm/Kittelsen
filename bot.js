@@ -30,7 +30,7 @@ let banArray = ["HAS BEEN BANNED FOR LIFE",
                 "HAS BEEN DEMOLISHED INTO THE PAVEMENT, AND ALSO BANNED", "hAs BeEn BaNnEd LolLll",
                 "was eradicated out of our bleak fucking existance", "got fucking banned, yay",
                 "said AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆHHHHHHHHHHHHHHHHH as they \"fell\" off a cliff",
-                "was forced out the moon door, wooooooooo", "is no longer with us :("];
+                "was forced out the moon door, wooooooooo", " was revealed as an omniscum, and is no longer welcome here.", "is no longer with us :("];
 
 let imVegan = false;
 
