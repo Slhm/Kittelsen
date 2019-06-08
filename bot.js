@@ -66,7 +66,6 @@ let con;
 
 function handleDisconnect() {
 
-
   con = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -114,7 +113,7 @@ client.on('message', async input => {
   if (inp.startsWith(prefix)) {
     var args = inp.substr(prefix.length).split(' ');
     var cmd = args[0].toLowerCase();
-    var text  = args[1];
+    var text  = inp.substr(inp.indexOf(' ')+1);
 
 
     const arguments = (inp) => {
@@ -189,23 +188,24 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
       pp(input, args);
       break;
     case 'fullwidth':
-      args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(fullW(inp.split('!fullwidth')[1]));
-      break;
     case 'aesthetic':
-      args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(fullW(inp.split('!aesthetic')[1]));
+      typeof args[1] === 'undefined'? input.channel.send("you need an argument after the command, my dude") :
+        input.channel.send(fullW(text));
       break;
     case 'futhark':
-      args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(eldF(inp.split('!futhark')[1]));
-      break;
     case 'runes':
-      args === "" ? input.channel.send("you need an argument after the command, my dude") : input.channel.send(eldF(inp.split('!runes')[1]));
+      typeof args[1] === 'undefined' ? input.channel.send("you need an argument after the command, my dude") :
+        input.channel.send(eldF(text));
       break;
     case 'freedom':
     case 'convert':
-      args === "" ? input.channel.send("you need a number and unit type after the command, my dude") : client.commands.get('freedom').run(client, input, args);
+    case 'c':
+      typeof args[1] === 'undefined' ? input.channel.send("you need a number and unit type after the command, my dude") :
+        client.commands.get('freedom').run(client, input, args);
       break;
     case 'poll':
-      client.commands.get('poll').run(client, input, args, arguments);
+      typeof args[1] === 'undefined' ? input.channel.send("you need a title for the poll, my dude. check #info") :
+        client.commands.get('poll').run(client, input, args, arguments);
       break;
     case '8':
       client.commands.get('8').run(client, input, args, con);
@@ -231,7 +231,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
     case 'reboot':
       reboot(input)
         .catch(e => {
-          console.log(e);
+          console.error(e);
         });
       break;
     case 'sa':

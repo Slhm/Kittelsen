@@ -67,3 +67,5 @@ auth.json
 .idea/*
 
 package-lock.json
+
+currency.json
