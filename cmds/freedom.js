@@ -13,50 +13,51 @@ module.exports.run = async (client, input, args) => {
       "F - C\n" +
       "lbs - kg\n" +
       "syntax example !freedom 10F");
+
   } else if (args[1].endsWith("f")) {
-    let F = stringToNumber(args[1]);
+    let F = toAmount(args[1]);
     let C = Math.round(((F - 32) * 5 / 9) * 10) / 10;
     input.channel.send(args[1] + " in non-freedomUnits is: " + C + "C");
 
   } else if (args[1].endsWith("c")) {
-    let c = stringToNumber(args[1]);
+    let c = toAmount(args[1]);
     let f = Math.round((c * 9 / 5) + 32);
     input.channel.send(args[1] + "in freedoms is: " + f + "F");
 
   } else if (args[1].endsWith("mph") || args[1].endsWith("miles")) {
     //let mph = args[1].slice(0, -3);
-    let mph = stringToNumber(args[1]);
+    let mph = toAmount(args[1]);
     let kph = Math.round(mph * 1.609344 * 10) / 10;
     input.channel.send(args[1] + " in non-freedomUnits is: " + kph + " km(per hour if speed)");
 
   } else if (args[1].endsWith("kph") || args[1].endsWith("kmph") || args[1].endsWith("km")) {
-    let kph = stringToNumber(args[1]);
+    let kph = toAmount(args[1]);
     let mph = Math.round(kph * 0.6213712 * 10) / 10;
     input.channel.send(args[1] + " in freedomUnits is: " + mph + " miles(per hour if speed)");
 
   } else if (args[1].endsWith("lbs") || args[1].endsWith("pounds")) {
-    let lbs = stringToNumber(args[1]);
+    let lbs = toAmount(args[1]);
     let kg = Math.round(lbs * 0.4535924 * 10) / 10;
     input.channel.send(args[1] + " in non-freedomUnits is: " + kg + "kg");
 
   } else if (args[1].endsWith("kg")) {
-    let kg = stringToNumber(args[1]);
+    let kg = toAmount(args[1]);
     let lbs = Math.round(kg * 2.204623 * 10) / 10;
     input.channel.send(args[1] + " in freedomUnits is: " + lbs + "lbs");
 
-  } else if (args[1].endsWith("oz")) {
-    let oz = stringToNumber(args[1]);
+  } else if (args[1].endsWith("oz") || args[1].endsWith("ounce") || args[1].endsWith("ounces")) {
+    let oz = toAmount(args[1]);
     let l = Math.round(oz * 0.0284131 * 10) / 10;
     input.channel.send(args[1] + " in non-freedomUnits is: " + l + " liters");
 
-  } else if (args[1].endsWith("l")) {
-    let l = stringToNumber(args[1]);
+  } else if (args[1].endsWith("l") || args[1].endsWith("liter") || args[1].endsWith("liters")) {
+    let l = toAmount(args[1]);
     let oz = Math.round(l * 33.81413 * 10) / 10;
     input.channel.send(args[1] + " in freedomUnits is: " + oz + " oz");
   } else if (args[1].endsWith("usd") || args[1].endsWith("nok") || args[1].endsWith("cad") || args[1].endsWith("eur") || args[1].endsWith("nzd")) {
     await checkCurrencyList()
       .then( () => {
-        currencyConvert(input, args[1].match(/[a-z]+/g), args[1].match(/[0-9]+/g))
+        currencyConvert(input, toCurrency(args[1]), toAmount(args[1]))
           .catch(e => {
             console.error(e);
           });
@@ -130,8 +131,14 @@ const updateCurrencyList = async () => {
     });
 };
 
-function stringToNumber(str) {
-  return str.match(/[0-9]+/g);
+//regex for strings
+function toCurrency(str) {
+  return str.match(/[a-z]+/g);
+}
+
+//regex for positive and negative numbers
+function toAmount(str) {
+  return str.match(/^-?[0-9]+/g);
 }
 
 module.exports.help = {
