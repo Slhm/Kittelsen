@@ -13,7 +13,8 @@ module.exports.run = async (client, input, args, arguments, con) => {
   args[1] = args[1].toLowerCase();
 
   if (args[1] === "-i" || args[1] === "insert" || args[1] === "add") {
-    await con.query('INSERT INTO memes (name, link) VALUES (\"' + arguments[0] + '\", \"' + input.author.username + '\")', (e, rows) => {
+    console.log("arg1: " + arguments[0] + "\nargs2: " + arguments[1] + "\narg3: " + arguments[2]);
+    await con.query('INSERT INTO memes (name, numText, link) VALUES (\"' + arguments[0] + '\", \"' + arguments[1] + '\", \"' + arguments[2] + '\")', (e, rows) => {
       input.channel.send("more memes added");
     });
   } else if (args[1] === "-l" || args[1] === "list") {
