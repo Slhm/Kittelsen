@@ -46,16 +46,17 @@ module.exports.run = async (client, input, args, arguments, con) => {
         //console.log("el.name: " + el.name);
         //console.log("toLetters(args): " + toLetters(args[1]));
         if(el.name === args[1] && el.numText === 2) {
-          fetchMeme(input, el.link, arguments[0], arguments[1]);
           f = true;
+          fetchMeme(input, el.link, arguments[0], arguments[1]);
         }
         else if(el.name === args[1] && el.numText === 3) {
           fetchMeme(input, el.link, arguments[0], arguments[1], arguments[2]);
           f = true;
         }
       });
+      if(!f) input.channel.send("item not found. check bottom of #info");
     });
-    if(!f) input.channel.send("item not found. check bottom of #info");
+
   }
 };
 
@@ -66,6 +67,7 @@ module.exports.help = {
 
 const fetchMeme = async (input, type, _text0, _text1, _text2) => {
   console.log("inne i fetch. link: " + type);
+  let msg = await input.channel.send("fetching meme..");
 
   //let text = "&text0="+_text0+"&text1="+_text1+"&text2="+_text2;
   let text = "&boxes[0][text]=" + _text0 + "&boxes[1][text]=" + _text1;
@@ -79,7 +81,10 @@ const fetchMeme = async (input, type, _text0, _text1, _text2) => {
     .then(res => {
       let suc = JSON.stringify(res.success);
       let url = res.data.url;
-      if (suc === 'true') input.channel.send(url);
+      if (suc === 'true') {
+        input.channel.send(url);
+        msg.delete();
+      }
       else input.channel.send("something went wrong :( \n" + "ping noekk#8059 to let him know he fucked up");
     }).catch(error => console.error(error))
 };
