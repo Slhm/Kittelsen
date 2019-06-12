@@ -8,7 +8,9 @@ const ownerId = require('./auth.json').ownerId;
 const fetch = require('node-fetch');
 const fs = require('fs');
 const mysql = require('mysql');
+const dbHelper = require('./dbHelper.js');
 client.commands = new Discord.Collection();
+
 
 
 //****TMP DATABASE******
@@ -96,7 +98,7 @@ handleDisconnect();
 client.on('ready', async () => {
   logger.info('Connected!');
   logger.info('Logged in as: ' + client.user.tag + ' - (' + client.user.id + ')');
-  client.user.setActivity("God");
+  client.user.setActivity("dead");
 });
 
 client.on('message', async input => {
@@ -141,7 +143,7 @@ client.on('message', async input => {
     }
   } else if (imVegan && (inp.startsWith("im") || inp.startsWith("i'm"))) {
     input.channel.send("im vegan");
-  }
+  }else if(inp.toLowerCase().includes("im vegan") || inp.toLowerCase().includes("i'm vegan")) await dbHelper.incrementItemAmount('veg', input.author.id, con);
 });
 
 client.on('error', (e) => {
@@ -255,6 +257,8 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
       else input.react('✅');
       imVegan = !imVegan;
       break;
+    case 'imv-l':
+      dbHelper.listHighScore('veg', 'im vegan', con, input);
   }
 }
 
