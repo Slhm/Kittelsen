@@ -181,7 +181,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
       input.channel.send('The future is vegan, my dude');
       break;
     case 'memes':
-      client.commands.get('memes').run(client, input, args, arguments);
+      client.commands.get('memes').run(client, input, args, arguments, con);
       break;
     case 'pp':
     case 'pfp':

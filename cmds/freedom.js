@@ -25,7 +25,6 @@ module.exports.run = async (client, input, args) => {
     input.channel.send(args[1] + "in freedoms is: " + f + "F");
 
   } else if (args[1].endsWith("mph") || args[1].endsWith("miles")) {
-    //let mph = args[1].slice(0, -3);
     let mph = toAmount(args[1]);
     let kph = Math.round(mph * 1.609344 * 10) / 10;
     input.channel.send(args[1] + " in non-freedomUnits is: " + kph + " km(per hour if speed)");
@@ -136,9 +135,9 @@ function toCurrency(str) {
   return str.match(/[a-z]+/g);
 }
 
-//regex for positive and negative numbers
+//regex for positive, negative numbers, and decimals
 function toAmount(str) {
-  return str.match(/^-?[0-9]+/g);
+  return str.match(/^-?[0-9]+(\.[0-9])?/g);
 }
 
 module.exports.help = {
