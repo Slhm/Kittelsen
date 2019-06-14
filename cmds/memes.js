@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const imgflip = require('../auth.json').imgflip;
 const ownerId = require('../auth.json').ownerId;
+const dbHelper = require('../dbHelper');
 
 //Memes
 let memeArray = ["pikachu", "exit", "spongebob", "buttons", "truth", "win", "kermit", "depdonald"];
@@ -18,23 +19,18 @@ module.exports.run = async (client, input, args, arguments, con) => {
       input.channel.send("more memes added");
     });
   } else if (args[1] === "-l" || args[1] === "list") {
-    await con.query('SELECT * FROM memes', (e, rows) => {
-      let list = "";
-      rows.forEach((row, i) => {
-        list += i + 1 + ": " + "<" + row.name + ">" + " link: " + row.link + "\n";
-      });
-      input.channel.send("items in table: \n" + list);
-    })
+    dbHelper.listLinksInTable('memes', ['name', 'link'], con, input);
   } else if (isOwner(input) && (args[1] === "rm" || args[1] === "delete")) {
-    await con.query('DELETE FROM memes WHERE id = ' + args[2], (e, rows) => {
-      if (e) input.channel.send("error: " + e);
-      else {
-        input.channel.send("removed item.");
-        con.query('SET @count = 0;');
-        con.query('UPDATE cozy SET memes.id = @count := @count + 1;');
-        con.query('ALTER TABLE memes AUTO_INCREMENT = 1');
-      }
-    })
+    dbHelper.deleteItem('memes','id = ' + args[2], con, input);
+    //await con.query('DELETE FROM memes WHERE id = ' + args[2], (e, rows) => {
+    //  if (e) input.channel.send("error: " + e);
+    //  else {
+    //    input.channel.send("removed item.");
+    //    con.query('SET @count = 0;');
+    //    con.query('UPDATE memes SET memes.id = @count := @count + 1;');
+    //    con.query('ALTER TABLE memes AUTO_INCREMENT = 1');
+    //  }
+    //})
   } else {
     // if(memeArray.join().includes(args[1]))
     let f = false;

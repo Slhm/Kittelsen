@@ -1,3 +1,5 @@
+const dbHelper = require('../dbHelper');
+
 module.exports.run = async (client, input, args, con) => {
 
 
@@ -19,23 +21,7 @@ module.exports.run = async (client, input, args, con) => {
   let tmpVal = 0;
 
   if(args[1] === "leaderboard"){
-    let lb = "";
-    let members = input.guild.members;
-    let i = 1;
-
-    await con.query('SELECT * FROM cheers ORDER BY amount DESC', (e, rows) => {
-
-      rows.forEach( (row) => {
-        members.forEach( (member) => {
-          if(row.id === parseInt(member.user.id)){
-            lb += "[" + i + "]   " + "#" + member.user.username + ":\n" +
-              "          Amount of cheers: " + row.amount + "\n";
-            i++;
-          }
-        })
-      });
-      input.channel.send("**Cheers Leader Board:** \n" + "```css\n" + lb + "\n```");
-    })
+    dbHelper.listHighScore('cheers', 'cheers', con, input);
   }
   else if (input.mentions.users.first()) {
     await con.query('SELECT * FROM cheers WHERE id = ' + input.mentions.users.first().id, (e, rows) => {
@@ -63,4 +49,3 @@ module.exports.run = async (client, input, args, con) => {
 module.exports.help = {
   name: "cheers"
 };
-

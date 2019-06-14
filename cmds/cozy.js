@@ -1,4 +1,5 @@
 const ownerId = require('../auth.json').ownerId;
+const dbHelper = require('../dbHelper');
 
 module.exports.run = async (client, input, args, con, arguments) => {
 
@@ -7,34 +8,23 @@ module.exports.run = async (client, input, args, con, arguments) => {
       input.channel.send("more coziness added successfully :3");
     });
   }else if(args[1] === "-l" || args[1] === "list"){
-    await con.query('SELECT * FROM cozy', (e, rows) => {
-      let list  = "";
-      rows.forEach((row, i) => {
-        list += i+1 + ": " + "<" + row.link + ">" + " added by: " + row.addedBy + "\n";
-      });
-      input.channel.send("items in table: \n" + list);
-    })
+    dbHelper.listLinksInTable('cozy', ['link', 'addedBy'], con, input);
+
   }else if(isOwner(input) && (args[1] === "rm" || args[1] === "delete")){
-    await con.query('DELETE FROM cozy WHERE id = ' + args[2], (e,rows) => {
-      if(e) input.channel.send("error: " + e);
-      else{
-      input.channel.send("removed item.");
-      con.query('SET @count = 0;');
-      con.query('UPDATE cozy SET cozy.id = @count := @count + 1;');
-      con.query('ALTER TABLE cozy AUTO_INCREMENT = 1');
-      }
-    })
+    dbHelper.deleteItem('cozy','id = ' + args[2], con, input);
+
   } else {
-    let r;
-    await con.query('SELECT COUNT(*) AS count FROM cozy', (e, rows) => {
-      r = Math.floor(Math.random() * rows[0].count) + 1;
-      //console.log("rows:  " + rows[0].count);
-      let q = 'SELECT * FROM cozy WHERE id = ' + r;
-      con.query(q, (e, row) => {
-        //console.log("r: " + r + "\nlink: " + rows + ", link[0]: " + rows[0].link);
-        input.channel.send(row[0].link + " added by: " + row[0].addedBy + " uwu");
-      });
-    });
+    dbHelper.getRandomItem('cozy', con, input);
+    //let r;
+    //await con.query('SELECT COUNT(*) AS count FROM cozy', (e, rows) => {
+    //  r = Math.floor(Math.random() * rows[0].count) + 1;
+    //  //console.log("rows:  " + rows[0].count);
+    //  let q = 'SELECT * FROM cozy WHERE id = ' + r;
+    //  con.query(q, (e, row) => {
+    //    //console.log("r: " + r + "\nlink: " + rows + ", link[0]: " + rows[0].link);
+    //    input.channel.send(row[0].link + " added by: " + row[0].addedBy + " uwu");
+    //  });
+    //});
   }
 };
 

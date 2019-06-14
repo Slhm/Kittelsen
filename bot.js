@@ -13,27 +13,6 @@ client.commands = new Discord.Collection();
 
 
 
-//****TMP DATABASE******
-
-//Music
-let music = [
-  "There is no music but our one true Queen, Jessica Kinney: https://www.youtube.com/watch?v=F9v8uCRucd0",
-  "Float away in the endless ocean of icelandic fart smelling water: https://www.youtube.com/watch?v=Gf1h2PMPCAo",
-  "Drunk jazzy tunes are the best kind of tunes: https://www.youtube.com/watch?v=0BRxDp2u02U",
-  "Japanesey mathy rocky https://www.youtube.com/watch?v=Tc1yD9H7Rb8",
-  "Shameless self plug. https://floatingnomore.bandcamp.com/",
-  "ｍｅｌａｎｃｈｏｌｙ ｉｓ ｅｔｅｒｎａｌ: https://www.youtube.com/watch?v=co5gy_2uOEY",
-  "ᛞᚢ ᚲᚨᚾ ᛁᚲᚲᛖ ᛚᛖᛊᛖ ᛞᛖᛏᛏᛖ ᚢᚨᚾᛊᛖᛏᛏ, ᛗᛖᚾ ᛖᚾᛊᛚᚨᚹᛖᛞ ᛖᚱ ᚲᚢᛚᛏ: https://youtu.be/Rcssy33l04Y?t=31",
-  "brutus for fucking ever https://www.youtube.com/watch?v=1Z-0j4mRbB0",
-  "all hail the mighty emperor https://www.youtube.com/watch?v=4FYwz2-_G_4"
-];
-
-let banArray = ["HAS BEEN BANNED FOR LIFE",
-                "HAS BEEN DEMOLISHED INTO THE PAVEMENT, AND ALSO BANNED", "hAs BeEn BaNnEd LolLll",
-                "was eradicated out of our bleak fucking existance", "got fucking banned, yay",
-                "said AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆHHHHHHHHHHHHHHHHH as they \"fell\" off a cliff",
-                "was forced out the moon door, wooooooooo", " was revealed as an omniscum, and is no longer welcome here.", "is no longer with us :("];
-
 let imVegan = false;
 
 
@@ -143,7 +122,7 @@ client.on('message', async input => {
     }
   } else if (imVegan && (inp.startsWith("im") || inp.startsWith("i'm"))) {
     input.channel.send("im vegan");
-  }else if(inp.toLowerCase().includes("im vegan") || inp.toLowerCase().includes("i'm vegan")) await dbHelper.incrementItemAmount('veg', input.author.id, con);
+  }else if(inp.toLowerCase().includes("im vegan") || inp.toLowerCase().includes("i'm vegan")) await dbHelper.incrementAmount('veg', input.author.id, con);
 });
 
 client.on('error', (e) => {
@@ -282,24 +261,12 @@ function isOwner(input) {
 
 
 function imVeganFunc(on, input, args) {
-
   let ch = "";
-
-  /*if (args[2]) {
-    try {
-      ch = input.channels.get(args[2]);
-    } catch (e) {
-      console.log(e);
-    }
-  }*/
-
   let isOn = on;
 
   if (isOn) {
-    let r = Math.floor(Math.random() * 40 * 60 * 60 * 1000); //
+    let r = Math.floor(Math.random() * 40 * 60 * 60 * 1000); // 40 hours
     let i = setTimeout(() => {
-        //if(!ch) input.channel.send("im vegan");
-        //else client.channels.get('458029595145404452').send("im vegaaaaaaaaaaan");
         client.channels.find("name", "talk-things").send("im vegan.");
         imVeganFunc(isOn, input);
       }, r
@@ -442,3 +409,25 @@ arguments = arguments[0].split("'*'");
 //let regex = /("[a-zA-Z\s]+")/gm;
 //let arguments = regex.exec(inp.substr(prefix.length + cmd.length));
 */
+
+
+//****TMP DATABASE******
+
+//Music
+let music = [
+  "There is no music but our one true Queen, Jessica Kinney: https://www.youtube.com/watch?v=F9v8uCRucd0",
+  "Float away in the endless ocean of icelandic fart smelling water: https://www.youtube.com/watch?v=Gf1h2PMPCAo",
+  "Drunk jazzy tunes are the best kind of tunes: https://www.youtube.com/watch?v=0BRxDp2u02U",
+  "Japanesey mathy rocky https://www.youtube.com/watch?v=Tc1yD9H7Rb8",
+  "Shameless self plug. https://floatingnomore.bandcamp.com/",
+  "ｍｅｌａｎｃｈｏｌｙ ｉｓ ｅｔｅｒｎａｌ: https://www.youtube.com/watch?v=co5gy_2uOEY",
+  "ᛞᚢ ᚲᚨᚾ ᛁᚲᚲᛖ ᛚᛖᛊᛖ ᛞᛖᛏᛏᛖ ᚢᚨᚾᛊᛖᛏᛏ, ᛗᛖᚾ ᛖᚾᛊᛚᚨᚹᛖᛞ ᛖᚱ ᚲᚢᛚᛏ: https://youtu.be/Rcssy33l04Y?t=31",
+  "brutus for fucking ever https://www.youtube.com/watch?v=1Z-0j4mRbB0",
+  "all hail the mighty emperor https://www.youtube.com/watch?v=4FYwz2-_G_4"
+];
+
+let banArray = ["HAS BEEN BANNED FOR LIFE",
+  "HAS BEEN DEMOLISHED INTO THE PAVEMENT, AND ALSO BANNED", "hAs BeEn BaNnEd LolLll",
+  "was eradicated out of our bleak fucking existance", "got fucking banned, yay",
+  "said AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆHHHHHHHHHHHHHHHHH as they \"fell\" off a cliff",
+  "was forced out the moon door, wooooooooo", " was revealed as an omniscum, and is no longer welcome here.", "is no longer with us :("];

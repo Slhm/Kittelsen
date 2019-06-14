@@ -1,52 +1,58 @@
 //regex for strings
-function toCurrency(str) {
+module.exports.toLetters = async (str) => {
   return str.match(/[a-z]+/g);
-}
+};
 
 //regex for positive, negative numbers, and decimals
-function toAmount(str) {
+module.exports.toNumber = async (str) => {
   return str.match(/^-?[0-9]+(\.[0-9])?/g);
-}
-
-const listLinksInTable = module.exports.listLinksInTable = async (tableName, con) => {
-  await con.query('SELECT * FROM ' + tableName, (e, rows) => {
-    let list = "";
-    rows.forEach((row, i) => {
-      list += i + 1 + ": " + "<" + row.name + ">" + " link: " + row.link + "\n";
-    });
-    return "items in table: \n" + list;
-  })
 };
 
-const incrementItemAmount = module.exports.incrementItemAmount = async (tableName, userId, con) => {
-  await con.query('SELECT * FROM ' + tableName + ' WHERE userId = ' + userId, (e, rows) => {
-    if (e) throw e;
+//tableName = name of table in database, f = array of fields(in order you want them presented i.e f[0]: f[1])
+module.exports.listLinksInTable = async (tableName, f, con, input) => {
+  getAllItems(tableName,con)
+    .then(rows => {
+      let list = "";
+      rows.forEach((row, i) => {
+        list += i + 1 + ": " + "<" + row[f[0].toString()] + "> " + f[1] + ": " + row[f[1].toString()] + "\n";
+      });
+      input.channel.send("items in table: \n" + list);
+    })
 
-    let q;
-    let tmpVal;
 
-    if (rows.length < 1) {
-      tmpVal = 1;
-      q = 'INSERT INTO ' + tableName + ' (userId, amount) VALUES (' + userId + "," + 1 + ")";
-    } else {
-      tmpVal = parseInt(rows[0].amount) + 1;
-      q = 'UPDATE ' + tableName + ' SET amount = ' + tmpVal + " WHERE userId = " + userId
-    }
+};
 
-    con.query(q);
+module.exports.incrementAmount = async (tableName, userId, con) => {
+  getOneUserItem(tableName, userId, con)
+    .then(user => {
+      if(user.length < 1) {
+        insertItem(tableName, ['userId','amount'], [userId, 1], con);
+      }
+      else {
+        let tmpVal = parseInt(user.amount) + 1;
+        updateItem(tableName, ['amount', 'userId'], tmpVal, userId, con);
+      }
     });
 };
 
-const listHighScore = module.exports.listHighScore = async (tableName, typeOfAmount, con, input)  =>{
+
+//not done!
+module.exports.insertTwoItems = async (tableName, f, con) => {
+  await con.query('INSERT INTO ' + tableName + ' (' + f + ') VALUES (\"' + f[0] + '\", \"' + input.author.username + '\")', (e, rows) => {
+    input.channel.send("more coziness added successfully :3");
+  });
+};
+
+module.exports.listHighScore = async (tableName, typeOfAmount, con, input) => {
   let lb = "";
   let members = input.guild.members;
   let i = 1;
 
   await con.query('SELECT * FROM ' + tableName + ' ORDER BY amount DESC', (e, rows) => {
 
-    rows.forEach( (row) => {
-      members.forEach( (member) => {
-        if(row.userId === member.user.id.toString()){
+    rows.forEach((row) => {
+      members.forEach((member) => {
+        if (row.userId === member.user.id.toString()) {
           lb += "[" + i + "]   " + "#" + member.user.username + ":\n" +
             "          Amount of " + typeOfAmount + ": " + row.amount + "\n";
           i++;
@@ -56,3 +62,93 @@ const listHighScore = module.exports.listHighScore = async (tableName, typeOfAmo
     input.channel.send("**" + typeOfAmount + " Leader Board:** \n" + "```css\n" + lb + "\n```");
   })
 };
+
+module.exports.getRandomItem = async (tableName, con, input) => {
+
+  getCount(tableName, con)
+    .then(count => {
+      let r = (Math.floor(Math.random() * count) + 1);
+      getOneItem(tableName,r,con)
+        .then(msg => {
+          input.channel.send(msg.link)
+        });
+    });
+};
+
+module.exports.getUsernameFromId = async (userId) => {
+
+};
+
+
+
+module.exports.deleteItem = async (tableName, query, con, input) => {
+  await con.query('DELETE FROM ' + tableName + ' WHERE ' + query, (e, rows) => {
+    if (e) input.channel.send("error: " + e);
+    else {
+      input.channel.send("removed item.");
+      con.query('SET @count = 0;');
+      con.query('UPDATE ' + tableName + ' SET ' + tableName + '.id ' + ' = @count := @count + 1;');
+      con.query('ALTER TABLE ' + tableName + ' AUTO_INCREMENT = 1');
+    }
+  })
+};
+
+function getOneUserItem(tableName, userId, con){
+  return new Promise((resolve,reject) => {
+    con.query('SELECT * FROM ' + tableName + ' WHERE userId = ' + userId, (e, row) => {
+      if(e) reject(e);
+      else resolve(row[0]);
+    });
+  })
+}
+
+
+
+//columnNames[0] = amountColumnName, columnName[1] = idName;
+function insertItem(tableName, columnNames, vals, con) {
+  console.log("Inne i insert:\ncolumnsNames: " + columnNames + "\nvals: " + vals);
+  return new Promise((resolve,reject) => {
+    con.query('INSERT INTO ' + tableName + ' (' + columnNames + ') VALUES (' + vals + ')', (e,rows) => {
+      if(e) reject(false);
+      else resolve(true);
+    })
+  });
+}
+
+//columnNames[0] = amountColumnName, columnName[1] = idName;
+function updateItem(tableName, columnNames, newVal, _id, con){
+  console.log("Inne i update:\ncolumnsNames: " + columnNames + "\nnewVal: " + newVal + "\n_id: " + _id);
+  return new Promise((resolve,reject) => {
+    con.query('UPDATE ' + tableName + ' SET ' + columnNames[0] + ' = ' + newVal + ' WHERE ' + columnNames[1] + ' = ' + _id, (e, rows) => {
+      if(e) reject(false);
+      else resolve(true);
+    })
+  });
+}
+
+function getCount(tableName, con){
+  return new Promise((resolve,reject) => {
+    con.query('SELECT COUNT(*) AS count FROM ' + tableName, (e, rows) => {
+      if(e) reject(e);
+      else resolve(rows[0].count);
+    });
+  })
+}
+
+function getOneItem(tableName, itemId, con){
+  return new Promise((resolve,reject) => {
+    con.query('SELECT * FROM ' + tableName + ' WHERE id = ' + itemId, (e, row) => {
+      if(e) reject(e);
+      else resolve(row[0]);
+    });
+  })
+}
+
+function getAllItems(tableName, con){
+  return new Promise((resolve,reject) => {
+    con.query('SELECT * FROM ' + tableName, (e, rows) => {
+      if(e) reject(e);
+      else resolve(rows);
+    })
+  })
+}
