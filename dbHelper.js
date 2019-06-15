@@ -25,7 +25,7 @@ module.exports.listLinksInTable = async (tableName, f, con, input) => {
 module.exports.incrementAmount = async (tableName, userId, con) => {
   getOneUserItem(tableName, userId, con)
     .then(user => {
-      if(user.length < 1) {
+      if(!user) {
         insertItem(tableName, ['userId','amount'], [userId, 1], con);
       }
       else {
@@ -109,9 +109,14 @@ function insertItem(tableName, columnNames, vals, con) {
   console.log("Inne i insert:\ncolumnsNames: " + columnNames + "\nvals: " + vals);
   return new Promise((resolve,reject) => {
     con.query('INSERT INTO ' + tableName + ' (' + columnNames + ') VALUES (' + vals + ')', (e,rows) => {
-      if(e) reject(false);
-      else resolve(true);
-    })
+      if(e) {
+	      console.log("it worked, yay");
+	      reject(false);
+      }else {
+	      console.log("it didnt work, fuck");
+	      resolve(true);
+      }
+      })
   });
 }
 
