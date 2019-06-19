@@ -83,6 +83,7 @@ const currencyConvert = async (input, currency, amount) => {
     }
 
     let obj = JSON.parse(file);
+
     let cur = ["NOK", "NZD", "EUR", "CAD"];
 
     if (currency[0] === "usd") {
