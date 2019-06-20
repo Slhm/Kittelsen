@@ -341,6 +341,7 @@ const reboot = async (input) => {
 
 const vertical = async (input, text) => {
   console.log("text: " + text);
+  text = removeEmojis(text);
   let tmpString = text ? text : "";
   for (let i = 0; i < text.length; i++) {
     tmpString += "\n" + text.charAt(i);
@@ -348,6 +349,9 @@ const vertical = async (input, text) => {
   input.channel.send(tmpString === "" ? "empty string" : tmpString);
 };
 
+function removeEmojis(input){
+  return input.replace(/<(.*?)>/gm, '');
+}
 
 const pp = async (input, args) => {
 
