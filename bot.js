@@ -132,7 +132,6 @@ client.on('error', (e) => {
 
 
 function handleCommands(input, inp, cmd, arguments, args, text) {
-    console.log("heihei inne i handle");
     switch (cmd) {
         case 'commands':
         case 'help':
@@ -225,12 +224,24 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
         case 'botban':
             if (isOwner(input)) {
                 if (input.mentions.users.first()) {
-                    dbHelper.insertUserIdAndOneItem('botBan', 'reason', input.mentions.users.first().id, arguments[0], con, input)
-                        .then(updateBanList);
+                    if(args[1] === "rm") {
+                        dbHelper.deleteItem('botban', 'userId = ' + input.mentions.users.first().id, con, input)
+                            .then(updateBanList);
+                    }
+                    else {
+                        dbHelper.insertUserIdAndOneItem('botban', 'reason', input.mentions.users.first().id, arguments[0], con, input)
+                            .then(updateBanList);
+                    }
                 }
                 else {
-                    dbHelper.insertUserIdAndOneItem('botBan', 'reason', arguments[0], arguments[1], con, input)
-                        .then(updateBanList);
+                    if(args[1] === "rm") {
+                        dbHelper.deleteItem('botban', 'userId = ' + arguments[0], con, input)
+                            .then(updateBanList);
+                    }
+                    else {
+                        dbHelper.insertUserIdAndOneItem('botban', 'reason', arguments[0], arguments[1], con, input)
+                            .then(updateBanList);
+                    }
                 }
             }
             break;
@@ -254,8 +265,6 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             dbHelper.listHighScore('veg', 'im vegan', con, input);
     }
 }
-
-
 
 function isCool(input) {
     return input.member.roles.has('458031022563393536');

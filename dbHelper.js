@@ -98,7 +98,6 @@ module.exports.getAllUserIdsInTable = async (tableName, con) => {
     await getAllItems(tableName, con)
         .then(rows => {
             rows.forEach((row, i) => {
-                console.log("row.userId: " + row.userId);
                 tmpArray.push(row.userId);
             });
             return tmpArray;
@@ -107,13 +106,9 @@ module.exports.getAllUserIdsInTable = async (tableName, con) => {
             return(tmpArray);
         })
         .catch(e => {
-            //reject(e);
-            console.log("e inne i getAllUserIds.. : " + e)
+            console.log("getAllUserIdsInTable Error: " + e)
         });
     return tmpArray;
-    //console.log("tmpArray: " + tmpArray[0]);
-
-
 };
 
 
@@ -136,6 +131,7 @@ function deleteItem(tableName,query,con, autoInc){
                     con.query('UPDATE ' + tableName + ' SET ' + tableName + '.id ' + ' = @count := @count + 1;');
                     con.query('ALTER TABLE ' + tableName + ' AUTO_INCREMENT = 1');
                 }
+            resolve(1);
             }
         })
     })
