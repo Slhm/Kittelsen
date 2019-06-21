@@ -260,6 +260,9 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
     case 'vertical':
       vertical(input, text);
       break;
+    case 'mocking':
+      mocking(input,text);
+      break;
     case 'imv-l':
       dbHelper.listHighScore('veg', 'im vegan', con, input);
   }
@@ -303,6 +306,18 @@ function setBanList(_banList) {
   banList = _banList;
 }
 
+function mocking(input,text){
+    let tmpString = "";
+    text = text.toLowerCase();
+    for(let i=0;i<text.length;i++){
+	if(i % 2 === 1){
+	    tmpString += text.charAt(i).toUpperCase();
+	}else tmpString += text.charAt(i);
+    }
+    console.log("mocking: " + tmpString);
+    input.channel.send(tmpString);
+}
+
 function imVeganFunc(on, input, args) {
   let ch = "";
   let isOn = on;
@@ -343,7 +358,7 @@ const vertical = async (input, text) => {
   console.log("text: " + text);
   text = removeEmojis(text);
   let tmpString = text ? text : "";
-  for (let i = 0; i < text.length; i++) {
+  for (let i = 1; i < text.length; i++) {
     tmpString += "\n" + text.charAt(i);
   }
   input.channel.send(tmpString === "" ? "empty string" : tmpString);
