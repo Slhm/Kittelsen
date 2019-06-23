@@ -33,18 +33,19 @@ module.exports.insertItems = async (tableName, columnNames, vals, con, input) =>
 };
 
 module.exports.incrementAmount = async (tableName, userId, con) => {
-    getOneUserItem(tableName, userId, con)
+    let tmpVal;
+    await getOneUserItem(tableName, userId, con)
         .then(user => {
             if (!user) {
                 insertItems(tableName, ['userId', 'amount'], [userId, 1], con);
             }
             else {
-                let tmpVal = parseInt(user.amount) + 1;
+                tmpVal = parseInt(user.amount) + 1;
                 updateItem(tableName, ['amount', 'userId'], tmpVal, userId, con);
             }
         });
+    return tmpVal ? tmpVal : 1;
 };
-
 
 module.exports.insertUserIdAndOneItem = async (tableName, columnName, userId, val, con, input) => {
     console.log("heihei inne i insertUserIdAndOneItem");

@@ -24,23 +24,12 @@ module.exports.run = async (client, input, args, con) => {
     dbHelper.listHighScore('cheers', 'cheers', con, input);
   }
   else if (input.mentions.users.first()) {
-    await con.query('SELECT * FROM cheers WHERE id = ' + input.mentions.users.first().id, (e, rows) => {
-      if (e) throw e;
-
-      let q;
-
-      if (rows.length < 1) {
-        tmpVal = 1;
-        q = 'INSERT INTO cheers (id, amount) VALUES (' + input.mentions.users.first().id + "," + 1 + ")";
-      } else {
-        tmpVal = parseInt(rows[0].amount) + 1;
-        q = 'UPDATE cheers SET amount = ' + tmpVal + " WHERE id = " + input.mentions.users.first().id;
-      }
-
-      con.query(q);
-      let r = Math.floor(Math.random() * ch.length);
-      input.channel.send(input.author.username + " and " + input.mentions.users.first().username + " " +  ch[r] + "\n" + input.mentions.users.first() + " has received " + tmpVal + " cheers so far!");
-    });
+    await dbHelper.incrementAmount('cheers',input.mentions.users.first().id,con)
+      .then(amount => {
+        let r = Math.floor(Math.random() * ch.length);
+	console.log("amount: " + amount + " \n amount[0]: " + amount[0]);
+        input.channel.send(input.author.username + " and " + input.mentions.users.first().username + " " +  ch[r] + "\n" + input.mentions.users.first() + " has received " + amount.toString() + " cheers so far!");
+      });
   } else {
     input.channel.send("Cheers, " + input.author.username + "!");
   }
