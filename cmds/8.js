@@ -1,4 +1,5 @@
 const ownerId = require('../auth.json').ownerId;
+const dbHelper = require('../dbHelper');
 
 //8Ball
 let eightBall = ["Without a doubt.", "Yes.", "Fuck yes.", "Most likely.", "Pretty sure, yeah.", "I think so?", "Ja for faen", "oui",

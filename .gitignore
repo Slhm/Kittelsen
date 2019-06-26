@@ -71,3 +71,5 @@ package-lock.json
 currency.json
 
 run_bot.sh
+
+.logs/*

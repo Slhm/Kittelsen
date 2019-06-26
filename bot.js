@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const logger = require('winston');
-const auth = require('./auth.json').token;
+const winston = require('winston');
+const tokenDaVoett = require('./auth.json').token;
 const imgflip = require('./auth.json').imgflip;
 const dbp = require('./auth.json').drunkDB;
 const ownerId = require('./auth.json').ownerId;
@@ -17,12 +17,25 @@ let imVegan = false;
 let con;
 let banList = ['11'];
 
-// Logger settings
-logger.remove(logger.transports.Console);
-logger.add(logger.transports.Console, {
-  colorize: true
+//const logConfig = {
+//  'transports': [
+//    new winston.transports.File({
+//      filename: './logs/log.log'
+//    })
+//  ]
+//};
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  defaultMeta: { service: 'user-service'},
+  transports: [
+    new winston.transports.File({ filename: 'error.log', level: 'error' }),
+    new winston.transports.File({ filename: 'combined.log' })
+  ]
 });
-logger.level = 'debug';
+logger.add(new winston.transports.Console());
+
 
 
 // reads and loads cmd files
@@ -74,13 +87,21 @@ handleDisconnect();
 
 
 client.on('ready', () => {
-  logger.info('Connected!');
-  logger.info('Logged in as: ' + client.user.tag + ' - (' + client.user.id + ')');
+  //winston.info('Connected!');
+  //winston.info('Logged in as: ' + client.user.tag + ' - (' + client.user.id + ')');
   updateBanList(banList);
   client.user.setActivity("dead");
 });
 
 client.on('message', async input => {
+  logger.log({
+    level: 'info',
+    date: Date.now(),
+    inp: input.content,
+    user: input.author.username,
+    guild: input.guild.name,
+    channel: input.channel.name
+  });
   if (input.author.bot && !input.content.startsWith("!8")) return;
   if (input.channel.type === "dm") return;
   if (input.guild.id === '458029332141572120') {
@@ -90,6 +111,8 @@ client.on('message', async input => {
   //console.log("username: " + input.author.username + ", roleId: " + input.member.roles.last());
   let prefix = "!";
   let inp = input.content;
+
+
 
   if (inp.startsWith(prefix)) {
     var args = inp.substr(prefix.length).split(' ');
@@ -261,12 +284,23 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
       vertical(input, text);
       break;
     case 'mocking':
-      mocking(input,text);
+      mocking(input, text);
       break;
     case 'imv-l':
       dbHelper.listHighScore('veg', 'im vegan', con, input);
   }
 }
+
+function isUndefined(input, args){
+  if(typeof args[1] === 'undefined') {
+    input.channel.send("you need an argument after the command, my dude");
+    return true;
+  }else{
+    return false;
+  }
+
+}
+
 
 function isCool(input) {
   return input.member.roles.has('458031022563393536');
@@ -348,7 +382,7 @@ const reboot = async (input) => {
     console.log("Reboot signal recieved.");
     input.channel.send("rebooting...")
       .then(() => client.destroy())
-      .then(() => client.login(auth));
+      .then(() => client.login(tokenDaVoett));
   } else {
     input.channel.send("no");
   }
@@ -449,7 +483,7 @@ function eldF(input) {
 }
 
 
-client.login(auth);
+client.login(tokenDaVoett);
 
 
 /*
