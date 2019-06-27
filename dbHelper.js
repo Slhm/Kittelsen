@@ -1,4 +1,5 @@
 const botjs = require('./bot');
+const funcHelper = require('./funcHelper');
 
 //regex for strings
 module.exports.toLetters = async (str) => {
@@ -138,7 +139,7 @@ module.exports.getAllUserIdsInTable = async (tableName, con) => {
 
 //dbHelper.deleteItem('cozy','id = ' + args[2], con, input);
 module.exports.deleteItem = async (tableName, query, con, input) => {
-  await deleteItem(tableName, query, con, false)
+  await deleteItem(tableName, query, con, true)
     .then(re => {
       if (re) input.channel.send("item removed");
     })
@@ -148,7 +149,10 @@ module.exports.deleteItem = async (tableName, query, con, input) => {
 function deleteItem(tableName, query, con, autoInc) {
   return new Promise((resolve, reject) => {
     con.query('DELETE FROM ' + tableName + ' WHERE ' + query, (e, rows) => {
-      if (e) reject(e);
+      if (e) {
+        funcHelper.logError('deleteItem error: ' + e);
+        reject(e);
+      }
       else {
         if (autoInc) {
           con.query('SET @count = 0;');
@@ -164,7 +168,10 @@ function deleteItem(tableName, query, con, autoInc) {
 function getOneUserItem(tableName, userId, con) {
   return new Promise((resolve, reject) => {
     con.query('SELECT * FROM ' + tableName + ' WHERE userId = ' + userId, (e, row) => {
-      if (e) reject(e);
+      if (e) {
+        funcHelper.logError('getOneUserItem error: ' + e);
+        reject(e);
+      }
       else resolve(row[0]);
     });
   })
@@ -173,7 +180,10 @@ function getOneUserItem(tableName, userId, con) {
 function getOneItem(tableName, id, con) {
   return new Promise((resolve, reject) => {
     con.query('SELECT * FROM ' + tableName + ' WHERE id = ' + id, (e, rows) => {
-      if (e) reject(e);
+      if (e) {
+        funcHelper.logError('getOneItem error: ' + e);
+        reject(e);
+      }
       else resolve(rows[0]);
     })
   })
@@ -187,6 +197,7 @@ function insertItems(tableName, columnNames, vals, con) {
     con.query('INSERT INTO ' + tableName + ' (' + columnNames + ') VALUES (' + vals + ')', (e, rows) => {
       if (e) {
         console.log("it didnt work");
+        funcHelper.logError('insertItems error: ' + e);
         reject(false);
       } else {
         console.log("it worked");
@@ -201,7 +212,10 @@ function updateItem(tableName, columnNames, newVal, _id, con) {
   console.log("Inne i update:\ncolumnsNames: " + columnNames + "\nnewVal: " + newVal + "\n_id: " + _id);
   return new Promise((resolve, reject) => {
     con.query('UPDATE ' + tableName + ' SET ' + columnNames[0] + ' = ' + newVal + ' WHERE ' + columnNames[1] + ' = ' + _id, (e, rows) => {
-      if (e) reject(false);
+      if (e) {
+        funcHelper.logError('updateItem error: ' + e);
+        reject(false);
+      }
       else resolve(true);
     })
   });
@@ -210,7 +224,10 @@ function updateItem(tableName, columnNames, newVal, _id, con) {
 function getCount(tableName, con) {
   return new Promise((resolve, reject) => {
     con.query('SELECT COUNT(*) AS count FROM ' + tableName, (e, rows) => {
-      if (e) reject(e);
+      if (e) {
+        funcHelper.logError('getCount error: ' + e);
+        reject(e);
+      }
       else resolve(rows[0].count);
     });
   })
@@ -220,7 +237,10 @@ function getCount(tableName, con) {
 function getOneItemFromId(tableName, itemId, con) {
   return new Promise((resolve, reject) => {
     con.query('SELECT * FROM ' + tableName + ' WHERE id = ' + itemId, (e, row) => {
-      if (e) reject(e);
+      if (e) {
+        funcHelper.logError('getOneItemFromId error: ' + e);
+        reject(e);
+      }
       else resolve(row[0]);
     });
   })
@@ -229,7 +249,10 @@ function getOneItemFromId(tableName, itemId, con) {
 function getAllItems(tableName, con) {
   return new Promise((resolve, reject) => {
     con.query('SELECT * FROM ' + tableName, (e, rows) => {
-      if (e) reject(e);
+      if (e) {
+        funcHelper.logError('getAllItems error: ' + e);
+        reject(e);
+      }
       else resolve(rows);
     })
   })

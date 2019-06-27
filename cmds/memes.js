@@ -14,25 +14,16 @@ module.exports.run = async (client, input, args, arguments, con) => {
   args[1] = args[1].toLowerCase();
 
   if (args[1] === "-i" || args[1] === "insert" || args[1] === "add") {
-    console.log("arg1: " + arguments[0] + "\nargs2: " + arguments[1] + "\narg3: " + arguments[2]);
-    await con.query('INSERT INTO memes (name, numText, link) VALUES (\"' + arguments[0] + '\", \"' + arguments[1] + '\", \"' + arguments[2] + '\")', (e, rows) => {
-      input.channel.send("more memes added");
-    });
+    //console.log("arg1: " + arguments[0] + "\nargs2: " + arguments[1] + "\narg3: " + arguments[2]);
+    dbHelper.insertItems('memes',['name','numText','link'],["\'" + arguments[0] + "\'","\'" + arguments[1] + "\'", "\'" + arguments[2] + "\'"],con,input);
+
   } else if (args[1] === "-l" || args[1] === "list") {
     dbHelper.listLinksInTable('memes', ['name', 'link'], con, input);
+
   } else if (isOwner(input) && (args[1] === "rm" || args[1] === "delete")) {
     dbHelper.deleteItem('memes','id = ' + args[2], con, input);
-    //await con.query('DELETE FROM memes WHERE id = ' + args[2], (e, rows) => {
-    //  if (e) input.channel.send("error: " + e);
-    //  else {
-    //    input.channel.send("removed item.");
-    //    con.query('SET @count = 0;');
-    //    con.query('UPDATE memes SET memes.id = @count := @count + 1;');
-    //    con.query('ALTER TABLE memes AUTO_INCREMENT = 1');
-    //  }
-    //})
+
   } else {
-    // if(memeArray.join().includes(args[1]))
     let f = false;
     console.log("args[1]: " + args[1]);
     console.log("args[1]: " + toLetters(args[1]));

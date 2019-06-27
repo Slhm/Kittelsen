@@ -1,20 +1,15 @@
 const ownerId = require('../auth.json').ownerId;
 const Discord = require('discord.js');
+const dbHelper = require('../dbHelper');
 
 module.exports.run = async (client, input, args, con, arguments) => {
 
   if (args[1] === "-i" || args[1] === "insert" || args[1] === "add") {
-    await con.query('INSERT INTO ama (question, addedBy) VALUES (\"' + arguments[0] + '\", \"' + input.author.username + '\")', (e, rows) => {
-      input.channel.send("question added successfully");
-    });
+    dbHelper.insertItems('ama',['question','addedBy'],["\'" + arguments[0] + "\'", "\'" + input.author.username + "\'"],con,input);
+
   }else if(args[1] === "-l"){
-    await con.query('SELECT * FROM ama', (e, rows) => {
-      let list  = "";
-      rows.forEach((row, i) => {
-        list += i+1 + ": " + "<" + row.question + ">" + " added by: " + row.id + "\n";
-      });
-      input.channel.send("items in table: \n" + list);
-    })
+    dbHelper.listLinksInTable('ama',['question','addedBy'],con,input);
+
   }else {
     let r;
     await con.query('SELECT COUNT(*) AS count FROM ama', (e, rows) => {

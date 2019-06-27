@@ -9,34 +9,13 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 const mysql = require('mysql');
 const dbHelper = require('./dbHelper.js');
+const funcHelper = require('./funcHelper.js');
 const config = require('./config');
 client.commands = new Discord.Collection();
-
 
 let imVegan = false;
 let con;
 let banList = ['11'];
-
-//const logConfig = {
-//  'transports': [
-//    new winston.transports.File({
-//      filename: './logs/log.log'
-//    })
-//  ]
-//};
-
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  defaultMeta: { service: 'user-service'},
-  transports: [
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log' })
-  ]
-});
-logger.add(new winston.transports.Console());
-
-
 
 // reads and loads cmd files
 fs.readdir("./cmds/", (err, files) => {
@@ -55,7 +34,6 @@ fs.readdir("./cmds/", (err, files) => {
     client.commands.set(props.help.name, props);
   })
 });
-
 
 function handleDisconnect() {
 
@@ -87,38 +65,42 @@ handleDisconnect();
 
 
 client.on('ready', () => {
-  //winston.info('Connected!');
-  //winston.info('Logged in as: ' + client.user.tag + ' - (' + client.user.id + ')');
+  console.log('Connected!');
+  console.log('Logged in as: ' + client.user.tag + ' - (' + client.user.id + ')');
   updateBanList(banList);
   client.user.setActivity("dead");
 });
 
 client.on('message', async input => {
-  logger.log({
-    level: 'info',
-    date: Date.now(),
-    inp: input.content,
-    user: input.author.username,
-    guild: input.guild.name,
-    channel: input.channel.name
-  });
+
   if (input.author.bot && !input.content.startsWith("!8")) return;
-  if (input.channel.type === "dm") return;
-  if (input.guild.id === '458029332141572120') {
-    if (!isMod(input) && !isCool(input) && !isKittelsen(input)) return;
+  if (input.channel.type === "dm") {
+    funcHelper.logWarning(input);
+    return;
   }
-  if (await isBanned(input, getBanList())) return;
+  if (input.guild.id === '458029332141572120') {
+    if (!isMod(input) && !isCool(input) && !isKittelsen(input)) {
+      funcHelper.logWarning(input);
+      return;
+    }
+  }
+  if (await isBanned(input, getBanList())) {
+    funcHelper.logWarning(input);
+    return;
+  }
   //console.log("username: " + input.author.username + ", roleId: " + input.member.roles.last());
   let prefix = "!";
   let inp = input.content;
 
 
 
+
+
   if (inp.startsWith(prefix)) {
+    funcHelper.logInfo(input);
     var args = inp.substr(prefix.length).split(' ');
     var cmd = args[0].toLowerCase();
     let text = inp.substr(cmd.length + 2);
-    //var text  = inp.substr(cmd.length);
 
 
     const arguments = (inp) => {
@@ -141,6 +123,7 @@ client.on('message', async input => {
     try {
       handleCommands(input, inp, cmd, arguments(inp), args, text);
     } catch (e) {
+      funcHelper.logError(e);
       console.log(e);
     }
   } else if (imVegan && (inp.startsWith("im") || inp.startsWith("i'm"))) {
@@ -150,6 +133,7 @@ client.on('message', async input => {
 
 client.on('error', (e) => {
   console.error("Error in client: " + e);
+  funcHelper.logError('Client error: ' + e);
 });
 
 
@@ -230,12 +214,14 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
       shutdown(input)
         .catch(e => {
           console.log(e);
+          funcHelper.logError('shutdown error: ' + e);
         });
       break;
     case 'reboot':
       reboot(input)
         .catch(e => {
           console.error(e);
+          funcHelper.logError('reboot error: ' + e);
         });
       break;
     case 'sa':
@@ -286,8 +272,22 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
     case 'mocking':
       mocking(input, text);
       break;
+    case 'send':
+      if(isOwner(input)) send(input, arguments[0],arguments[1]);
+      break;
     case 'imv-l':
       dbHelper.listHighScore('veg', 'im vegan', con, input);
+  }
+}
+
+function send(input, channelId, msg){
+  try{
+    //"guildId: " + guildId +
+    console.log( "\nchannelId: " + channelId + "\nmsg: " + msg);
+    client.channels.get(channelId).send(msg);
+  }catch(e){
+    funcHelper.logError('!send error: ' + e);
+    input.channel.send("e: " + e );
   }
 }
 
@@ -498,24 +498,6 @@ client.login(tokenDaVoett);
         '!satan\n' +
         '!todo      -      lists todo items'
  */
-
-/*
-//REGEX STUFF. MIGHT CHANGE TO IT EVENTUALLY
-//let arguments = inp.substring(prefix.length + cmd.length);
-
-arguments = arguments.split("'*'");
-for (let i = 0; i <= arguments.length; i++) {
-  if (arguments[i] === "" || arguments[i] === " ") arguments.splice(i, 0);
-}
-arguments = arguments[0].split("'*'");
-
-//This is much prettier, but couldn't get it to work.
-//let regex = /("[a-zA-Z\s]+")/gm;
-//let arguments = regex.exec(inp.substr(prefix.length + cmd.length));
-*/
-
-
-//****TMP DATABASE******
 
 //Music
 let music = [
