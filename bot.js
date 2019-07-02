@@ -269,6 +269,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
     case 'vertical':
       vertical(input, text);
       break;
+    case 'mock':
     case 'mocking':
       mocking(input, text);
       break;

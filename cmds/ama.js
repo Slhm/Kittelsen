@@ -7,8 +7,11 @@ module.exports.run = async (client, input, args, con, arguments) => {
   if (args[1] === "-i" || args[1] === "insert" || args[1] === "add") {
     dbHelper.insertItems('ama',['question','addedBy'],["\'" + arguments[0] + "\'", "\'" + input.author.username + "\'"],con,input);
 
-  }else if(args[1] === "-l"){
+  }else if(args[1] === "-l" || args[1] === "list"){
     dbHelper.listLinksInTable('ama',['question','addedBy'],con,input);
+
+  }else if (args[1] === "rm" || args[1] === "delete") {
+    dbHelper.deleteItem('ama', 'id = ' + args[2], con,input);
 
   }else {
     let r;

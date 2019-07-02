@@ -24,7 +24,6 @@ module.exports.listLinksInTable = async (tableName, f, con, input) => {
 };
 
 module.exports.insertItems = async (tableName, columnNames, vals, con, input) => {
-  console.log("heihei");
   insertItems(tableName, columnNames, vals, con)
     .then(rows => {
       if (rows) input.channel.send("item added successfully");
@@ -69,17 +68,6 @@ module.exports.getOneItem = async (tableName, columnName, id, con, input) => {
       }
     })
 };
-
-/*
-        await con.query('SELECT num FROM eight WHERE id = 11', (e, rows) => {
-          if (e) throw e;
-          let tmp = parseInt(rows[0].num);
-          con.query('UPDATE eight SET num = ' + tmp + 1 + ' WHERE id = 11');
-          //console.log(rows[0].num);
-          let chance = Math.pow(1 / eightBall.length, 2);
-          input.channel.send("<@!" + ownerId + ">, it happened. there's a " + chance + "% chance of this happening. it has happened: " + tmp + " times before.");
-        });
-        */
 
 module.exports.listHighScore = async (tableName, typeOfAmount, con, input) => {
   let lb = "";
