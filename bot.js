@@ -72,6 +72,10 @@ client.on('ready', () => {
 });
 
 client.on('message', async input => {
+  let prefix = "!";
+  let inp = input.content;
+
+  if (!isKittelsen(input) && (inp.toLowerCase().includes("im vegan") || inp.toLowerCase().includes("i'm vegan"))) await dbHelper.incrementAmount('veg', input.author.id, con);
 
   if (input.author.bot && !input.content.startsWith("!8")) return;
   if (input.channel.type === "dm") {
@@ -81,7 +85,6 @@ client.on('message', async input => {
   if (input.guild.id === '458029332141572120') {
     if (!isMod(input) && !isCool(input) && !isKittelsen(input)) {
       funcHelper.logWarning(input);
-      return;
     }
   }
   if (await isBanned(input, getBanList())) {
@@ -89,8 +92,7 @@ client.on('message', async input => {
     return;
   }
   //console.log("username: " + input.author.username + ", roleId: " + input.member.roles.last());
-  let prefix = "!";
-  let inp = input.content;
+
 
 
 
@@ -128,13 +130,19 @@ client.on('message', async input => {
     }
   } else if (imVegan && (inp.startsWith("im") || inp.startsWith("i'm"))) {
     input.channel.send("im vegan");
-  } else if (inp.toLowerCase().includes("im vegan") || inp.toLowerCase().includes("i'm vegan")) await dbHelper.incrementAmount('veg', input.author.id, con);
+  }
 });
 
 client.on('error', (e) => {
   console.error("Error in client: " + e);
   funcHelper.logError('Client error: ' + e);
 });
+
+let getCommands = "available kittelsenBot commands:\n " +
+  "**!help** - shows available commands\n " +
+  "**!memes** - makes memes..\n " +
+  "**!ud** - urban dictionary\n " +
+  "**!pp** - returns big version of profile pic\n";
 
 
 function handleCommands(input, inp, cmd, arguments, args, text) {
