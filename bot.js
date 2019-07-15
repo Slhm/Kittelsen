@@ -83,7 +83,7 @@ client.on('message', async input => {
     return;
   }
   if (input.guild.id === '458029332141572120') {
-    if (!isMod(input) && !isCool(input) && !isKittelsen(input)) {
+    if (!isMod(input) && !isCool(input) && !isKittelsen(input) && !isNew(input)) {
       funcHelper.logWarning(input);
     }
   }
@@ -136,6 +136,12 @@ client.on('message', async input => {
 client.on('error', (e) => {
   console.error("Error in client: " + e);
   funcHelper.logError('Client error: ' + e);
+});
+
+client.on('guildMemberAdd', member => {
+  if (member.guild.id === '458029332141572120') {
+    client.channels.get('458029595145404452').send("Hiiiiiiiiiiii " + "<@!" + member.id + ">" + ". Feel free to write something in " + client.channels.get('459007548247506965').toString() + ". Cheers")
+  }
 });
 
 let getCommands = "available kittelsenBot commands:\n " +
@@ -216,7 +222,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
       break;
     case 'ban' :
       let b = banArray[Math.floor(Math.random() * banArray.length)];
-      input.channel.send(input.mentions.users.first() + b);
+      input.channel.send(input.mentions.users.first() + " " + b);
       break;
     case 'shutdown':
       shutdown(input)
@@ -325,6 +331,10 @@ let isBanned = async (input, banList) => {
 
 function isMod(input) {
   return input.member.roles.has('458030682988609538');
+}
+
+function isNew(input) {
+  return input.member.roles.has('458334852874371093');
 }
 
 function isKittelsen(input) {
@@ -522,7 +532,7 @@ let music = [
 ];
 
 let banArray = ["HAS BEEN BANNED FOR LIFE",
-  "HAS BEEN DEMOLISHED INTO THE PAVEMENT, AND ALSO BANNED", "hAs BeEn BaNnEd LolLll",
+  "HAS BEEN DEMOLISHED INTO THE PAVEMENT BY BOBBY B, AND ALSO BANNED", "hAs BeEn BaNnEd LolLll",
   "was eradicated out of our bleak fucking existance", "got fucking banned, yay",
   "said AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆHHHHHHHHHHHHHHHHH as they \"fell\" off a cliff",
-  "was forced out the moon door, wooooooooo", " was revealed as an omniscum, and is no longer welcome here.", "is no longer with us :("];
+  "was forced out the moon door by our lord, Sweetrobin", " was revealed as an omniscum, and is no longer welcome here.", "is no longer with us :("];
