@@ -134,6 +134,15 @@ module.exports.deleteItem = async (tableName, query, con, input) => {
     .catch(e => input.channel.send("error deleting item"));
 };
 
+
+module.exports.deleteUserItem = async (tableName, query, con, input) => {
+  await deleteItem(tableName, query, con, false)
+    .then(re => {
+      if (re) input.channel.send("item removed");
+    })
+    .catch(e => input.channel.send("error deleting item"));
+};
+
 function deleteItem(tableName, query, con, autoInc) {
   return new Promise((resolve, reject) => {
     con.query('DELETE FROM ' + tableName + ' WHERE ' + query, (e, rows) => {

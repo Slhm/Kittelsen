@@ -75,7 +75,7 @@ client.on('message', async input => {
   let prefix = "!";
   let inp = input.content;
 
-  if (!isKittelsen(input) && (inp.toLowerCase().includes("im vegan") || inp.toLowerCase().includes("i'm vegan"))) await dbHelper.incrementAmount('veg', input.author.id, con);
+  if (!isKittelsen(input) && (inp.toLowerCase().includes("im vegan") || inp.toLowerCase().includes("i'm vegan") || inp.toLowerCase().includes("i'm vegan"))) await dbHelper.incrementAmount('veg', input.author.id, con);
 
   if (input.author.bot && !input.content.startsWith("!8")) return;
   if (input.channel.type === "dm") {
@@ -247,20 +247,24 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
       if (isOwner(input)) {
         if (input.mentions.users.first()) {
           if (args[1] === "rm") {
-            dbHelper.deleteItem('botban', 'userId = ' + input.mentions.users.first().id, con, input)
+            dbHelper.deleteUserItem('botban', 'userId = ' + input.mentions.users.first().id, con, input)
               .then(updateBanList);
-          } else {
+          } else if(arguments[0]){
             dbHelper.insertUserIdAndOneItem('botban', 'reason', input.mentions.users.first().id, arguments[0], con, input)
               .then(updateBanList);
-          }
-        } else {
-          if (args[1] === "rm") {
-            dbHelper.deleteItem('botban', 'userId = ' + arguments[0], con, input)
-              .then(updateBanList);
           } else {
+	  	input.channel.send("wrong syntax my dude");
+	  }
+        } else {
+          if (args[1] === "rm" && arguments[0]) {
+            dbHelper.deleteUserItem('botban', 'userId = ' + arguments[0], con, input)
+              .then(updateBanList);
+          } else if(arguments[0]){
             dbHelper.insertUserIdAndOneItem('botban', 'reason', arguments[0], arguments[1], con, input)
               .then(updateBanList);
-          }
+          }else{
+		 input.channel.send("wrong syntax, my dude");
+	  }
         }
       }
       break;

@@ -28,7 +28,7 @@ module.exports.run = async (client, input, args, arguments, con) => {
     console.log("args[1]: " + args[1]);
     console.log("args[1]: " + toLetters(args[1]));
 
-    await con.query('SELECT name, link, numText FROM drunkdb.memes', (e, rows) => {
+    await con.query('SELECT name, link, numText FROM memes', (e, rows) => {
       // WHERE name = "' + toLetters(args[1]) + '"'
       rows.forEach(el => {
         //console.log("el.name: " + el.name);
