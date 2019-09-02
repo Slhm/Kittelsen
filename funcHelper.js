@@ -3,7 +3,7 @@ const winston = require('winston');
 module.exports.logInfo = async (input) => {
   logger.log({
     level: 'info',
-    date: Date.now(),
+    date: getDate(),
     user: input.author.username,
     guild: input.channel.type !== "dm" ? input.guild.name + ", " + input.channel.name : "dm",
     inp: input.content
@@ -13,7 +13,7 @@ module.exports.logInfo = async (input) => {
 module.exports.logWarning = async (input) => {
   logger.log({
     level: 'warn',
-    date: Date.now(),
+    date: getDate(),
     user: input.author.username,
     guild: input.channel.type !== "dm" ? input.guild.name + ", " + input.channel.name : "dm",
     inp: input.content
@@ -23,7 +23,7 @@ module.exports.logWarning = async (input) => {
 module.exports.logError = async (eMsg) => {
   logger.log({
     level: 'error',
-    date: Date.now(),
+    date: getDate(),
     error: eMsg
   })
 };
@@ -38,4 +38,9 @@ const logger = winston.createLogger({
     new winston.transports.File({ filename: './logs/warnings.log', level: 'warn' })
   ]
 });
+
+
+function getDate(){
+  return new Date().toLocaleString( {timeZone: "Norway/Oslo"})
+}
 logger.add(new winston.transports.Console());
