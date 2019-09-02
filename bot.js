@@ -150,6 +150,33 @@ let getCommands = "available kittelsenBot commands:\n " +
   "**!ud** - urban dictionary\n " +
   "**!pp** - returns big version of profile pic\n";
 
+let commandslol = "**MOST USEFUL COMMANDS: **\n" +
+    "**!8**  -  Magic 8ball (if question contains an \"or\", it chooses one of the two)\n" +
+    "**!ud** - urban dictionary (add -i 1 at the end for the second highest rated entry, -i 2 for third and so on)\n" +
+    "**!freedom**  -  Converts imperial to metric, vice versa, and currencies(usd,nok,cad,nzd,eur).\n" +
+    "    !freedom 10lbs\n" +
+    "**!memes**  -  Generates memes. (see bottom of this post)\n" +
+    "**!cheers**  -  simple point system. toast with people by \\@ing them. \n" +
+    "**!pp**  -  !pp @USER (or user id) for big profile pic\n" +
+    "**!ban**  -  @ someone to ban them. (not really) \n" +
+    "**!poll**  -  Makes a poll\n" +
+    "    !poll 'SUBJECT HERE'  (add emojis at the end for custom reactions. thumbs up/down is default.)\n" +
+    "**!cozy**  -  returns something cozy. add stuff with \" !cozy add 'LINK HERE' \"\n" +
+    "\n" +
+    "**TEXT MANIPULATION **\n" +
+    "**!vertical**  -  outputs text in vertical /horizontal\n" +
+    "**!aesthetic**  -  outputs text in ｆｕｌｌｗｉｄｔｈ\n" +
+    "**!runes**  -  outputs text in ᛖᛚᛞᛖᚱ ᚠᚢᚦᚨᚱᚲ\n" +
+    "**!mock**  -  oUtPuTs TeXt LiKe ThIs\n" +
+    "\n" +
+    "**MISC**\n" +
+    "**!future**  -  Returns something about the future\n" +
+    "**!satan**  -  UwU\n" +
+    "**!vcj**  -  bot says 'im vegan' if anyone else says something starting with 'im / i'm'. turn it off with same cmd\n" +
+    "\n" +
+    "**!memes** - check <https://imgur.com/a/ZwLtHJd> for available templates and command example.\n" +
+    "Syntax example: ```!memes exit 'text1' 'text2' 'text3' ```\n" +
+    "^ would produce this image -> <https://imgflip.com/i/2rd1ep>";
 
 function handleCommands(input, inp, cmd, arguments, args, text) {
   switch (cmd) {
@@ -157,7 +184,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
     case 'help':
       if (input.guild.id === '458029332141572120') {
         input.channel.send('Available commands are in: ' + input.guild.channels.get('534443945942581249').toString());
-      }
+      }else input.channel.send(commandslol);
       break;
     case 'satan':
       input.channel.send("Satan wa totemo kawaīdesu ^w^", {files: ["./resources/satanKawaii.gif"]});
