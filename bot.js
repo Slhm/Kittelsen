@@ -233,7 +233,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
                 client.commands.get('freedom').run(client, input, args);
             break;
         case 'poll':
-            typeof args[1] === 'undefined' ? input.channel.send("you need a title for the poll, my dude. check #info") :
+            typeof args[1] === 'undefined' ? input.channel.send("you need a title for the poll, my dude. check #info or ping comradeSeitan") :
                 client.commands.get('poll').run(client, input, args, arguments);
             break;
         case '8':
@@ -364,8 +364,9 @@ let isBanned = async (input, banList) => {
     return banned;
 };
 
+//TODO: get vcj modID
 function isvcjMod(input){
-    if(input.member.roles.has(''));
+    //if(input.member.roles.has(''));
 }
 
 function isMod(input) {
@@ -467,7 +468,7 @@ const reboot = async (input) => {
 //returns text in vertical/horizontal format.
 const vertical = async (input, text) => {
     console.log("text: " + text);
-    text = removeEmojis(text);
+    text = funcHelper.removeEmojis(text);
     let tmpString = text ? text : "";
     for (let i = 1; i < text.length; i++) {
         tmpString += "\n" + text.charAt(i);
@@ -475,10 +476,6 @@ const vertical = async (input, text) => {
     input.channel.send(tmpString === "" ? "empty string" : tmpString);
 };
 
-//Regex for removing emojis in a text
-function removeEmojis(input) {
-    return input.replace(/<(.*?)>/gm, '');
-}
 
 const pp = async (input, args) => {
 

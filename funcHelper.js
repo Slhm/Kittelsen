@@ -43,4 +43,19 @@ const logger = winston.createLogger({
 function getDate(){
   return new Date().toLocaleString( {timeZone: "Norway/Oslo"})
 }
+
+module.exports.containsQuotes = (str) => {
+  return (str.contains("\"") || str.contains("'") || str.contains("“"));
+};
+
+//Regex for removing emojis in a text
+module.exports.removeEmojis = (input) => {
+  return input.replace(/<(.*?)>/gm, '');
+};
+
+module.exports.makeArgument = async(array) =>{
+  array.shift();
+  return array.join(' ');
+};
+
 logger.add(new winston.transports.Console());
