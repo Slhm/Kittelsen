@@ -91,7 +91,6 @@ client.on('message', async input => {
         funcHelper.logWarning(input);
         return;
     }
-    //console.log("username: " + input.author.username + ", roleId: " + input.member.roles.last());
 
 
     if (inp.startsWith(prefix)) {
@@ -104,12 +103,22 @@ client.on('message', async input => {
         const arguments = (inp) => {
             let tmpString = "";
             let tmpArray = [];
+            let tmpTypeOfQuote = "";
             let insideQuote = false;
             for (let i = 0; i < inp.length; i++) {
                 if (inp.charAt(i) === "'" && !insideQuote) {
+                    tmpTypeOfQuote = "'";
                     insideQuote = true;
                     continue;
-                } else if (inp.charAt(i) === "'" && insideQuote) {
+                }else if(inp.charAt(i) === "\"" && !insideQuote) {
+                    tmpTypeOfQuote = "\"";
+                    insideQuote = true;
+                    continue;
+                }else if(inp.charAt(i) === "“" && !insideQuote){
+                    tmpTypeOfQuote = "“";
+                    insideQuote = true;
+                    continue;
+                } else if (inp.charAt(i) === tmpTypeOfQuote && insideQuote) {
                     insideQuote = false;
                     tmpArray.push(tmpString);
                     tmpString = "";
@@ -140,11 +149,6 @@ client.on('guildMemberAdd', member => {
     }
 });
 
-let getCommands = "available kittelsenBot commands:\n " +
-    "**!help** - shows available commands\n " +
-    "**!memes** - makes memes..\n " +
-    "**!ud** - urban dictionary\n " +
-    "**!pp** - returns big version of profile pic\n";
 
 let commandslol = "**MOST USEFUL COMMANDS: **\n" +
     "**!8**  -  Magic 8ball (if question contains an \"or\", it chooses one of the two)\n" +
@@ -326,10 +330,10 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
     }
 }
 
+//
 function send(input, channelId, msg) {
     try {
-        //"guildId: " + guildId +
-        console.log("\nchannelId: " + channelId + "\nmsg: " + msg);
+        //console.log("\nchannelId: " + channelId + "\nmsg: " + msg);
         client.channels.get(channelId).send(msg);
     } catch (e) {
         funcHelper.logError('!send error: ' + e);
@@ -359,6 +363,10 @@ let isBanned = async (input, banList) => {
     });
     return banned;
 };
+
+function isvcjMod(input){
+    if(input.member.roles.has(''));
+}
 
 function isMod(input) {
     return input.member.roles.has('458030682988609538');
@@ -456,6 +464,7 @@ const reboot = async (input) => {
     }
 };
 
+//returns text in vertical/horizontal format.
 const vertical = async (input, text) => {
     console.log("text: " + text);
     text = removeEmojis(text);
@@ -466,6 +475,7 @@ const vertical = async (input, text) => {
     input.channel.send(tmpString === "" ? "empty string" : tmpString);
 };
 
+//Regex for removing emojis in a text
 function removeEmojis(input) {
     return input.replace(/<(.*?)>/gm, '');
 }
@@ -473,12 +483,15 @@ function removeEmojis(input) {
 const pp = async (input, args) => {
 
     let m = await input.channel.send("fetching avatar ...");
+
+    //Check for @'ed user in input
     let user = input.mentions.users.first();
-    if (!user) await client.fetchUser(args[1]).then((u) => {
+    //Check for userId in input.
+    if (!user && args[1]) await client.fetchUser(args[1]).then((u) => {
         user = u;
-        console.log("user: " + user + ", user.avatarshit: " + user.displayAvatarURL)
     }).catch((e) => e.stack);
 
+    //If user id in input
     if (args[1]) {
         await input.channel.send({
             files: [
@@ -488,7 +501,9 @@ const pp = async (input, args) => {
                 }
             ]
         });
-    } else {
+    }
+    // If no arguments. Returns user avatar of user who did command.
+    else {
         await input.channel.send({
             files: [
                 {
@@ -570,4 +585,5 @@ let banArray = ["HAS BEEN BANNED FOR LIFE",
     "HAS BEEN DEMOLISHED INTO THE PAVEMENT BY BOBBY B, AND ALSO BANNED", "hAs BeEn BaNnEd LolLll",
     "was eradicated out of our bleak fucking existance", "got fucking banned, yay",
     "said AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆHHHHHHHHHHHHHHHHH as they \"fell\" off a cliff",
-    "was forced out the moon door by our lord, Sweetrobin", " was revealed as an omniscum, and is no longer welcome here.", "is no longer with us :("];
+    "was forced out the moon door by our lord, Sweetrobin", " was revealed as an omniscum, and is no longer welcome here.", "is no longer with us :(", ", earthling ed is coming to shove broccoli down your throat. good luck.",
+    "smells of cheese, and have to leave", "died of everything deficiency"];

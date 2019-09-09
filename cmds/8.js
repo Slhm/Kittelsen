@@ -55,11 +55,10 @@ module.exports.run = async (client, input, args, con) => {
 
 function orFunc(input, q) {
 
-  let op1 = "**" + q.split(' or ')[0] + "**";
-  let op2 = "**" + q.split(' or ')[1] + "**";
+  let options = q.split(' or ');
+  let opValue = options[Math.floor(Math.random() * options.length)];
 
-
-  input.channel.send(Math.random() > 0.5 ? op1 + " all the way, dude" : op2 + " all the way, dude");
+  input.channel.send(opValue + " all the way, dude");
 }
 
 module.exports.help = {

@@ -3,16 +3,18 @@ const fs = require('fs');
 
 module.exports.run = async (client, input, args) => {
   console.log("freedom my dude");
-  args[1] = args[1].toLowerCase();
   if (args[2]) args[1] = args[1] + args[2];
+  args[1] = args[1].toLowerCase();
+  args[1] = args[1].replace(/\s*$/,"");
 
   if (!args[1]) {
-    input.channel.send("Freedom units to metric calculator and vice versa.\n" +
+    input.channel.send("Freedom units to metric converter and vice versa.\n" +
       "These convertions are available so far:\n" +
       "m(ph) - k(ph)\n" +
       "F - C\n" +
       "lbs - kg\n" +
-      "syntax example !freedom 10F");
+        "currencies(uds,eur,nok,cad,nzd)" +
+      "syntax example !c 10F");
 
   } else if (args[1].endsWith("f")) {
     let F = toAmount(args[1]);
@@ -22,7 +24,7 @@ module.exports.run = async (client, input, args) => {
   } else if (args[1].endsWith("c")) {
     let c = toAmount(args[1]);
     let f = Math.round((c * 9 / 5) + 32);
-    input.channel.send(args[1] + "in freedoms is: " + f + "F");
+    input.channel.send(args[1] + " in freedoms is: " + f + "F");
 
   } else if (args[1].endsWith("mph") || args[1].endsWith("miles")) {
     let mph = toAmount(args[1]);
