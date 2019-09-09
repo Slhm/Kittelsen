@@ -53,9 +53,9 @@ module.exports.removeEmojis = (input) => {
   return input.replace(/<(.*?)>/gm, '');
 };
 
-module.exports.makeArgument = async(array) =>{
-  array.shift();
-  return array.join(' ');
+module.exports.makeArgument = (array, index) =>{
+  array.splice(0,index);
+  return array.join(' ').toString();
 };
 
 logger.add(new winston.transports.Console());
