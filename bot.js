@@ -249,8 +249,8 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             break;
         case 'ban' :
             let b = banArray[Math.floor(Math.random() * banArray.length)];
-            input.channel.send(input.mentions.users.first() + " " + b);
-            break;
+            input.channel.send(input.mentions.users.first() ? input.mentions.users.first() : funcHelper.makeArgument(args, 1)  + " " + b);
+	    break;
         case 'shutdown':
             shutdown(input)
                 .catch(e => {
