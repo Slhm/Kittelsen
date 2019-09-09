@@ -5,19 +5,21 @@ const funcHelper = require('../funcHelper');
 module.exports.run = async (client, input, args, con, arguments) => {
 
   let queryLink = arguments[0];
+  let arg = args[1];
+  let delIndex = args[2];
   if(!arguments[0]){
-    queryLink = funcHelper.makeArgument(args);
+    queryLink = funcHelper.makeArgument(args,2);
   }
 
 
-  if (args[1] === "-i" || args[1] === "insert" || args[1] === "add") {
+  if (arg === "-i" || arg === "insert" || arg === "add") {
     dbHelper.insertItems('cozy',['link','addedBy'],["\'" + queryLink + "\'", "\'" + input.author.username + "\'"],con,input);
 
-  }else if(args[1] === "-l" || args[1] === "list"){
+  }else if(arg === "-l" || arg === "list"){
     dbHelper.listLinksInTable('cozy', ['link', 'addedBy'], con, input);
 
-  }else if(isOwner(input) && (args[1] === "rm" || args[1] === "delete")){
-    dbHelper.deleteItem('cozy','id = ' + args[2], con, input);
+  }else if(isOwner(input) && (arg === "rm" || arg === "delete")){
+    dbHelper.deleteItem('cozy','id = ' + delIndex, con, input);
 
   } else {
     dbHelper.getRandomItem('cozy', con, input);
