@@ -57,16 +57,20 @@ module.exports.insertUserIdAndOneItem = async (tableName, columnName, userId, va
 };
 
 module.exports.getOneItem = async (tableName, columnName, id, con, input) => {
-  getOneItem(tableName, id, con)
+  let tmpVal = 0;
+  await getOneItemFromId(tableName, id, con)
     .then(item => {
+      //console.log("item['time']: " + item['time']);
       if (!item) {
         console.log("no item in getOneItem");
         return false;
       }
       else {
-        return item[columnName];
+	console.log("item found in getOneItem: \n" + "\nitem.time: " + item.time);
+        tmpVal = item.time;
       }
     })
+  return tmpVal;
 };
 
 module.exports.listHighScore = async (tableName, typeOfAmount, con, input) => {
@@ -103,6 +107,13 @@ module.exports.getRandomItem = async (tableName, con, input) => {
 
 module.exports.getUsernameFromId = async (userId) => {
 
+};
+
+module.exports.updateItem = async (tableName, columnNames, newVal, _id, con) => {
+  updateItem(tableName, columnNames, newVal, _id, con)
+      .then((e) => {
+        return e;
+      });
 };
 
 module.exports.getAllUserIdsInTable = async (tableName, con) => {
@@ -254,3 +265,4 @@ function getAllItems(tableName, con) {
     })
   })
 }
+
