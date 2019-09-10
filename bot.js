@@ -75,7 +75,7 @@ client.on('message', async input => {
     let prefix = "!";
     let inp = input.content;
 
-    if (!isKittelsen(input) && (inp.toLowerCase().includes("im vegan") || inp.toLowerCase().includes("i'm vegan") || inp.toLowerCase().includes("i'm vegan"))) await dbHelper.incrementAmount('veg', input.author.id, con);
+    if (!isKittelsen(input) && (inp.toLowerCase().includes("im vegan") || inp.toLowerCase().includes("i'm vegan") || inp.toLowerCase().includes("i'm vegan") || inp.toLocaleLowerCase().includes('i’m vegan'))) await dbHelper.incrementAmount('veg', input.author.id, con);
 
     if (input.author.bot && !input.content.startsWith("!8")) return;
     if (input.channel.type === "dm") {
@@ -325,10 +325,33 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
         case 'send':
             if (isOwner(input)) send(input, arguments[0], arguments[1]);
             break;
-        case 'imv-l':
-            dbHelper.listHighScore('veg', 'im vegan', con, input);
+
+        case 'vegan-lb':
+            getVegLeaderBoard(con,input);
+            break;
     }
 }
+
+
+const getVegLeaderBoard = async (con, input) => {
+    let d = new Date();
+    let ut = Math.round(d.getTime()/1000 * 10) / 10;
+
+    console.log("ut: " + ut);
+    await dbHelper.getOneItem('vegLB', 'time', '11', con,input)
+        .then(el => {
+          
+	   //console.log("el.time.toString(): " + el.time.toString());
+	   console.log("el alene: " + parseInt(el));
+           console.log("ut: " + ut + "\ntime + 900: " + Math.round(el + 900));
+	   if(Math.round(el + 900) < ut){
+               dbHelper.updateItem('vegLB', ['time','id'], ut, 11, con);
+               dbHelper.listHighScore('veg', 'im vegan', con, input);
+           }else{
+               input.channel.send("too early my dude. wait: " + (Math.round(((el + 900) - ut) / 60) + " minutes"));
+           }
+        });
+};
 
 //
 function send(input, channelId, msg) {
