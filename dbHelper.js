@@ -56,7 +56,7 @@ module.exports.insertUserIdAndOneItem = async (tableName, columnName, userId, va
     .catch(e => console.log(e))
 };
 
-module.exports.getOneItem = async (tableName, columnName, id, con, input) => {
+module.exports.getOneItem = async (tableName, columnName, id, con, itemName) => {
   let tmpVal = 0;
   await getOneItemFromId(tableName, id, con)
     .then(item => {
@@ -66,8 +66,8 @@ module.exports.getOneItem = async (tableName, columnName, id, con, input) => {
         return false;
       }
       else {
-	console.log("item found in getOneItem: \n" + "\nitem.time: " + item.time);
-        tmpVal = item.time;
+	//console.log("item found in getOneItem: \n" + "\nitem.time: " + item.time);
+        tmpVal = item[itemName];
       }
     })
   return tmpVal;
@@ -82,7 +82,7 @@ module.exports.listHighScore = async (tableName, typeOfAmount, con, input) => {
 
     rows.forEach((row) => {
       members.forEach((member) => {
-        if (row.userId === member.user.id.toString()) {
+        if (row.userId === member.user.id.toString() && i <= 20) {
           lb += "[" + i + "]   " + "#" + member.user.username + ":\n" +
             "          Amount of " + typeOfAmount + ": " + row.amount + "\n";
           i++;

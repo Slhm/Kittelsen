@@ -247,10 +247,10 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
         case 'ø':
             input.channel.send({files: ["./resources/oe.jpg"]});
             break;
-        case 'ban' :
+        case 'ban':
             let b = banArray[Math.floor(Math.random() * banArray.length)];
-            input.channel.send(input.mentions.users.first() ? input.mentions.users.first() : funcHelper.makeArgument(args, 1)  + " " + b);
-	    break;
+	    input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1)  + " " + b);
+   	    break;
         case 'shutdown':
             shutdown(input)
                 .catch(e => {
@@ -338,17 +338,17 @@ const getVegLeaderBoard = async (con, input) => {
     let ut = Math.round(d.getTime()/1000 * 10) / 10;
 
     console.log("ut: " + ut);
-    await dbHelper.getOneItem('vegLB', 'time', '11', con,input)
+    await dbHelper.getOneItem('vegLB', 'time', '11', con,"time")
         .then(el => {
-          
+          el_ = el;
 	   //console.log("el.time.toString(): " + el.time.toString());
-	   console.log("el alene: " + parseInt(el));
+	   console.log("el alene: " + parseInt(el_));
            console.log("ut: " + ut + "\ntime + 900: " + Math.round(el + 900));
-	   if(Math.round(el + 900) < ut){
+	   if(Math.round(el_ + 900) < ut){
                dbHelper.updateItem('vegLB', ['time','id'], ut, 11, con);
                dbHelper.listHighScore('veg', 'im vegan', con, input);
            }else{
-               input.channel.send("too early my dude. wait: " + (Math.round(((el + 900) - ut) / 60) + " minutes"));
+               input.channel.send("too early my dude. wait: " + (Math.round(((el_ + 900) - ut) / 60) + " minutes"));
            }
         });
 };
