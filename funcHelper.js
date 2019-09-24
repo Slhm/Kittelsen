@@ -53,6 +53,27 @@ module.exports.removeEmojis = (input) => {
   return input.replace(/<(.*?)>/gm, '');
 };
 
+
+module.exports.getEmojis = (input) => {
+  //let tmp = input.match(/<(.*?)>/).toString();
+  console.log(input.match(/[0-9]+/).toString());
+
+  return input.match(/[0-9]+/).toString();
+};
+
+/*
+
+
+module.exports.getEmojis = (input) => {
+  console.log("input in getEmojis: " + input);
+  let tmp = input.match(/<(.*?)>/).toString();
+  console.log("after first regex: " + tmp);
+  console.log("after second: " + tmp.match(/[0-9]+/).toString());
+  tmp = tmp.match(/[0-9]+/).toString();
+  return tmp;
+}
+ */
+
 module.exports.makeArgument = (array, index) =>{
   array.splice(0,index);
   return array.join(' ').toString();
