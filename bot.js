@@ -326,12 +326,37 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             if (isOwner(input)) send(input, arguments[0], arguments[1]);
             break;
 
+
         case 'vegan-lb':
             getVegLeaderBoard(con,input);
+            break;
+	case 'be':
+        case 'bigemoji':
+            getEmoji(input, text);
             break;
     }
 }
 
+
+const getEmoji = async(input, text) => {
+    var emoji = funcHelper.getEmojis(text);
+    console.log("emoji from getEmojis: " + emoji);
+    //let emojiUrl = input.emojis.get(emoji).url;
+
+    if (emoji) {
+        await input.channel.send({
+            files: [
+                {
+                    //attachment: emojiUrl,
+		    attachment: 'https://cdn.discordapp.com/emojis/'+ emoji,
+		    name: "bigEmoji.png"
+                }
+            ]
+        });
+    }
+    else input.channel.send("couldnt find that emoji");
+    //input.channel.send(emojiUrl.url);
+};
 
 const getVegLeaderBoard = async (con, input) => {
     let d = new Date();
