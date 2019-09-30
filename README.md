@@ -1,7 +1,7 @@
 # Kittelsen
 Discord bot based in node.js
 
-### Most interesting commands/functionality:
+### Most useful commands/functionality:
 
 * !8 - magic 8 ball. if message contains one or more "or", it will choose between them.
 * !memes - generates memes based on input. 
@@ -9,13 +9,14 @@ Discord bot based in node.js
 * Text manipulation: fullwidth, elder futhark, mOcKiNg, vertical/horizontal.
 * !poll - makes a poll, can also do custom reactions.
 * !ud - urban dictionary definition fetch.
+* !cozy - returns something cozy another user has added. functionality for adding/removing/listing items in DB. 
+* Lots of generic code, with dbHelper.js, and funcHelper.js helper files.
 
 
 #### It uses:
 * winston: for logging
 * mysql: database
 * fs: node module for reading files.
-* 
 
 
 auth.json is nessecary, and has the format:
