@@ -60,16 +60,14 @@ module.exports.getOneItem = async (tableName, columnName, id, con, itemName) => 
   let tmpVal = 0;
   await getOneItemFromId(tableName, id, con)
     .then(item => {
-      //console.log("item['time']: " + item['time']);
       if (!item) {
         console.log("no item in getOneItem");
         return false;
       }
       else {
-	//console.log("item found in getOneItem: \n" + "\nitem.time: " + item.time);
         tmpVal = item[itemName];
       }
-    })
+    });
   return tmpVal;
 };
 
@@ -94,7 +92,6 @@ module.exports.listHighScore = async (tableName, typeOfAmount, con, input) => {
 };
 
 module.exports.getRandomItem = async (tableName, con, input) => {
-
   getCount(tableName, con)
     .then(count => {
       let r = (Math.floor(Math.random() * count) + 1);

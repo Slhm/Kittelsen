@@ -69,12 +69,9 @@ module.exports.run = async (client, input, args) => {
 
   }
   else input.channel.send("try again. Syntax example: !freedom 10F");
-
 };
 
 const currencyConvert = async (input, currency, amount) => {
-
-
 
   fs.readFile("currency.json", (err, file) => {
     if (err) console.error(err);
@@ -108,6 +105,7 @@ const currencyConvert = async (input, currency, amount) => {
 
 };
 
+//if local currency json file is older than 24h it updates.
 const checkCurrencyList = async () => {
 
   fs.readFile("currency.json", (err, file) => {
@@ -117,10 +115,10 @@ const checkCurrencyList = async () => {
     let obj = JSON.parse(file);
     if (obj.time_last_updated + 86400 < ut) {
       updateCurrencyList();
-      console.log("større", obj.time_last_updated, ut);
+      //console.log("større", obj.time_last_updated, ut);
     }
     else {
-      console.log("mindre", obj.time_last_updated, ut);
+      //console.log("mindre", obj.time_last_updated, ut);
     }
   });
 };

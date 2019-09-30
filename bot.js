@@ -3,7 +3,7 @@ const client = new Discord.Client();
 const winston = require('winston');
 const tokenDaVoett = require('./auth.json').token;
 const imgflip = require('./auth.json').imgflip;
-const dbp = require('./auth.json').drunkDB;
+const dbp = require('./auth.json').DB;
 const ownerId = require('./auth.json').ownerId;
 const fetch = require('node-fetch');
 const fs = require('fs');
@@ -13,7 +13,6 @@ const funcHelper = require('./funcHelper.js');
 const config = require('./config');
 client.commands = new Discord.Collection();
 
-let imVegan = false;
 let con;
 let banList = ['11'];
 
@@ -40,8 +39,8 @@ function handleDisconnect() {
     con = mysql.createConnection({
         host: "localhost",
         user: "root",
-        password: dbp,
-        database: "drunkdb"
+        password: dbp.pass,
+        database: dbp.database
     });
 
     con.connect(e => {
@@ -67,15 +66,18 @@ handleDisconnect();
 client.on('ready', () => {
     console.log('Connected!');
     console.log('Logged in as: ' + client.user.tag + ' - (' + client.user.id + ')');
+
+    //fetches ban list from db
     updateBanList(banList);
     client.user.setActivity("dead");
 });
 
 client.on('message', async input => {
     let prefix = "!";
-    let inp = input.content;
 
-    if (!isKittelsen(input) && (inp.toLowerCase().includes("im vegan") || inp.toLowerCase().includes("i'm vegan") || inp.toLowerCase().includes("i'm vegan") || inp.toLocaleLowerCase().includes('i’m vegan'))) await dbHelper.incrementAmount('veg', input.author.id, con);
+    //extracts text content of input object
+    let inp = input.content;
+    countVeg(input, inp);
 
     if (input.author.bot && !input.content.startsWith("!8")) return;
     if (input.channel.type === "dm") {
@@ -110,11 +112,11 @@ client.on('message', async input => {
                     tmpTypeOfQuote = "'";
                     insideQuote = true;
                     continue;
-                }else if(inp.charAt(i) === "\"" && !insideQuote) {
+                } else if (inp.charAt(i) === "\"" && !insideQuote) {
                     tmpTypeOfQuote = "\"";
                     insideQuote = true;
                     continue;
-                }else if(inp.charAt(i) === "“" && !insideQuote){
+                } else if (inp.charAt(i) === "“" && !insideQuote) {
                     tmpTypeOfQuote = "“";
                     insideQuote = true;
                     continue;
@@ -133,8 +135,6 @@ client.on('message', async input => {
             funcHelper.logError(e);
             console.log(e);
         }
-    } else if (imVegan && (inp.startsWith("im") || inp.startsWith("i'm"))) {
-        input.channel.send("im vegan");
     }
 });
 
@@ -149,34 +149,6 @@ client.on('guildMemberAdd', member => {
     }
 });
 
-
-let commandslol = "**MOST USEFUL COMMANDS: **\n" +
-    "**!8**  -  Magic 8ball (if question contains an \"or\", it chooses one of the two)\n" +
-    "**!ud** - urban dictionary (add -i 1 at the end for the second highest rated entry, -i 2 for third and so on)\n" +
-    "**!freedom**  -  Converts imperial to metric, vice versa, and currencies(usd,nok,cad,nzd,eur).\n" +
-    "    !freedom 10lbs\n" +
-    "**!memes**  -  Generates memes. (see bottom of this post)\n" +
-    "**!cheers**  -  simple point system. toast with people by \\@ing them. \n" +
-    "**!pp**  -  !pp @USER (or user id) for big profile pic\n" +
-    "**!ban**  -  @ someone to ban them. (not really) \n" +
-    "**!poll**  -  Makes a poll\n" +
-    "    !poll 'SUBJECT HERE'  (add emojis at the end for custom reactions. thumbs up/down is default.)\n" +
-    "**!cozy**  -  returns something cozy. add stuff with \" !cozy add 'LINK HERE' \"\n" +
-    "\n" +
-    "**TEXT MANIPULATION **\n" +
-    "**!vertical**  -  outputs text in vertical /horizontal\n" +
-    "**!aesthetic**  -  outputs text in ｆｕｌｌｗｉｄｔｈ\n" +
-    "**!runes**  -  outputs text in ᛖᛚᛞᛖᚱ ᚠᚢᚦᚨᚱᚲ\n" +
-    "**!mock**  -  oUtPuTs TeXt LiKe ThIs\n" +
-    "\n" +
-    "**MISC**\n" +
-    "**!future**  -  Returns something about the future\n" +
-    "**!satan**  -  UwU\n" +
-    "**!vcj**  -  bot says 'im vegan' if anyone else says something starting with 'im / i'm'. turn it off with same cmd\n" +
-    "\n" +
-    "**!memes** - check <https://imgur.com/a/ZwLtHJd> for available templates and command example.\n" +
-    "Syntax example: ```!memes exit 'text1' 'text2' 'text3' ```\n" +
-    "^ would produce this image -> <https://imgflip.com/i/2rd1ep>";
 
 function handleCommands(input, inp, cmd, arguments, args, text) {
     switch (cmd) {
@@ -193,7 +165,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             client.commands.get('ud').run(client, input);
             break;
         case 'music':
-            let msc = music[Math.floor(Math.random() * music.length)];
+            let msc = dbHelper.getRandomItem('music', con, input);
             input.channel.send(msc);
             break;
         case 'cheers':
@@ -248,9 +220,9 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             input.channel.send({files: ["./resources/oe.jpg"]});
             break;
         case 'ban':
-            let b = banArray[Math.floor(Math.random() * banArray.length)];
-	    input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1)  + " " + b);
-   	    break;
+            let b = dbHelper.getRandomItem('banlist', con, input);
+            input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1) + " " + b);
+            break;
         case 'shutdown':
             shutdown(input)
                 .catch(e => {
@@ -299,7 +271,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
                 }
             }
             break;
-        case 'imvegan':
+        case 'vcj':
             if ((args[1] === "on" && isOwner(input))) {
                 imVeganFunc(true, input, args);
                 input.react('✅');
@@ -309,11 +281,6 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             } else {
                 input.react('👍');
             }
-            break;
-        case 'vcj':
-            if (imVegan) input.react('❌');
-            else input.react('✅');
-            imVegan = !imVegan;
             break;
         case 'vertical':
             vertical(input, text);
@@ -325,60 +292,63 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
         case 'send':
             if (isOwner(input)) send(input, arguments[0], arguments[1]);
             break;
-
-
         case 'vegan-lb':
-            getVegLeaderBoard(con,input);
+            getVegLeaderBoard(con, input);
             break;
-	case 'be':
         case 'bigemoji':
-            getEmoji(input, text);
+        case 'be':
+            bigEmojiFunc(input, text);
             break;
     }
 }
 
 
-const getEmoji = async(input, text) => {
+const bigEmojiFunc = async (input, text) => {
     var emoji = funcHelper.getEmojis(text);
-    console.log("emoji from getEmojis: " + emoji);
-    //let emojiUrl = input.emojis.get(emoji).url;
 
     if (emoji) {
         await input.channel.send({
             files: [
                 {
-                    //attachment: emojiUrl,
-		    attachment: 'https://cdn.discordapp.com/emojis/'+ emoji,
-		    name: "bigEmoji.png"
+                    attachment: 'https://cdn.discordapp.com/emojis/' + emoji,
+                    name: "bigEmoji.png"
                 }
             ]
         });
-    }
-    else input.channel.send("couldnt find that emoji");
-    //input.channel.send(emojiUrl.url);
+    } else input.channel.send("couldnt find that emoji");
 };
 
 const getVegLeaderBoard = async (con, input) => {
     let d = new Date();
-    let ut = Math.round(d.getTime()/1000 * 10) / 10;
+    let ut = Math.round(d.getTime() / 1000 * 10) / 10;
 
-    console.log("ut: " + ut);
-    await dbHelper.getOneItem('vegLB', 'time', '11', con,"time")
+    await dbHelper.getOneItem('vegLB', 'time', '11', con, "time")
         .then(el => {
-          el_ = el;
-	   //console.log("el.time.toString(): " + el.time.toString());
-	   console.log("el alene: " + parseInt(el_));
-           console.log("ut: " + ut + "\ntime + 900: " + Math.round(el + 900));
-	   if(Math.round(el_ + 900) < ut){
-               dbHelper.updateItem('vegLB', ['time','id'], ut, 11, con);
-               dbHelper.listHighScore('veg', 'im vegan', con, input);
-           }else{
-               input.channel.send("too early my dude. wait: " + (Math.round(((el_ + 900) - ut) / 60) + " minutes"));
-           }
+
+            //leaderboard has a 15 min cooldown.
+            //TODO: make cooldown server specific.
+            if (Math.round(el + 900) < ut) {
+                dbHelper.updateItem('vegLB', ['time', 'id'], ut, 11, con);
+                dbHelper.listHighScore('veg', 'im vegan', con, input);
+            } else {
+                input.channel.send("too early my dude. wait: " + (Math.round(((el + 900) - ut) / 60) + " minutes"));
+            }
         });
 };
 
-//
+//input: input object
+//inp: text (input.content)
+function countVeg(input, inp){
+    if (!isKittelsen(input) && (inp.toLowerCase().includes("im vegan") ||
+                                inp.toLowerCase().includes("i'm vegan") ||
+                                inp.toLowerCase().includes("i'm vegan") ||
+                                inp.toLocaleLowerCase().includes('i’m vegan'))) {
+         dbHelper.incrementAmount('veg', input.author.id, con);
+    }
+
+}
+
+//send message through bot.
 function send(input, channelId, msg) {
     try {
         //console.log("\nchannelId: " + channelId + "\nmsg: " + msg);
@@ -389,6 +359,7 @@ function send(input, channelId, msg) {
     }
 }
 
+//checks if arguments are undefined
 function isUndefined(input, args) {
     if (typeof args[1] === 'undefined') {
         input.channel.send("you need an argument after the command, my dude");
@@ -399,54 +370,64 @@ function isUndefined(input, args) {
 
 }
 
-
+//checks for "cool-person" role
 function isCool(input) {
     return input.member.roles.has('458031022563393536');
 }
 
 let isBanned = async (input, banList) => {
-    let banned = false;
     await banList.forEach((el) => {
-        if (el === input.author.id.toString()) banned = true;
+        if (el === input.author.id.toString()) return true;
     });
-    return banned;
+    return false;
 };
 
 //TODO: get vcj modID
-function isvcjMod(input){
+function isvcjMod(input) {
     //if(input.member.roles.has(''));
 }
 
+//checks for mod role
 function isMod(input) {
     return input.member.roles.has('458030682988609538');
 }
 
+//checks for "new-person" role
 function isNew(input) {
     return input.member.roles.has('458334852874371093');
 }
 
+//checks if an id is the bot id
 function isKittelsen(input) {
     return input.author.id === '418100748451315713';
 }
 
+//checks if id is of the bot owner
 function isOwner(input) {
     return input.author.id === ownerId
 }
 
+//updates banlist
 const updateBanList = async (banList) => {
     banList = await dbHelper.getAllUserIdsInTable('botban', con);
     setBanList(banList);
     return banList;
 };
 
+//get ban list
 function getBanList() {
     return banList;
 }
 
+//set ban list
 function setBanList(_banList) {
     banList = _banList;
 }
 
+
+//returns text lIkE tHiS
+//input: input object
+//text: string
 function mocking(input, text) {
     let tmpString = "";
     text = text.toLowerCase();
@@ -468,7 +449,7 @@ function imVeganFunc(on, input, args) {
         let i = setTimeout(() => {
                 client.channels.find("name", "talk-things").send("im vegan.");
                 imVeganFunc(isOn, input);
-            }, r
+                }, r
         );
     }
 }
@@ -484,24 +465,24 @@ const shutdown = async (input) => {
     }
 };
 
+//makes bot leave server. server id for argument to make it leave an external server
 const leave = async (input, arguments, args) => {
     if (isOwner(input)) {
         await funcHelper.logInfo(input);
 
         if (!arguments[0] && !args[0]) {
-          input.channel.send("leaving. byyyyyyyyyyyye");
-          input.guild.leave();
-        }
-        else {
+            input.channel.send("leaving. byyyyyyyyyyyye");
+            input.guild.leave();
+        } else {
             if (client.guilds.find(col => col.id === arguments[0].toString())) {
-              client.guilds.find(col => col.id === arguments[0]).leave();
-              input.channel.send("done.");
-            }
-            else input.channel.send("couldnt find server to leave");
+                client.guilds.find(col => col.id === arguments[0]).leave();
+                input.channel.send("done.");
+            } else input.channel.send("couldnt find server to leave");
         }
     } else input.channel.send("no");
 };
 
+//reboots bot
 const reboot = async (input) => {
     if (isOwner(input)) {
         console.log("Reboot signal recieved.");
@@ -524,9 +505,8 @@ const vertical = async (input, text) => {
     input.channel.send(tmpString === "" ? "empty string" : tmpString);
 };
 
-
+//returns big avatar. if no arguments, returns avatar of command sender
 const pp = async (input, args) => {
-
     let m = await input.channel.send("fetching avatar ...");
 
     //Check for @'ed user in input
@@ -561,7 +541,8 @@ const pp = async (input, args) => {
     m.delete();
 };
 
-
+//returns text in fullwidth
+//input: string
 function fullW(input) {
     let tmpString = "";
 
@@ -575,7 +556,8 @@ function fullW(input) {
     return tmpString;
 }
 
-//eldF encrypt
+//returns text in elder futhark
+//input: string
 function eldF(input) {
     let tmpString = "";
     let tmpValue;
@@ -610,25 +592,36 @@ function eldF(input) {
     return tmpString;
 }
 
+let commandslol = "**MOST USEFUL COMMANDS: **\n" +
+    "**!8**  -  Magic 8ball (if question contains an \"or\", it chooses one of the two)\n" +
+    "**!ud** - urban dictionary (add -i 1 at the end for the second highest rated entry, -i 2 for third and so on)\n" +
+    "**!freedom**  -  Converts imperial to metric, vice versa, and currencies(usd,nok,cad,nzd,eur).\n" +
+    "    !freedom 10lbs\n" +
+    "**!memes**  -  Generates memes. (see bottom of this post)\n" +
+    "**!cheers**  -  simple point system. toast with people by \\@ing them. \n" +
+    "**!pp**  -  !pp @USER (or user id) for big profile pic\n" +
+    "**!be**  -  !be (emoji) for big emoji" +
+    "**!ban**  -  @ someone to ban them. (not really) \n" +
+    "**!poll**  -  Makes a poll\n" +
+    "    !poll 'SUBJECT HERE'  (add emojis at the end for custom reactions. thumbs up/down is default.)\n" +
+    "**!cozy**  -  returns something cozy. add stuff with \" !cozy add 'LINK HERE' \"\n" +
+    "\n" +
+    "**TEXT MANIPULATION **\n" +
+    "**!vertical**  -  outputs text in vertical /horizontal\n" +
+    "**!aesthetic**  -  outputs text in ｆｕｌｌｗｉｄｔｈ\n" +
+    "**!runes**  -  outputs text in ᛖᛚᛞᛖᚱ ᚠᚢᚦᚨᚱᚲ\n" +
+    "**!mock**  -  oUtPuTs TeXt LiKe ThIs\n" +
+    "\n" +
+    "**MISC**\n" +
+    "**!future**  -  Returns something about the future\n" +
+    "**!satan**  -  UwU\n" +
+    "\n" +
+    "**!memes** - check <https://imgur.com/a/ZwLtHJd> for available templates and command example.\n" +
+    "Syntax example: ```!memes exit 'text1' 'text2' 'text3' ```\n" +
+    "^ would produce this image -> <https://imgflip.com/i/2rd1ep>";
+
+
 
 client.login(tokenDaVoett);
 
-//Music
-let music = [
-    "There is no music but our one true Queen, Jessica Kinney: https://www.youtube.com/watch?v=F9v8uCRucd0",
-    "Float away in the endless ocean of icelandic fart smelling water: https://www.youtube.com/watch?v=Gf1h2PMPCAo",
-    "Drunk jazzy tunes are the best kind of tunes: https://www.youtube.com/watch?v=0BRxDp2u02U",
-    "Japanesey mathy rocky https://www.youtube.com/watch?v=Tc1yD9H7Rb8",
-    "Shameless self plug. https://floatingnomore.bandcamp.com/",
-    "ｍｅｌａｎｃｈｏｌｙ ｉｓ ｅｔｅｒｎａｌ: https://www.youtube.com/watch?v=co5gy_2uOEY",
-    "ᛞᚢ ᚲᚨᚾ ᛁᚲᚲᛖ ᛚᛖᛊᛖ ᛞᛖᛏᛏᛖ ᚢᚨᚾᛊᛖᛏᛏ, ᛗᛖᚾ ᛖᚾᛊᛚᚨᚹᛖᛞ ᛖᚱ ᚲᚢᛚᛏ: https://youtu.be/Rcssy33l04Y?t=31",
-    "brutus for fucking ever https://www.youtube.com/watch?v=1Z-0j4mRbB0",
-    "all hail the mighty emperor https://www.youtube.com/watch?v=4FYwz2-_G_4"
-];
 
-let banArray = ["HAS BEEN BANNED FOR LIFE",
-    "HAS BEEN DEMOLISHED INTO THE PAVEMENT BY BOBBY B, AND ALSO BANNED", "hAs BeEn BaNnEd LolLll",
-    "was eradicated out of our bleak fucking existance", "got fucking banned, yay",
-    "said AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆHHHHHHHHHHHHHHHHH as they \"fell\" off a cliff",
-    "was forced out the moon door by our lord, Sweetrobin", " was revealed as an omniscum, and is no longer welcome here.", "is no longer with us :(", ", earthling ed is coming to shove broccoli down your throat. good luck.",
-    "smells of cheese, and have to leave", "died of everything deficiency"];

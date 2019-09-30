@@ -10,7 +10,7 @@ let eightBall = ["Without a doubt.", "Yes.", "Fuck yes.", "Most likely.", "Prett
 
 //let eightBall = ["test", ""];
 
-let double = false;
+let doubleLoop = false;
 
 module.exports.run = async (client, input, args, con) => {
 
@@ -19,18 +19,19 @@ module.exports.run = async (client, input, args, con) => {
   if (q.includes(' or ')) orFunc(input, q);
   else {
 
+    let ra = Math.floor(Math.random());
+    if(ra > 0.5)
     let r = Math.floor(Math.random() * eightBall.length);
 
     //This is for the last element in the array. It's a loop that asks the bot again.
     if (r === eightBall.length - 1) {
       await input.channel.send("hmm, i dont know about that, but i know this one dude who might know. just a sec");
-
       await input.channel.send("!8 **hey, drunkBot. do you know: ** " + q);
 
-      //It sets the var double to true, so that it can know if it happens two times in a row.
-      if (!double) double = true;
+      //It sets the var doubleLoop to true, so that it can know if it happens two times in a row.
+      if (!doubleLoop) doubleLoop = true;
 
-      //If double is true, it means it has looped back once, and it has hit the last element again.
+      //If doubleLoop is true, it means it has looped back once, and it has hit the last element again.
       //This fetches a variable in the database to display how many times it has happened, adds 1, and pings the owner.
       else {
         await con.query('SELECT num FROM eight WHERE id = 11', (e, rows) => {
@@ -42,13 +43,13 @@ module.exports.run = async (client, input, args, con) => {
           let chance = Math.pow(1 / eightBall.length, 2);
           input.channel.send("<@!" + ownerId + ">, it happened. there's a " + chance + "% chance of this happening. it has happened: " + tmp + " times before.");
         });
-        double = false;
+        doubleLoop = false;
       }
     } else {
       let ans = eightBall[r];
       //input.channel.send("```" + ans + "```");
       input.channel.send(ans);
-      double = false;
+      doubleLoop = false;
     }
   }
 };

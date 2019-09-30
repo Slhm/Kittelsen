@@ -68,8 +68,12 @@ auth.json
 
 package-lock.json
 
+#local file for currency convertion
 currency.json
 
+#run script
 run_bot.sh
 
 .logs/*
+
+*.backup
