@@ -165,8 +165,8 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             client.commands.get('ud').run(client, input);
             break;
         case 'music':
-            let msc = dbHelper.getRandomItem('music', con, input);
-            input.channel.send(msc);
+            dbHelper.getRandomItem('music', con, input, 'text')
+		    .then(m => {input.channel.send(m)});
             break;
         case 'cheers':
             client.commands.get('cheers').run(client, input, args, con);

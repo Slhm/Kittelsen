@@ -21,8 +21,13 @@ module.exports.run = async (client, input, args, con, arguments) => {
   }else if(isOwner(input) && (arg === "rm" || arg === "delete")){
     dbHelper.deleteItem('cozy','id = ' + delIndex, con, input);
 
-  } else {
-    dbHelper.getRandomItem('cozy', con, input);
+  }else {
+    let m = "coziness: ";
+    await dbHelper.getRandomItem('cozy', con, input, "link")
+        .then(link => {
+            //m += link.toString();
+	    input.channel.send("coziness: " + link);
+        });
   }
 };
 
