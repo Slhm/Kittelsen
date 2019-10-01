@@ -23,18 +23,15 @@ auth.json is nessecary, and has the format:
 ```json
 
 {
-  "token":"",   
+  "token":"BOT_TOKEN",   
   "imgflip":{
-    "user":"",  
-    "pass":""  
+    "user":"IMGFLIP_USERNAME",
+    "pass":"IMGFLIP_PASSWORD"
   },
   "DB":{
-    "pass":"",
-    "database":""
+    "pass":"DATABASE_PASSWORD",
+    "database":"DATABASE_NAME"
     },
-  "ownerId": ""
+  "ownerId": "BOT_OWNER_ID"
 }
 ```
-token: discordbot token.
-
-imgflip(for meme generator): username/password.
