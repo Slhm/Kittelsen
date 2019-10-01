@@ -165,8 +165,8 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             client.commands.get('ud').run(client, input);
             break;
         case 'music':
-            let msc = dbHelper.getRandomItem('music', con, input);
-            input.channel.send(msc);
+            dbHelper.getRandomItem('music', con, input, 'text')
+		    .then(m => {input.channel.send(m)});
             break;
         case 'cheers':
             client.commands.get('cheers').run(client, input, args, con);
@@ -220,8 +220,8 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             input.channel.send({files: ["./resources/oe.jpg"]});
             break;
         case 'ban':
-            let b = dbHelper.getRandomItem('banlist', con, input);
-            input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1) + " " + b);
+            dbHelper.getRandomItem('banlist', con, input,'text')
+                .then(b => {input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1) + " " + b)});
             break;
         case 'shutdown':
             shutdown(input)

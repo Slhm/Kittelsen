@@ -91,15 +91,19 @@ module.exports.listHighScore = async (tableName, typeOfAmount, con, input) => {
   })
 };
 
-module.exports.getRandomItem = async (tableName, con, input) => {
-  getCount(tableName, con)
-    .then(count => {
-      let r = (Math.floor(Math.random() * count) + 1);
-      getOneItemFromId(tableName, r, con)
-        .then(msg => {
-          input.channel.send(msg.link)
+module.exports.getRandomItem = async (tableName, con, input, columnName) => {
+    let m = 0;
+    let r = await getCount(tableName, con)
+        .then(count => {
+            return (Math.floor(Math.random() * count) + 1);
         });
-    });
+    await getOneItemFromId(tableName, r, con)
+        .then(msg => {
+            if (!msg) return false;
+            else m = msg[columnName];
+            return m;
+        });
+    return m;
 };
 
 module.exports.getUsernameFromId = async (userId) => {
