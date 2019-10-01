@@ -220,8 +220,8 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             input.channel.send({files: ["./resources/oe.jpg"]});
             break;
         case 'ban':
-            let b = dbHelper.getRandomItem('banlist', con, input);
-            input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1) + " " + b);
+            dbHelper.getRandomItem('banlist', con, input,'text')
+                .then(b => {input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1) + " " + b)});
             break;
         case 'shutdown':
             shutdown(input)
