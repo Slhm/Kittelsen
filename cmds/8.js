@@ -20,7 +20,7 @@ module.exports.run = async (client, input, args, con) => {
   else {
 
     //let ra = Math.floor(Math.random());
-    //if(ra > 0.5)
+    //if(ra > 0.5);
     let r = Math.floor(Math.random() * eightBall.length);
 
     //This is for the last element in the array. It's a loop that asks the bot again.

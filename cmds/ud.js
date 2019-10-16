@@ -33,6 +33,6 @@ const fetchUd = async (inp, input, index) => {
       let url = res.list[index].definition;
       //console.log("url: " + url);
       if (url) input.channel.send("__**" + inp + "**__:\n" + url);
-      else input.channel.send("something went wrong :( \n" + "ping noekk#8059 to let him know he fucked up");
+      else input.channel.send("something went wrong :( \n" + "ping comradeSeitan#8059 to let him know he fucked up");
     }).catch(error => console.error(error))
 };

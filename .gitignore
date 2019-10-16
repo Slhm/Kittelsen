@@ -77,3 +77,5 @@ run_bot.sh
 .logs/*
 
 *.backup
+*.back
+CtD

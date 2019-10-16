@@ -96,7 +96,7 @@ client.on('message', async input => {
 
 
     if (inp.startsWith(prefix)) {
-        funcHelper.logInfo(input);
+        //funcHelper.logInfo(input);
         var args = inp.substr(prefix.length).split(' ');
         var cmd = args[0].toLowerCase();
         let text = inp.substr(cmd.length + 2);
@@ -157,71 +157,88 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             if (input.guild.id === '458029332141572120') {
                 input.channel.send('Available commands are in: ' + input.guild.channels.get('534443945942581249').toString());
             } else input.channel.send(commandslol);
+            funcHelper.logInfo(input);
             break;
         case 'satan':
             input.channel.send("Satan wa totemo kawaīdesu ^w^", {files: ["./resources/satanKawaii.gif"]});
             break;
         case 'ud':
             client.commands.get('ud').run(client, input);
+            funcHelper.logInfo(input);
             break;
         case 'music':
-            dbHelper.getRandomItem('music', con, input, 'text')
-		    .then(m => {input.channel.send(m)});
+            dbHelper.getRandomItem('music', con, input)
+                .then(m => {input.channel.send(m);});
+            funcHelper.logInfo(input);
             break;
         case 'cheers':
             client.commands.get('cheers').run(client, input, args, con);
+            funcHelper.logInfo(input);
             break;
         case 'cozy':
         case 'cosy':
             client.commands.get('cozy').run(client, input, args, con, arguments);
+            funcHelper.logInfo(input);
             break;
         case 'ama':
             client.commands.get('ama').run(client, input, args, con, arguments);
+            funcHelper.logInfo(input);
             break;
         case 'future':
             input.channel.send('The future is vegan, my dude');
+            funcHelper.logInfo(input);
             break;
         case 'memes':
             client.commands.get('memes').run(client, input, args, arguments, con);
+            funcHelper.logInfo(input);
             break;
         case 'pp':
         case 'pfp':
             pp(input, args);
+            funcHelper.logInfo(input);
             break;
         case 'fullwidth':
         case 'aesthetic':
             typeof args[1] === 'undefined' ? input.channel.send("you need an argument after the command, my dude") :
                 input.channel.send(fullW(text));
+            funcHelper.logInfo(input);
             break;
         case 'futhark':
         case 'runes':
             typeof args[1] === 'undefined' ? input.channel.send("you need an argument after the command, my dude") :
                 input.channel.send(eldF(text));
+            funcHelper.logInfo(input);
             break;
         case 'freedom':
         case 'convert':
         case 'c':
             typeof args[1] === 'undefined' ? input.channel.send("you need a number and unit type after the command, my dude") :
                 client.commands.get('freedom').run(client, input, args);
+            funcHelper.logInfo(input);
             break;
         case 'poll':
             typeof args[1] === 'undefined' ? input.channel.send("you need a title for the poll, my dude. check #info or ping comradeSeitan") :
                 client.commands.get('poll').run(client, input, args, arguments);
+            funcHelper.logInfo(input);
             break;
         case '8':
             client.commands.get('8').run(client, input, args, con);
+            funcHelper.logInfo(input);
             break;
         case 'ping':
             let d = new Date();
             let ping = input.createdTimestamp - d.getTime();
             input.channel.send("Ping is: " + ping + "ms");
+            funcHelper.logInfo(input);
             break;
         case 'ø':
             input.channel.send({files: ["./resources/oe.jpg"]});
+            funcHelper.logInfo(input);
             break;
         case 'ban':
-            dbHelper.getRandomItem('banlist', con, input,'text')
-                .then(b => {input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1) + " " + b)});
+            await dbHelper.getRandomItem('banlist', con, input, 'text');
+            input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1) + " " + b);
+            funcHelper.logInfo(input);
             break;
         case 'shutdown':
             shutdown(input)
@@ -229,6 +246,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
                     console.log(e);
                     funcHelper.logError('shutdown error: ' + e);
                 });
+            funcHelper.logInfo(input);
             break;
         case 'reboot':
             reboot(input)
@@ -236,15 +254,18 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
                     console.error(e);
                     funcHelper.logError('reboot error: ' + e);
                 });
+            funcHelper.logInfo(input);
             break;
         case 'leave':
             if (isOwner(input) && arguments[0]) leave(input, arguments, args);
             else input.channel.send("no");
+            funcHelper.logInfo(input);
             break;
         case 'sa':
             if (isOwner(input) && args[1] === "-p") client.user.setActivity(arguments[0], {type: "PLAYING"});
             else if (isOwner(input) && args[1] === "-w") client.user.setActivity(arguments[0], {type: "WATCHING"});
             else if (isOwner(input) && args[1] === "-l") client.user.setActivity(arguments[0], {type: "LISTENING"});
+            funcHelper.logInfo(input);
             break;
         case 'botban':
             if (isOwner(input)) {
@@ -270,6 +291,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
                     }
                 }
             }
+            funcHelper.logInfo(input);
             break;
         case 'vcj':
             if ((args[1] === "on" && isOwner(input))) {
@@ -281,23 +303,29 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             } else {
                 input.react('👍');
             }
+            funcHelper.logInfo(input);
             break;
         case 'vertical':
             vertical(input, text);
+            funcHelper.logInfo(input);
             break;
         case 'mock':
         case 'mocking':
             mocking(input, text);
+            funcHelper.logInfo(input);
             break;
         case 'send':
             if (isOwner(input)) send(input, arguments[0], arguments[1]);
+            funcHelper.logInfo(input);
             break;
         case 'vegan-lb':
             getVegLeaderBoard(con, input);
+            funcHelper.logInfo(input);
             break;
         case 'bigemoji':
         case 'be':
             bigEmojiFunc(input, text);
+            funcHelper.logInfo(input);
             break;
     }
 }
@@ -329,7 +357,7 @@ const getVegLeaderBoard = async (con, input) => {
             //TODO: make cooldown server specific.
             if (Math.round(el + 900) < ut) {
                 dbHelper.updateItem('vegLB', ['time', 'id'], ut, 11, con);
-                dbHelper.listHighScore('veg', 'im vegan', con, input);
+                dbHelper.listHighScore('veg', 'vegoon', con, input);
             } else {
                 input.channel.send("too early my dude. wait: " + (Math.round(((el + 900) - ut) / 60) + " minutes"));
             }
