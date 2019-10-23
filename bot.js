@@ -546,14 +546,18 @@ const pp = async (input, args) => {
 
     //If user id in input
     if (args[1]) {
-        await input.channel.send({
-            files: [
-                {
-                    attachment: user.displayAvatarURL,
-                    name: "avatar.png"
-                }
-            ]
-        });
+        try {
+            await input.channel.send({
+                files: [
+                    {
+                        attachment: user.displayAvatarURL,
+                        name: "avatar.png"
+                    }
+                ]
+            });
+        }catch(e){
+            input.channel.send("Couldn't find that user. @ them or use user_id");
+        }
     }
     // If no arguments. Returns user avatar of user who did command.
     else {
