@@ -236,7 +236,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             funcHelper.logInfo(input);
             break;
         case 'ban':
-            await dbHelper.getRandomItem('banlist', con, input, 'text');
+            dbHelper.getRandomItem('banlist', con, input, 'text');
             input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1) + " " + b);
             funcHelper.logInfo(input);
             break;
