@@ -1,4 +1,5 @@
 const winston = require('winston');
+const ownerId = require('./auth.json').ownerId;
 
 module.exports.logInfo = async (input) => {
   logger.log({
@@ -49,17 +50,54 @@ module.exports.containsQuotes = (str) => {
 };
 
 //Regex for removing emojis in a text
-module.exports.removeEmojis = (input) => {
-  return input.replace(/<(.*?)>/gm, '');
+module.exports.removeEmojis = (text) => {
+  return text.replace(/<(.*?)>/gm, '');
 };
 
-
-module.exports.getEmojis = (input) => {
-  //let tmp = input.match(/<(.*?)>/).toString();
-  console.log(input.match(/[0-9]+/).toString());
-
-  return input.match(/[0-9]+/).toString();
+module.exports.getEmojiUrl = (text, isGlobal) => {
+    return (isGlobalEmoji(text) ? "https://cdn.discordapp.com/assets/" + text : "https://cdn.discordapp.com/emojis/" + text);
 };
+
+module.exports.getEmojis = (text, isGlobal) => {
+    //let tmp = input.match(/<(.*?)>/).toString();
+    //console.log(input.match(/[0-9]+/).toString());
+
+  return text.match(/[0-9]+/).toString();
+};
+
+module.exports.isGlobalEmoji = (text) => {
+    return text.includes("assets");
+};
+
+module.exports.getFileExtention = (text) => {
+    return text.match(/[^.]+$/gm).toString;
+};
+
+//TODO: get vcj modID
+module.exports.isvcjMod = (input) => {
+  //if(input.member.roles.has(''));
+};
+
+//checks for mod role
+module.exports.isMod = (input) => {
+  return input.member.roles.has('458030682988609538');
+};
+
+//checks for "new-person" role
+module.exports.isNew = (input) => {
+  return input.member.roles.has('458334852874371093');
+};
+
+//checks if an id is the bot id
+module.exports.isKittelsen = (input) => {
+  return input.author.id === '418100748451315713';
+};
+
+//checks if id is of the bot owner
+module.exports.isOwner = (input) => {
+  return input.author.id === ownerId
+};
+
 
 /*
 

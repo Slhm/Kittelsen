@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const Discord = require('discord.js');
 module.exports.run = async (client, input) => {
 
   let m = await input.channel.send("fetching definition... ");
@@ -32,7 +33,17 @@ const fetchUd = async (inp, input, index) => {
       let suc = JSON.stringify(res.success);
       let url = res.list[index].definition;
       //console.log("url: " + url);
-      if (url) input.channel.send("__**" + inp + "**__:\n" + url);
-      else input.channel.send("something went wrong :( \n" + "ping comradeSeitan#8059 to let him know he fucked up");
+      if (url) {
+          const emb = new Discord.RichEmbed()
+              .setTitle("urban dictionary defintion of: " + inp)
+              .setColor("#0e2158")
+              .setDescription(url)
+              .setFooter("Index: " + index);
+          input.channel.send(emb);
+          //input.channel.send("__**" + inp + "**__:\n" + url);
+      }
+      else {
+          input.channel.send("something went wrong :( \n" + "ping comradeSeitan#8059 to let him know he fucked up");
+      }
     }).catch(error => console.error(error))
 };

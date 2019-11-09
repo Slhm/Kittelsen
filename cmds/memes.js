@@ -70,10 +70,18 @@ const fetchMeme = async (input, type, _text0, _text1, _text2) => {
       let suc = JSON.stringify(res.success);
       let url = res.data.url;
       if (suc === 'true') {
-        input.channel.send(url);
+        //input.channel.send(url);
+        input.channel.send({
+          files: [
+            {
+              attachment: url,
+              name: "meme.png"
+            }
+          ]
+        });
         msg.delete();
       }
-      else input.channel.send("something went wrong :( \n" + "ping noekk#8059 to let him know he fucked up");
+      else input.channel.send("something went wrong :(");
     }).catch(error => console.error(error))
 };
 

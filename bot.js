@@ -236,9 +236,8 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             funcHelper.logInfo(input);
             break;
         case 'ban':
-            dbHelper.getRandomItem('banlist', con, input, 'text');
-            input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1) + " " + b);
-            funcHelper.logInfo(input);
+            ban(input, inp, arguments, args);
+	        funcHelper.logInfo(input);
             break;
         case 'shutdown':
             shutdown(input)
@@ -268,6 +267,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             funcHelper.logInfo(input);
             break;
         case 'botban':
+        case 'realban':
             if (isOwner(input)) {
                 if (input.mentions.users.first()) {
                     if (args[1] === "rm") {
@@ -319,7 +319,8 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             funcHelper.logInfo(input);
             break;
         case 'vegan-lb':
-            getVegLeaderBoard(con, input);
+            if(isOwner(input)) getVegLeaderBoard(con, input);
+            else input.channel.send("no");
             funcHelper.logInfo(input);
             break;
         case 'bigemoji':
@@ -330,16 +331,32 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
     }
 }
 
+const ban = async(input, inp, arguments, args) => {
 
+    if(isOwner(input) && args[1] === "-i") await dbHelper.insertItems("banlist", ["text"], [arguments[0]], con, input);
+    else if(isOwner(input) && args[1] === "-l") await dbHelper.listLinksInTable("banlist", ["text"], con, input);
+    else if(isOwner(input) && args[1] === "rm") await dbHelper.deleteItem("banlist", 'id = ' + args[2], con, input);
+    else {
+        dbHelper.getRandomItem('banlist', con, input, 'text')
+            .then(b => {
+                input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1) + " " + b);
+            });
+    }
+    return 0;
+};
+
+//todo: figure out global emojis
 const bigEmojiFunc = async (input, text) => {
-    var emoji = funcHelper.getEmojis(text);
+    //let isGlobal = funcHelper.isGlobalEmoji(text);
+    let emoji = funcHelper.getEmojis(text, false);
+
 
     if (emoji) {
         await input.channel.send({
             files: [
                 {
-                    attachment: 'https://cdn.discordapp.com/emojis/' + emoji,
-                    name: "bigEmoji.png"
+                    attachment: funcHelper.getEmojiUrl(text, false),
+                    name: "bigEmoji.gif"
                 }
             ]
         });

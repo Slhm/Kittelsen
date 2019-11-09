@@ -30,7 +30,7 @@ module.exports.run = async (client, input, args, arguments) => {
     else await msg.react(emojiList[i]);
   }
 
-  if(emojiList.length === 0) {
+  if(!emojiList.length) {
     await msg.react("👍");
     await msg.react("👎");
   }
