@@ -1,6 +1,8 @@
 # Kittelsen
 Discord bot based in node.js
 
+Still WIP to generelize it enough to be used as a template.
+
 ### Most useful commands/functionality:
 
 * !8 - magic 8 ball. if message contains one or more "or", it will choose between them.
