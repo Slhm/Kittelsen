@@ -35,10 +35,10 @@ const fetchUd = async (inp, input, index) => {
       //console.log("url: " + url);
       if (url) {
           const emb = new Discord.RichEmbed()
-              .setTitle("urban dictionary defintion of: " + inp)
+              .setTitle("urban dictionary: " + inp)
               .setColor("#0e2158")
               .setDescription(url)
-              .setFooter("Index: " + index);
+              .setFooter("Index: " + index + ". \nAdd -i N at the end for Nth index.");
           input.channel.send(emb);
           //input.channel.send("__**" + inp + "**__:\n" + url);
       }

@@ -15,14 +15,16 @@ let doubleLoop = false;
 
 module.exports.run = async (client, input, args, con) => {
 
-    await args.shift();
-    let q = await args.join(" ");
+    let ar = args;
+    await ar.shift();
+    let q = await ar.join(" ");
     if (q.includes(' or ')) orFunc(input, q);
     else {
-
-        if (funcHelper.isOwner(input) && args[1] === "-i") await dbHelper.insertItems("eightball", ["type", "answer"], [arguments[0], arguments[1]], con, input);
-        else if (funcHelper.isOwner(input) && args[1] === "-l") await dbHelper.listLinksInTable("eightball", ["type", "answer"], con, input);
-        else if (funcHelper.isOwner(input) && args[1] === "rm") await dbHelper.deleteItem("eightball", 'id = ' + args[2], con, input);
+	let flag = args[0];
+	//console.log("args[1] = ", args[0]);
+        if (funcHelper.isOwner(input) && (flag === "-i" || flag === "--insert")) dbHelper.insertItems("eightball", ["type", "answer"], ["'" + args[1] + "'", "'" + arguments[1] + "'"], con, input);
+        else if (funcHelper.isOwner(input) && (flag === "-l" || flag === "--list")) dbHelper.listLinksInTable("eightball", ["type", "answer"], con, input);
+        else if (funcHelper.isOwner(input) && (flag === "rm" || flag === "--remove")) await dbHelper.deleteItem("eightball", 'id = ' + args[1], con, input);
         else {
 
             //let ra = Math.floor(Math.random());

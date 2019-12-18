@@ -12,10 +12,10 @@ module.exports.run = async (client, input, args, con, arguments) => {
   }
 
 
-  if (arg === "-i" || arg === "insert" || arg === "add") {
+  if (isOwner(input) && (arg === "-i" || arg === "insert" || arg === "add")) {
     dbHelper.insertItems('cozy',['link','addedBy'],["\'" + queryLink + "\'", "\'" + input.author.username + "\'"],con,input);
 
-  }else if(arg === "-l" || arg === "list"){
+  }else if(isOwner(input) && (arg === "-l" || arg === "list")){
     dbHelper.listLinksInTable('cozy', ['link', 'addedBy'], con, input);
 
   }else if(isOwner(input) && (arg === "rm" || arg === "delete")){

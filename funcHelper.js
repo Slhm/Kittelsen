@@ -55,7 +55,10 @@ module.exports.removeEmojis = (text) => {
 };
 
 module.exports.getEmojiUrl = (text, isGlobal) => {
-    return (isGlobalEmoji(text) ? "https://cdn.discordapp.com/assets/" + text : "https://cdn.discordapp.com/emojis/" + text);
+	console.log("text: " + text);
+	return (isGlobal ? "https://cdn.discordapp.com/assets/" + text : "https://cdn.discordapp.com/emojis/" + text);
+
+    //return (isGlobalEmoji(text) ? "https://cdn.discordapp.com/assets/" + text : "https://cdn.discordapp.com/emojis/" + text);
 };
 
 module.exports.getEmojis = (text, isGlobal) => {

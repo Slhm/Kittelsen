@@ -79,10 +79,11 @@ client.on('message', async input => {
     let inp = input.content;
     countVeg(input, inp);
 
-    if (input.author.bot && !input.content.startsWith("!8")) return;
+    
+    if (input.author.bot && !input.content.startsWith("!8")) return false;
     if (input.channel.type === "dm") {
         funcHelper.logWarning(input);
-        return;
+        return false;
     }
     if (input.guild.id === '458029332141572120') {
         if (!isMod(input) && !isCool(input) && !isKittelsen(input) && !isNew(input)) {
@@ -90,13 +91,13 @@ client.on('message', async input => {
         }
     }
     if (await isBanned(input, getBanList())) {
-        funcHelper.logWarning(input);
-        return;
+        //funcHelper.logWarning(input);
+        return false;
     }
-
-
+    
+    //console.log("isNotBanned: ", isNotBanned);
     if (inp.startsWith(prefix)) {
-        //funcHelper.logInfo(input);
+	//funcHelper.logInfo(input);
         var args = inp.substr(prefix.length).split(' ');
         var cmd = args[0].toLowerCase();
         let text = inp.substr(cmd.length + 2);
@@ -120,8 +121,8 @@ client.on('message', async input => {
                     tmpTypeOfQuote = "“";
                     insideQuote = true;
                     continue;
-                } else if (inp.charAt(i) === tmpTypeOfQuote && insideQuote) {
-                    insideQuote = false;
+                } else if (insideQuote && (inp.charAt(i) === tmpTypeOfQuote || (tmpTypeOfQuote === "“" && inp.charAt(i) === "”"))) {
+		    insideQuote = false;
                     tmpArray.push(tmpString);
                     tmpString = "";
                 }
@@ -315,7 +316,9 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             funcHelper.logInfo(input);
             break;
         case 'send':
-            if (isOwner(input)) send(input, arguments[0], arguments[1]);
+            
+            //send(input, arguments[0], arguments[1]);
+	    if (isOwner(input)) send(input, arguments[0], arguments[1]);
             funcHelper.logInfo(input);
             break;
         case 'vegan-lb':
@@ -328,12 +331,25 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             bigEmojiFunc(input, text);
             funcHelper.logInfo(input);
             break;
+	case 'megaping':
+	    pingAll(input, args[1]);
+	    break;
+    	case 'def':
+	    input.channel.send(defEmb);
+	    break;
     }
 }
 
+const defEmb = new Discord.RichEmbed()
+    .setTitle("'Veganism' definition")
+    .setFooter("by The Vegan Society")
+    .setDescription("\"Veganism is a philosophy and way of living which seeks to exclude—as far as is possible and practicable—all forms of exploitation of, and cruelty to, animals for food, clothing or any other purpose; and by extension, promotes the development and use of animal-free alternatives for the benefit of animals, humans and the environment. In dietary terms it denotes the practice of dispensing with all products derived wholly or partly from animals.\"")
+    .setColor("#66ff99");
+
+
 const ban = async(input, inp, arguments, args) => {
 
-    if(isOwner(input) && args[1] === "-i") await dbHelper.insertItems("banlist", ["text"], [arguments[0]], con, input);
+    if(isOwner(input) && args[1] === "-i") await dbHelper.insertItems("banlist", ["text"], ["\"" + arguments[0] + "\""], con, input);
     else if(isOwner(input) && args[1] === "-l") await dbHelper.listLinksInTable("banlist", ["text"], con, input);
     else if(isOwner(input) && args[1] === "rm") await dbHelper.deleteItem("banlist", 'id = ' + args[2], con, input);
     else {
@@ -345,6 +361,16 @@ const ban = async(input, inp, arguments, args) => {
     return 0;
 };
 
+let vcjChannels = ["616276370732875811", "586175313151787009", "586171104591216649", "586175275881070619", "586733352330067979", "588027872308887564", "586690366103748645", "630199061974220851", "600452315694104594", "644992800655671301", "644992842841980948", "645002167505387531", "646815230328045569"];
+function pingAll(input, text){
+	
+	if(input.guild.id === "586171104591216643" && isOwner(input)){
+		for(let i = 0; i <=vcjChannels.length; i++){
+			send(input, vcjChannels[i],text);
+		}
+	}
+}
+
 //todo: figure out global emojis
 const bigEmojiFunc = async (input, text) => {
     //let isGlobal = funcHelper.isGlobalEmoji(text);
@@ -355,7 +381,7 @@ const bigEmojiFunc = async (input, text) => {
         await input.channel.send({
             files: [
                 {
-                    attachment: funcHelper.getEmojiUrl(text, false),
+                    attachment: funcHelper.getEmojiUrl(emoji, false),
                     name: "bigEmoji.gif"
                 }
             ]
@@ -421,10 +447,15 @@ function isCool(input) {
 }
 
 let isBanned = async (input, banList) => {
+    let banned = false;
     await banList.forEach((el) => {
-        if (el === input.author.id.toString()) return true;
+        
+        //console.log("userId: ", input.author.id, "\nelement in db: ", el, "\nAre they equal: ", input.author.id === el);
+	if (el === input.author.id.toString()) {
+		banned = true;
+	}
     });
-    return false;
+    return banned;
 };
 
 //TODO: get vcj modID
@@ -455,6 +486,7 @@ function isOwner(input) {
 //updates banlist
 const updateBanList = async (banList) => {
     banList = await dbHelper.getAllUserIdsInTable('botban', con);
+    console.log("banned users are: " + banList);
     setBanList(banList);
     return banList;
 };
@@ -543,6 +575,11 @@ const reboot = async (input) => {
 const vertical = async (input, text) => {
     console.log("text: " + text);
     text = funcHelper.removeEmojis(text);
+
+    if(text.length >= 16) {
+	    input.channel.send("String too long :(");
+	    return;
+    }
     let tmpString = text ? text : "";
     for (let i = 1; i < text.length; i++) {
         tmpString += "\n" + text.charAt(i);
@@ -642,19 +679,19 @@ function eldF(input) {
 }
 
 let commandslol = "**MOST USEFUL COMMANDS: **\n" +
-    "**!8**  -  Magic 8ball (if question contains an \"or\", it chooses one of the two)\n" +
+    "**!8**  -  Magic 8ball (if question contains an \"or\", it chooses one of the options)\n" +
     "**!ud** - urban dictionary (add -i 1 at the end for the second highest rated entry, -i 2 for third and so on)\n" +
     "**!freedom**  -  Converts imperial to metric, vice versa, and currencies(usd,nok,cad,nzd,eur).\n" +
     "    !freedom 10lbs\n" +
     "**!memes**  -  Generates memes. (see bottom of this post)\n" +
     "**!cheers**  -  simple point system. toast with people by \\@ing them. \n" +
     "**!pp**  -  !pp @USER (or user id) for big profile pic\n" +
-    "**!be**  -  !be (emoji) for big emoji" +
+    "**!be**  -  !be (emoji) for big emoji\n" +
     "**!ban**  -  @ someone to ban them. (not really) \n" +
     "**!poll**  -  Makes a poll\n" +
     "    !poll 'SUBJECT HERE'  (add emojis at the end for custom reactions. thumbs up/down is default.)\n" +
-    "**!cozy**  -  returns something cozy. add stuff with \" !cozy add 'LINK HERE' \"\n" +
-    "\n" +
+    "**!cozy**  -  returns something cozy." +
+    "\n\n" +
     "**TEXT MANIPULATION **\n" +
     "**!vertical**  -  outputs text in vertical /horizontal\n" +
     "**!aesthetic**  -  outputs text in ｆｕｌｌｗｉｄｔｈ\n" +

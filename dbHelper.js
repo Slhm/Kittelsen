@@ -17,7 +17,8 @@ module.exports.listLinksInTable = async (tableName, f, con, input) => {
         .then(rows => {
             let list = "";
             rows.forEach((row, i) => {
-                list += i + 1 + ": " + "<" + row[f[0].toString()] + "> " + f[1] + ": " + row[f[1].toString()] + "\n";
+                if(f[1]) list += i + 1 + ": " + "<" + row[f[0].toString()] + "> " + f[1] + ": " + row[f[1].toString()] + "\n";
+		else list += i + 1 + ": " + "<" + row[f[0].toString()] + ">\n";
             });
             input.channel.send("items in table: \n" + list);
         })

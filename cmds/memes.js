@@ -10,20 +10,24 @@ let memeArrayID = [155067746, 124822590, 102156234, 87743020, 123999232, 1019104
 module.exports.run = async (client, input, args, arguments, con) => {
 
 
-
-  args[1] = args[1].toLowerCase();
+  if(!args[1]) args[1] = "";
+  else args[1] = args[1].toLowerCase();
 
   if (args[1] === "-i" || args[1] === "insert" || args[1] === "add") {
     //console.log("arg1: " + arguments[0] + "\nargs2: " + arguments[1] + "\narg3: " + arguments[2]);
     dbHelper.insertItems('memes',['name','numText','link'],["\'" + arguments[0] + "\'","\'" + arguments[1] + "\'", "\'" + arguments[2] + "\'"],con,input);
 
   } else if (args[1] === "-l" || args[1] === "list") {
-    dbHelper.listLinksInTable('memes', ['name', 'link'], con, input);
+    dbHelper.listLinksInTable('memes', ['name', 'numText'], con, input);
 
   } else if (isOwner(input) && (args[1] === "rm" || args[1] === "delete")) {
     dbHelper.deleteItem('memes','id = ' + args[2], con, input);
 
-  } else {
+  } else if(!args[1] || args[1] === "help"){
+    input.channel.send("**!memes** is a meme generator command.\n Check <https://imgur.com/a/ZwLtHJd> for available templates and command example.\n Syntax example: ```!memes exit 'text1' 'text2' 'text3' ``` \n^ would produce this image -> <https://imgflip.com/i/2rd1ep> \nYou can also do !memes -l for just the template names and number of text boxes");
+  
+  }
+    else {
     let f = false;
     console.log("args[1]: " + args[1]);
     console.log("args[1]: " + toLetters(args[1]));
