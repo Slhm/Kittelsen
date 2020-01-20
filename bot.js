@@ -213,7 +213,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
         case 'freedom':
         case 'convert':
         case 'c':
-            typeof args[1] === 'undefined' ? input.channel.send("you need a number and unit type after the command, my dude") :
+            typeof args[1] === 'undefined' ? input.channel.send("Convert/Freedom is a convertion command. \nAvailable units so far: F/C, miles/km, ft/m, l/oz, lbs/kg, inch/cm, as well as some currencies.") :
                 client.commands.get('freedom').run(client, input, args);
             funcHelper.logInfo(input);
             break;
@@ -228,7 +228,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             break;
         case 'ping':
             let d = new Date();
-            let ping = input.createdTimestamp - d.getTime();
+            let ping = d.getTime() - input.createdTimestamp; 
             input.channel.send("Ping is: " + ping + "ms");
             funcHelper.logInfo(input);
             break;
@@ -337,8 +337,39 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
     	case 'def':
 	    input.channel.send(defEmb);
 	    break;
+        case 'snow':
+            makeItSnow(input);
+            break;
     }
 }
+
+const makeItSnow = async(input) =>{
+    let snowField  = [10][100];
+    snowField.forEach((_, i) => {
+        snowField[i].fill(" ");
+    });
+    input.channel.send("snow, yay");
+    let msg = await input.channel.send(snowField.toString());
+    let xOffset = 0;
+    for(let i = 0; i < 20; i++){
+        for(let j = 0; j < snowField[0].length; j++) {
+            if(Math.random() > 0.2) snowField[0][j] = "*";
+        }
+        setTimeout( () => {
+            for(let x = 0; x < snowField.length; x++){
+                for(let y = 0; y < snowField[0].length; y++){
+                    if(snowField[x][y] === "*" && y !== snowField.length - 1){
+                        snowField[x][y] = " ";
+                        xOffset = (Math.random() > 0.5) ? xOffset+2 : xOffset -2;
+                        snowField[xOffset][y+1] = "*";
+                    }
+                }
+            }
+            msg.edit(snowField.toString())
+        }, 500);
+
+    }
+};
 
 const defEmb = new Discord.RichEmbed()
     .setTitle("'Veganism' definition")

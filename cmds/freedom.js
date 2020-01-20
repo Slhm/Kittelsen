@@ -8,16 +8,8 @@ module.exports.run = async (client, input, args) => {
   args[2] = args[2] ? args[2].toLowerCase() : "";
   args[1] = args[1].replace(/\s*$/,"");
 
-  if (!args[1]) {
-    input.channel.send("Freedom units to metric converter and vice versa.\n" +
-      "These convertions are available so far:\n" +
-      "m(ph) - k(ph)\n" +
-      "F - C\n" +
-      "lbs - kg\n" +
-        "currencies(uds,eur,nok,cad,nzd)" +
-      "syntax example !c 10F");
 
-  } else if (checkUnit(args, ["f", "fahrenheit"])) {
+  if (checkUnit(args, ["f", "fahrenheit"])) {
     let F = toAmount(args[1]);
     let C = Math.round(((F - 32) / 1.8) * 10) / 10;
     input.channel.send(args[1] + " in non-freedomUnits is: " + C + "C");
@@ -25,7 +17,6 @@ module.exports.run = async (client, input, args) => {
   } else if (checkUnit(args, ["c", "celsius"])) {
     let c = toAmount(args[1]);
     let f = Math.round((c * 1.8) + 32);
-    
     input.channel.send(args[1] + " in freedoms is: " + f + "F");
 
   } else if (checkUnit(args, ["mph", "miles"])) {
@@ -60,8 +51,8 @@ module.exports.run = async (client, input, args) => {
   
   }else if (checkUnit(args, ["cm"])) {
     let m = toAmount(args[1]);
-    let feet = Math.round(m * 0.03280840 * 100) / 100;
-    input.channel.send(args[1] + " in freedomUnits is: " + feet + " feet");
+    let inches = Math.round(m * 0.3937 * 100) / 100;
+    input.channel.send(args[1] + " in freedomUnits is: " + inches + " inches");
   
   }else if (checkUnit(args, ["m", "meter", "meters"])) {
     let m = toAmount(args[1]);
@@ -73,10 +64,18 @@ module.exports.run = async (client, input, args) => {
     let feet = toAmount(args[1]);
     let m = Math.round(feet * 0.3048 * 100) / 100;
     input.channel.send(args[1] + " in freedomUnits is: " + m + " meters");
+  
+  } else if (checkUnit(args, ["'"]) && checkUnit(args, ["\""])) {
+    let feetInches = toAmount(args[1]);
+    let feet = toAmount(feetInches.split("'")[0]);
+    let inches = toAmount(feetInches.split("'")[1]);
+    let m0 = (feet * 0.3) + (inches * 0.0254);
+    input.channel.send(args[1] + " in freedomUnits is: " + m0 + " meters");
   } else if (checkUnit(args, ["usd", "nok", "cad", "eur", "nzd"])) {
-    await checkCurrencyList()
+    //console.log("args[1]: " + args[1] + "args[2]: " + args[2]);
+	  await checkCurrencyList()
       .then( () => {
-        currencyConvert(input, toCurrency(args[1]), toAmount(args[1]))
+        currencyConvert(input, toCurrency(args[2] ? args[2] : args[1]), toAmount(args[1]))
           .catch(e => {
             console.error(e);
           });
@@ -86,7 +85,7 @@ module.exports.run = async (client, input, args) => {
       });
 
   }
-  else input.channel.send("Either wrong syntax or the unit isnt implemented yet. Syntax example: !freedom 10F\nSupported units so far: F/C, miles/km, m/ft, l/oz, lbs/kg, currencies(USD,NOK,EUR,CAD,NZD)");
+  else input.channel.send("Either wrong syntax or the unit isnt implemented yet. Syntax example: !freedom 10F\nSupported units so far: F/C, miles/km, m/ft, l/oz, lbs/kg, inch/cm, currencies(USD,NOK,EUR,CAD,NZD)");
 };
 
 function checkUnit(args, unit){
@@ -154,8 +153,12 @@ const updateCurrencyList = async () => {
   fetch('https://api.exchangerate-api.com/v4/latest/USD')
     .then(res => res.json())
     .then(j => {
-      fs.writeFileSync("currency.json", JSON.stringify(j));
-    });
+      try{
+	      fs.writeFileSync("currency.json", JSON.stringify(j));
+    	}catch(e){
+		console.log("currency error: " + e);
+	}
+      });
 };
 
 //regex for strings

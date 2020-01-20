@@ -69,7 +69,7 @@ function orFunc(input, q) {
     let options = q.split(' or ');
     let opValue = options[Math.floor(Math.random() * options.length)];
 
-    input.channel.send(opValue + " all the way, dude");
+    input.channel.send(opValue + " all the way, comrade");
 }
 
 module.exports.help = {

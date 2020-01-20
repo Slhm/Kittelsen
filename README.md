@@ -22,7 +22,7 @@ Still WIP to generelize it enough to be used as a template.
 * fs: node module for reading files.
 
 
-auth.json is nessecary, and has the format:
+auth.json is nessecary. Copy this format and insert your own credentials. Place the auth.json file in the root folder.
 ```json
 
 {
