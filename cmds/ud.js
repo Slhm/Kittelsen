@@ -1,5 +1,8 @@
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
+require('https').globalAgent.options.ca = require('ssl-root-cas/latest').create();
+
+
 module.exports.run = async (client, input) => {
 
   let m = await input.channel.send("fetching definition... ");

@@ -9,7 +9,7 @@ module.exports.run = async (client, input, args, arguments) => {
   let pollTitle = arguments[0];
   if(!arguments[0]){
     pollTitle = funcHelper.makeArgument(args,1);
-    pollTitle = funcHelper.removeEmojis(pollTitle);
+    //pollTitle = funcHelper.removeEmojis(pollTitle);
   }
 
   const emb = new Discord.RichEmbed()

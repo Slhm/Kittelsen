@@ -6,7 +6,10 @@ module.exports.run = async (client, input, args) => {
   //if (args[2]) args[1] = args[1] + args[2];
   args[1] = args[1].toLowerCase();
   args[2] = args[2] ? args[2].toLowerCase() : "";
+
+  // removes the last whitespace from amount string
   args[1] = args[1].replace(/\s*$/,"");
+  //if (toLetters(args[1]) args[1] = toLetters(args[1]); 
   console.log("args[1]: " + args[1] + "\nargs[2]: " + args[2]);
 
     // F to C
@@ -59,9 +62,13 @@ module.exports.run = async (client, input, args) => {
   
     // cm to inches
   }else if (checkUnit(args, ["cm"])) {
-    let m = toAmount(args[1]);
-    let inches = Math.round(m * 0.3937 * 100) / 100;
-    input.channel.send(args[1] + " in freedomUnits is: " + inches + " inches");
+    let cm = toAmount(args[1]);
+    let inches = Math.round(cm * 0.3937 * 100) / 100;
+    let m = cm / 100;
+    let feet = Math.round(m * 3.28084 * 100) / 100;
+    let feet_h = Math.floor(m * 3.28084);
+    let inches_h = Math.round((feet - feet_h) * 12 * 10) / 10;
+    input.channel.send(args[1] + " in freedomUnits is: " + inches + " inches" + "\nor if height: " + feet_h + "'" + inches_h + "\"");
   
     // meters to feet
   }else if (checkUnit(args, ["m", "meter", "meters"])) {
@@ -84,14 +91,14 @@ module.exports.run = async (client, input, args) => {
     let feet = toAmount(feetInches.split("'")[0]);
     let inches = toAmount(feetInches.split("'")[1]);
     let m0 = Math.round(((feet * 0.3048) + (inches * 0.0254)) * 100) / 100;
-    input.channel.send(args[1] + " in freedomUnits is: " + m0 + " meters");
+    input.channel.send(args[1] + " in non-freedomUnits is: " + m0 + " meters");
 
     // Currency converter
   } else if (checkUnit(args, ["usd", "nok", "cad", "eur", "nzd"])) {
     //console.log("args[1]: " + args[1] + "args[2]: " + args[2]);
 	  await checkCurrencyList()
       .then( () => {
-        currencyConvert(input, toCurrency(args[2] ? args[2] : args[1]), toAmount(args[1]))
+        currencyConvert(input, toCurrency(args[2] ? args[2] : toLetters(args[1])), toAmount(args[1]))
           .catch(e => {
             console.error(e);
           });
@@ -101,7 +108,8 @@ module.exports.run = async (client, input, args) => {
       });
 
   }
-  else input.channel.send("Either wrong syntax or the unit isnt implemented yet. Syntax example: !freedom 10F\nSupported units so far: F/C, miles/km, m/ft, l/oz, lbs/kg, inch/cm, currencies(USD,NOK,EUR,CAD,NZD)");
+  else input.channel.send("Either wrong syntax or the unit isnt implemented yet. Syntax example: !freedom 10F" +
+	  "\nSupported units so far: F/C, miles/km, m/ft, l/oz, lbs/kg, inch/cm, feet-inches(5'11\" syntax)/m, currencies(USD,NOK,EUR,CAD,NZD)");
 };
 
 function checkUnit(args, unit){
@@ -186,6 +194,11 @@ function toCurrency(str) {
 function toAmount(str) {
     return str.match(/^-?\d*\.?\d*/g);
     //return str.match(/^-?[0-9]+(\.[0-9])?/g);
+}
+
+//regex for if a string contains letters
+function toLetters(str){
+  return str.match(/([A-Za-z\s]*)/);
 }
 
 module.exports.help = {

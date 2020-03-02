@@ -13,18 +13,21 @@ let eightBall = ["Without a doubt.", "Yes.", "Fuck yes.", "Most likely.", "Prett
 
 let doubleLoop = false;
 
-module.exports.run = async (client, input, args, con) => {
+module.exports.run = async (client, input, args, con, arguments) => {
 
     let ar = args;
     await ar.shift();
     let q = await ar.join(" ");
+    
     if (q.includes(' or ')) orFunc(input, q);
     else {
 	let flag = args[0];
-	//console.log("args[1] = ", args[0]);
-        if (funcHelper.isOwner(input) && (flag === "-i" || flag === "--insert")) dbHelper.insertItems("eightball", ["type", "answer"], ["'" + args[1] + "'", "'" + arguments[1] + "'"], con, input);
+	
+	// Checks for Insert, List, Delete, and Help flags in the message. 
+        if (funcHelper.isOwner(input) && (flag === "-i" || flag === "--insert") && args[1] && arguments[0]) dbHelper.insertItems("eightball", ["type", "answer"], ["'" + args[1] + "'", "'" + arguments[0] + "'"], con, input);
         else if (funcHelper.isOwner(input) && (flag === "-l" || flag === "--list")) dbHelper.listLinksInTable("eightball", ["type", "answer"], con, input);
         else if (funcHelper.isOwner(input) && (flag === "rm" || flag === "--remove")) await dbHelper.deleteItem("eightball", 'id = ' + args[1], con, input);
+        else if (funcHelper.isOwner(input) && (flag === "-h" || flag === "--help")) input.channel.send("**!8 -i TEXT_HERE** to insert new item \n**!8 -l** for list \n**!8 rm ID_HERE** to remove DB item");
         else {
 
             //let ra = Math.floor(Math.random());

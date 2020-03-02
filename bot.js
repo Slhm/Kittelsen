@@ -173,7 +173,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             funcHelper.logInfo(input);
             break;
         case 'cheers':
-            client.commands.get('cheers').run(client, input, args, con);
+            client.commands.get('cheers').run(client, input, args, con, arguments);
             funcHelper.logInfo(input);
             break;
         case 'cozy':
@@ -218,12 +218,12 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             funcHelper.logInfo(input);
             break;
         case 'poll':
-            typeof args[1] === 'undefined' ? input.channel.send("you need a title for the poll, my dude. check #info or ping comradeSeitan") :
+            typeof args[1] === 'undefined' ? input.channel.send("you need a title for the poll, my dude. \n**!poll** TITLE \nor: **!poll** \"TITLE\" [reaction emojis]") :
                 client.commands.get('poll').run(client, input, args, arguments);
             funcHelper.logInfo(input);
             break;
         case '8':
-            client.commands.get('8').run(client, input, args, con);
+            client.commands.get('8').run(client, input, args, con, arguments);
             funcHelper.logInfo(input);
             break;
         case 'ping':
@@ -383,6 +383,7 @@ const ban = async(input, inp, arguments, args) => {
     if(isOwner(input) && args[1] === "-i") await dbHelper.insertItems("banlist", ["text"], ["\"" + arguments[0] + "\""], con, input);
     else if(isOwner(input) && args[1] === "-l") await dbHelper.listLinksInTable("banlist", ["text"], con, input);
     else if(isOwner(input) && args[1] === "rm") await dbHelper.deleteItem("banlist", 'id = ' + args[2], con, input);
+    else if(isOwner(input) && args[1] === "--help") input.channel.send("!ban -i \"TEXT HERE\" for input.\n!ban -l for list\n!ban rm ID for removing DB items");
     else {
         dbHelper.getRandomItem('banlist', con, input, 'text')
             .then(b => {
@@ -392,7 +393,7 @@ const ban = async(input, inp, arguments, args) => {
     return 0;
 };
 
-let vcjChannels = ["616276370732875811", "586175313151787009", "586171104591216649", "586175275881070619", "586733352330067979", "588027872308887564", "586690366103748645", "630199061974220851", "600452315694104594", "644992800655671301", "644992842841980948", "645002167505387531", "646815230328045569"];
+let vcjChannels = ["678291214063370243", "586546242386001921", "586175313151787009", "587998803332694016", "586171104591216649", "586175275881070619", "586733352330067979", "588027872308887564", "597555146796302338", "597555146796302338", "657244967269564435", "665568111587491885", "665568111587491885", "666312737302904859", "586733442126053396"];
 function pingAll(input, text){
 	
 	if(input.guild.id === "586171104591216643" && isOwner(input)){

@@ -46,7 +46,7 @@ module.exports.run = async (client, input, args, arguments, con) => {
           f = true;
         }
       });
-      if(!f) input.channel.send("item not found. check bottom of #info");
+      if(!f) input.channel.send("template not found. try !memes help");
     });
 
   }
@@ -61,6 +61,9 @@ const fetchMeme = async (input, type, _text0, _text1, _text2) => {
   console.log("inne i fetch. link: " + type);
   let msg = await input.channel.send("fetching meme..");
 
+  //if(!_text0) _text0 = "";
+  //if(!_text1) _text1 = "";
+  //if(!_text2) _text2 = "";
   //let text = "&text0="+_text0+"&text1="+_text1+"&text2="+_text2;
   let text = "&boxes[0][text]=" + _text0 + "&boxes[1][text]=" + _text1;
   if (_text2) text += "&boxes[2][text]=" + _text2;
