@@ -9,5 +9,11 @@
     "acceptedRoles":[
 
     ]
-  }
+  },
+  "mod_ids": [
+    "ACCEPTED_MOD_IDS"
+  ],
+  "ownerId": "OWNER_ID",
+  "ownerName": "OWNER_NAME"
 }
+

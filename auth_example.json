@@ -1,0 +1,13 @@
+{
+  "token":"DISCORD_BOT_TOKEN",
+  "imgflip":{
+    "user":"IMGFLIP_USERNAME",
+    "pass":"IMGFLIP_PASSWORD"
+  },
+  "DB": {
+    "database": "DB_NAME",
+    "pass": "DB_PASSWORD"
+  },
+  "ownerId": "OWNER_ID"
+}
+

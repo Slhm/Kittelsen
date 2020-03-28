@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 
+  let curArray = ["usd", "nok", "cad", "eur", "nzd", "aud", "gbp"];
 module.exports.run = async (client, input, args) => {
   console.log("freedom my dude");
   //if (args[2]) args[1] = args[1] + args[2];
@@ -48,11 +49,11 @@ module.exports.run = async (client, input, args) => {
     let lbs = Math.round(kg * 2.204623 * 100) / 100;
     input.channel.send(args[1] + " in freedomUnits is: " + lbs + "lbs");
 
-    // oz to liters
+    // oz to grams
   } else if (checkUnit(args, ["oz", "ounce", "ounces"])) {
     let oz = toAmount(args[1]);
-    let l = Math.round(oz * 0.0284131 * 100) / 100;
-    input.channel.send(args[1] + " in non-freedomUnits is: " + l + " liters");
+    let g = Math.round(oz * 28.34952 * 100) / 100;
+    input.channel.send(args[1] + " in non-freedomUnits is: " + g + " grams");
 
     // liters to oz
   } else if (checkUnit(args, ["l", "liter", "liters"])) {
@@ -94,11 +95,12 @@ module.exports.run = async (client, input, args) => {
     input.channel.send(args[1] + " in non-freedomUnits is: " + m0 + " meters");
 
     // Currency converter
-  } else if (checkUnit(args, ["usd", "nok", "cad", "eur", "nzd"])) {
+  } else if (checkUnit(args, curArray)) {
     //console.log("args[1]: " + args[1] + "args[2]: " + args[2]);
 	  await checkCurrencyList()
       .then( () => {
-        currencyConvert(input, toCurrency(args[2] ? args[2] : toLetters(args[1])), toAmount(args[1]))
+	      //console.log("args1: ", args[1], "\nargs2: ", args[2], "\ntoCurrency(args1: ", toCurrency(args[1]));
+        currencyConvert(input, toAmount(args[1]), toCurrency(args[1]) ? toCurrency(args[1]) : toCurrency(args[2]))
           .catch(e => {
             console.error(e);
           });
@@ -109,19 +111,24 @@ module.exports.run = async (client, input, args) => {
 
   }
   else input.channel.send("Either wrong syntax or the unit isnt implemented yet. Syntax example: !freedom 10F" +
-	  "\nSupported units so far: F/C, miles/km, m/ft, l/oz, lbs/kg, inch/cm, feet-inches(5'11\" syntax)/m, currencies(USD,NOK,EUR,CAD,NZD)");
+	  "\nSupported units so far: F/C, miles/km, m/ft, l/oz, lbs/kg, inch/cm, feet-inches(5'11\" syntax)/m, currencies(USD,NOK,EUR,CAD,NZD,AUD)");
 };
 
 function checkUnit(args, unit){
 	let check = false;
 	unit.forEach(u => {
+		//console.log(u);
 		if(args[1].endsWith(u) || args[2].endsWith(u)) check = true;
 	})
 	return check;
 	//return args[1].endsWith(unit) || args[2].endsWith(unit);
 }
 
-const currencyConvert = async (input, currency, amount) => {
+const toUpper = function(x){
+	return x.toUpperCase();
+}
+
+const currencyConvert = async (input, amount, currency) => {
 
   fs.readFile("currency.json", (err, file) => {
     if (err) console.error(err);
@@ -133,7 +140,8 @@ const currencyConvert = async (input, currency, amount) => {
 
     let obj = JSON.parse(file);
 
-    let cur = ["NOK", "NZD", "EUR", "CAD"];
+    let cur = curArray.map(toUpper);
+	//["NOK", "NZD", "EUR", "CAD", "AUD"];
 
     if (currency[0] === "usd") {
       let str = amount + currency[0] + " is: ";
@@ -144,7 +152,7 @@ const currencyConvert = async (input, currency, amount) => {
     } else {
       let str = amount + currency[0].toUpperCase() + " is: ";
       let usd = Math.round(amount / obj.rates[currency[0].toUpperCase()] * 10) / 10;
-      str += "USD: " + usd + ", ";
+      //str += "USD: " + usd + ", ";
       cur.forEach((item, i) => {
         if (item !== currency[0].toUpperCase()) str += cur[i] + ": " + Math.round(usd * obj.rates[item] * 10) / 10 + ", ";
       });
@@ -187,6 +195,7 @@ const updateCurrencyList = async () => {
 
 //regex for strings
 function toCurrency(str) {
+  //if(str === "") return false;
   return str.match(/[a-z]+/g);
 }
 

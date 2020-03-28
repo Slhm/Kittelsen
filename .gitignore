@@ -79,3 +79,4 @@ run_bot.sh
 *.backup
 *.back
 CtD
+config.json

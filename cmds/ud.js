@@ -32,10 +32,11 @@ const fetchUd = async (inp, input, index) => {
   return fetch('https://api.urbandictionary.com/v0/define?term=' + inp)
     .then(response => response.json())
     .then(res => {
-      //console.log("res: " + res);
+      console.log("res: " + res);
       let suc = JSON.stringify(res.success);
+      console.log(suc);
       let url = res.list[index].definition;
-      //console.log("url: " + url);
+      //console.log("res.list: " + res.list[0]);
       if (url) {
           const emb = new Discord.RichEmbed()
               .setTitle("urban dictionary: " + inp)
@@ -46,7 +47,10 @@ const fetchUd = async (inp, input, index) => {
           //input.channel.send("__**" + inp + "**__:\n" + url);
       }
       else {
-          input.channel.send("something went wrong :( \n" + "ping comradeSeitan#8059 to let him know he fucked up");
+          input.channel.send("something went wrong :( \n" + "maybe entry doesnt exist, or api is down or something. if its actually a bug in drunkbot, ping comrade");
       }
-    }).catch(error => console.error(error))
+    }).catch(error => {
+	    input.channel.send("something went wrong :( \nmaybe entry doesnt exist or api is down. if actual bug ping comrade");
+	    console.error(error);
+    })
 };

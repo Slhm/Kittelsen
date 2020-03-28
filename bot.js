@@ -38,7 +38,7 @@ function handleDisconnect() {
 
     con = mysql.createConnection({
         host: "localhost",
-        user: "root",
+        user: "ubuntu",
         password: dbp.pass,
         database: dbp.database
     });
