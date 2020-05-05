@@ -340,7 +340,18 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
         case 'snow':
             makeItSnow(input);
             break;
+	case 'guilds':
+	    getAllServers(input);
+	    break;
     }
+}
+
+function getAllServers(input){
+	let tmp = "";
+	client.guilds.forEach((g) => {
+	    tmp += g.name + "\n";
+	})
+	input.channel.send(tmp);
 }
 
 const makeItSnow = async(input) =>{
