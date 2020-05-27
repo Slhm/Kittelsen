@@ -146,10 +146,15 @@ client.on('error', (e) => {
 
 client.on('guildMemberAdd', member => {
     if (member.guild.id === '458029332141572120') {
-        client.channels.get('458029595145404452').send("Hiiiiiiiiiiii " + "<@!" + member.id + ">" + ". Feel free to write something in " + client.channels.get('459007548247506965').toString() + ". Cheers")
+        client.channels.get('458029595145404452').send("Hiiiiiiiiiiii " + "<@!" + member.id + ">" + ". Feel free to write something in " + client.channels.get('459007548247506965').toString() + "\nalso pronoun roles are in " + client.channels.get('534443945942581249').toString() + ". Cheers")
     }
 });
 
+client.on('guildMemberRemove', member => {
+    if (member.guild.id === '458029332141572120') {
+        client.channels.get('458029595145404452').send( member.user.username + " left :( \nprobably too much beer")
+    }
+});
 
 function handleCommands(input, inp, cmd, arguments, args, text) {
     switch (cmd) {
@@ -349,7 +354,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
 function getAllServers(input){
 	let tmp = "";
 	client.guilds.forEach((g) => {
-	    tmp += g.name + "\n";
+	    tmp += g.name +" - " + g.id + "\n";
 	})
 	input.channel.send(tmp);
 }

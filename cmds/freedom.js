@@ -71,6 +71,13 @@ module.exports.run = async (client, input, args) => {
     let inches_h = Math.round((feet - feet_h) * 12 * 10) / 10;
     input.channel.send(args[1] + " in freedomUnits is: " + inches + " inches" + "\nor if height: " + feet_h + "'" + inches_h + "\"");
   
+    // cm to inches
+  }else if (checkUnit(args, ["in", "inch", "inches"])) {
+    let inc = toAmount(args[1]);
+    let cm = Math.round(inc * 2.54 * 100) / 100;
+    input.channel.send(args[1] + " in non-freedomUnits is: " + cm + " cm");
+    
+	  
     // meters to feet
   }else if (checkUnit(args, ["m", "meter", "meters"])) {
     let m = toAmount(args[1]);
