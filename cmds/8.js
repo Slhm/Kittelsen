@@ -18,12 +18,12 @@ module.exports.run = async (client, input, args, con, arguments) => {
     let ar = args;
     await ar.shift();
     let q = await ar.join(" ");
-    
+
     if (q.includes(' or ')) orFunc(input, q);
     else {
 	let flag = args[0];
-	
-	// Checks for Insert, List, Delete, and Help flags in the message. 
+
+	// Checks for Insert, List, Delete, and Help flags in the message.
         if (funcHelper.isOwner(input) && (flag === "-i" || flag === "--insert") && args[1] && arguments[0]) dbHelper.insertItems("eightball", ["type", "answer"], ["'" + args[1] + "'", "'" + arguments[0] + "'"], con, input);
         else if (funcHelper.isOwner(input) && (flag === "-l" || flag === "--list")) dbHelper.listLinksInTable("eightball", ["type", "answer"], con, input);
         else if (funcHelper.isOwner(input) && (flag === "rm" || flag === "--remove")) await dbHelper.deleteItem("eightball", 'id = ' + args[1], con, input);
@@ -58,9 +58,12 @@ module.exports.run = async (client, input, args, con, arguments) => {
                     doubleLoop = false;
                 }
             } else {
-                let ans = eightBall[r];
-                //input.channel.send("```" + ans + "```");
-                input.channel.send(ans);
+              let m  = "";
+              await dbHelper.getRandomItem('eightball', con, input, 'answer')
+                  .then(link => {
+                    m = link;
+                  });
+              input.channel.send(m);
                 doubleLoop = false;
             }
         }
@@ -78,4 +81,3 @@ function orFunc(input, q) {
 module.exports.help = {
     name: "8"
 };
-

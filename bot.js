@@ -79,7 +79,7 @@ client.on('message', async input => {
     let inp = input.content;
     countVeg(input, inp);
 
-    
+
     if (input.author.bot && !input.content.startsWith("!8")) return false;
     if (input.channel.type === "dm") {
         funcHelper.logWarning(input);
@@ -94,7 +94,7 @@ client.on('message', async input => {
         //funcHelper.logWarning(input);
         return false;
     }
-    
+
     //console.log("isNotBanned: ", isNotBanned);
     if (inp.startsWith(prefix)) {
 	//funcHelper.logInfo(input);
@@ -233,7 +233,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             break;
         case 'ping':
             let d = new Date();
-            let ping = d.getTime() - input.createdTimestamp; 
+            let ping = d.getTime() - input.createdTimestamp;
             input.channel.send("Ping is: " + ping + "ms");
             funcHelper.logInfo(input);
             break;
@@ -321,9 +321,8 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             funcHelper.logInfo(input);
             break;
         case 'send':
-            
             //send(input, arguments[0], arguments[1]);
-	    if (isOwner(input)) send(input, arguments[0], arguments[1]);
+	          if (isOwner(input)) send(input, arguments[0], arguments[1]);
             funcHelper.logInfo(input);
             break;
         case 'vegan-lb':
@@ -336,18 +335,20 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             bigEmojiFunc(input, text);
             funcHelper.logInfo(input);
             break;
-	case 'megaping':
-	    pingAll(input, args[1]);
-	    break;
-    	case 'def':
-	    input.channel.send(defEmb);
-	    break;
+      	case 'megaping':
+      	    pingAll(input, args[1]);
+      	    break;
+          	case 'def':
+      	    input.channel.send(defEmb);
+      	    break;
         case 'snow':
             makeItSnow(input);
             break;
-	case 'guilds':
-	    getAllServers(input);
-	    break;
+        case 'time':
+        client.commands.get('time').run(client, input, args, arguments);
+      	case 'guilds':
+      	    getAllServers(input);
+      	    break;
     }
 }
 
@@ -411,7 +412,7 @@ const ban = async(input, inp, arguments, args) => {
 
 let vcjChannels = ["678291214063370243", "586546242386001921", "586175313151787009", "587998803332694016", "586171104591216649", "586175275881070619", "586733352330067979", "588027872308887564", "597555146796302338", "597555146796302338", "657244967269564435", "665568111587491885", "665568111587491885", "666312737302904859", "586733442126053396"];
 function pingAll(input, text){
-	
+
 	if(input.guild.id === "586171104591216643" && isOwner(input)){
 		for(let i = 0; i <=vcjChannels.length; i++){
 			send(input, vcjChannels[i],text);
@@ -463,6 +464,7 @@ function countVeg(input, inp){
                                 inp.toLowerCase().includes("i'm vegan") ||
                                 inp.toLocaleLowerCase().includes('i’m vegan'))) {
          dbHelper.incrementAmount('veg', input.author.id, con);
+         if inp.startsWith("<@418100748451315713>") input.channel.send("nice");
     }
 
 }
@@ -497,7 +499,7 @@ function isCool(input) {
 let isBanned = async (input, banList) => {
     let banned = false;
     await banList.forEach((el) => {
-        
+
         //console.log("userId: ", input.author.id, "\nelement in db: ", el, "\nAre they equal: ", input.author.id === el);
 	if (el === input.author.id.toString()) {
 		banned = true;
@@ -757,5 +759,3 @@ let commandslol = "**MOST USEFUL COMMANDS: **\n" +
 
 
 client.login(tokenDaVoett);
-
-

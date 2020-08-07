@@ -1,5 +1,8 @@
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
+const ownerName = require('config').ownerName;
+
+// AwS complained about bad ssl-certificates, and this is a workaround i found.
 require('https').globalAgent.options.ca = require('ssl-root-cas/latest').create();
 
 
@@ -36,10 +39,11 @@ const fetchUd = async (inp, input, index) => {
       let suc = JSON.stringify(res.success);
       console.log(suc);
       let url = res.list[index].definition;
+      let word = res.list[index].word;
       //console.log("res.list: " + res.list[0]);
       if (url) {
           const emb = new Discord.RichEmbed()
-              .setTitle("urban dictionary: " + inp)
+              .setTitle("Urban Dictionary, closest match: \n" + word)
               .setColor("#0e2158")
               .setDescription(url)
               .setFooter("Index: " + index + ". \nAdd -i N at the end for Nth index.");
@@ -47,10 +51,10 @@ const fetchUd = async (inp, input, index) => {
           //input.channel.send("__**" + inp + "**__:\n" + url);
       }
       else {
-          input.channel.send("something went wrong :( \n" + "maybe entry doesnt exist, or api is down or something. if its actually a bug in drunkbot, ping comrade");
+          input.channel.send("something went wrong :( \n" + "this is most likely that there is no entry for the query. if its actually a bug, ping " + ownerName);
       }
     }).catch(error => {
-	    input.channel.send("something went wrong :( \nmaybe entry doesnt exist or api is down. if actual bug ping comrade");
+	    input.channel.send("something went wrong :( \nmaybe entry doesnt exist or api is down. if actual bug ping " + ownerName);
 	    console.error(error);
     })
 };
