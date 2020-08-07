@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 const Discord = require('discord.js');
-const ownerName = require('config').ownerName;
+const ownerName = require('../config.json').ownerName;
 
 // AwS complained about bad ssl-certificates, and this is a workaround i found.
 require('https').globalAgent.options.ca = require('ssl-root-cas/latest').create();

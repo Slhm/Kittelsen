@@ -345,8 +345,9 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             makeItSnow(input);
             break;
         case 'time':
-        client.commands.get('time').run(client, input, args, arguments);
-      	case 'guilds':
+            client.commands.get('time').run(client, input, args, arguments);
+      	    break;
+	case 'guilds':
       	    getAllServers(input);
       	    break;
     }
@@ -464,7 +465,7 @@ function countVeg(input, inp){
                                 inp.toLowerCase().includes("i'm vegan") ||
                                 inp.toLocaleLowerCase().includes('i’m vegan'))) {
          dbHelper.incrementAmount('veg', input.author.id, con);
-         if inp.startsWith("<@418100748451315713>") input.channel.send("nice");
+         if (inp.startsWith("<@418100748451315713>")) input.channel.send("nice");
     }
 
 }

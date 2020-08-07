@@ -9,7 +9,8 @@ module.exports.run = async (client, input, args) => {
   args[2] = args[2] ? args[2].toLowerCase() : "";
 
   // removes the last whitespace from amount string
-  args[1] = args[1].replace(/\s*$/,"");
+  args[1] = args[1].replace(/ /g, "");
+  args[2] = args[2].replace(/ /g, "");
   //if (toLetters(args[1]) args[1] = toLetters(args[1]); 
   console.log("args[1]: " + args[1] + "\nargs[2]: " + args[2]);
 
@@ -17,49 +18,50 @@ module.exports.run = async (client, input, args) => {
   if (checkUnit(args, ["f", "fahrenheit"])) {
     let F = toAmount(args[1]);
     let C = Math.round(((F - 32) / 1.8) * 10) / 10;
-    input.channel.send(args[1] + " in non-freedomUnits is: " + C + "C");
+    input.channel.send(F + "F in non-freedomUnits is: " + C + "C");
+    
     // C to F
   } else if (checkUnit(args, ["c", "celsius"])) {
     let c = toAmount(args[1]);
     let f = Math.round((c * 1.8) + 32);
-    input.channel.send(args[1] + " in freedoms is: " + f + "F");
+    input.channel.send(c + "C in freedoms is: " + f + "F");
 
     // miles to km
   } else if (checkUnit(args, ["mph", "miles"])) {
     let mph = toAmount(args[1]);
     let kph = Math.round(mph * 1.609344 * 100) / 100;
-    input.channel.send(args[1] + " in non-freedomUnits is: " + kph + " km(per hour if speed)");
+    input.channel.send(mph + "miles in non-freedomUnits is: " + kph + " km(per hour if speed)");
 
     // km to miles
   } else if (checkUnit(args, ["kph", "kmph", "km"])) {
     let kph = toAmount(args[1]);
     let mph = Math.round(kph * 0.6213712 * 100) / 100;
-    input.channel.send(args[1] + " in freedomUnits is: " + mph + " miles(per hour if speed)");
+    input.channel.send(kph + "km in freedomUnits is: " + mph + " miles(per hour if speed)");
 
 
     // lbs to kg
   } else if (checkUnit(args, ["lbs", "pounds", "pound"])) {
     let lbs = toAmount(args[1]);
     let kg = Math.round(lbs * 0.4535924 * 100) / 100;
-    input.channel.send(args[1] + " in non-freedomUnits is: " + kg + "kg");
+    input.channel.send(lbs + "lbs in non-freedomUnits is: " + kg + "kg");
 
     // kg to lbs
   } else if (checkUnit(args, ["kg", "kilogram"])) {
     let kg = toAmount(args[1]);
     let lbs = Math.round(kg * 2.204623 * 100) / 100;
-    input.channel.send(args[1] + " in freedomUnits is: " + lbs + "lbs");
+    input.channel.send(kg + "kg in freedomUnits is: " + lbs + "lbs");
 
     // oz to grams
   } else if (checkUnit(args, ["oz", "ounce", "ounces"])) {
     let oz = toAmount(args[1]);
     let g = Math.round(oz * 28.34952 * 100) / 100;
-    input.channel.send(args[1] + " in non-freedomUnits is: " + g + " grams");
+    input.channel.send(oz + "oz in non-freedomUnits is: " + g + " grams");
 
     // liters to oz
   } else if (checkUnit(args, ["l", "liter", "liters"])) {
     let l = toAmount(args[1]);
     let oz = Math.round(l * 33.81413 * 100) / 100;
-    input.channel.send(args[1] + " in freedomUnits is: " + oz + " oz");
+    input.channel.send(l + "l in freedomUnits is: " + oz + " oz");
   
     // cm to inches
   }else if (checkUnit(args, ["cm"])) {
@@ -69,13 +71,13 @@ module.exports.run = async (client, input, args) => {
     let feet = Math.round(m * 3.28084 * 100) / 100;
     let feet_h = Math.floor(m * 3.28084);
     let inches_h = Math.round((feet - feet_h) * 12 * 10) / 10;
-    input.channel.send(args[1] + " in freedomUnits is: " + inches + " inches" + "\nor if height: " + feet_h + "'" + inches_h + "\"");
+    input.channel.send(cm + "cm in freedomUnits is: " + inches + " inches" + "\nor if height: " + feet_h + "'" + inches_h + "\"");
   
-    // cm to inches
+    // inches to cm
   }else if (checkUnit(args, ["in", "inch", "inches"])) {
     let inc = toAmount(args[1]);
     let cm = Math.round(inc * 2.54 * 100) / 100;
-    input.channel.send(args[1] + " in non-freedomUnits is: " + cm + " cm");
+    input.channel.send(inc + "inches in non-freedomUnits is: " + cm + " cm");
     
 	  
     // meters to feet
@@ -85,13 +87,13 @@ module.exports.run = async (client, input, args) => {
     let feet_h = Math.floor(m * 3.28084);
     let inches_h = Math.round((feet - feet_h) * 12 * 10) / 10;
     console.log("feet: " + feet + "\nfeet_h: " + feet_h + "\ninches_h: " + inches_h);
-    input.channel.send(args[1] + " in freedomUnits is: " + feet + " feet" + "\nor if height: " + feet_h + "'" + inches_h + "\"");
+    input.channel.send(m + "m in freedomUnits is: " + feet + " feet" + "\nor if height: " + feet_h + "'" + inches_h + "\"");
 
     // feet to meters
   } else if (checkUnit(args, ["ft", "feet"])) {
     let feet = toAmount(args[1]);
     let m = Math.round(feet * 0.3048 * 100) / 100;
-    input.channel.send(args[1] + " in  is: " + m + " meters");
+    input.channel.send(feet + "ft in  is: " + m + " meters");
   
     // feet/inches to meters
   } else if (args[1].includes("'") && args[1].includes("\"")) {
@@ -124,8 +126,8 @@ module.exports.run = async (client, input, args) => {
 function checkUnit(args, unit){
 	let check = false;
 	unit.forEach(u => {
-		//console.log(u);
-		if(args[1].endsWith(u) || args[2].endsWith(u)) check = true;
+		console.log("u: ", u, "\ntoLetters(args[1]): ", toLetters(args[1]), "\nargs[2]: ", args[2]);
+		if(toLetters(args[1])[1] === u || args[2] === u) check = true;
 	})
 	return check;
 	//return args[1].endsWith(unit) || args[2].endsWith(unit);
@@ -214,7 +216,7 @@ function toAmount(str) {
 
 //regex for if a string contains letters
 function toLetters(str){
-  return str.match(/([A-Za-z\s]*)/);
+  return str.match(/([A-Za-z\s]*)/g);
 }
 
 module.exports.help = {
