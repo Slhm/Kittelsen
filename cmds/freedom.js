@@ -125,9 +125,10 @@ module.exports.run = async (client, input, args) => {
 
 function checkUnit(args, unit){
 	let check = false;
+	let args1 = toLetters(args[1]) ? toLetters(args[1])[0] : "";
 	unit.forEach(u => {
-		console.log("u: ", u, "\ntoLetters(args[1]): ", toLetters(args[1]), "\nargs[2]: ", args[2]);
-		if(toLetters(args[1])[1] === u || args[2] === u) check = true;
+		console.log("u: ", u, "\ntoLetters(args[1]): ", args1, "\nargs[2]: ", args[2]);
+		if(args1 === u || args[2] === u) check = true;
 	})
 	return check;
 	//return args[1].endsWith(unit) || args[2].endsWith(unit);
@@ -216,7 +217,7 @@ function toAmount(str) {
 
 //regex for if a string contains letters
 function toLetters(str){
-  return str.match(/([A-Za-z\s]*)/g);
+  return str.match(/([A-Za-z]+)/g);
 }
 
 module.exports.help = {
