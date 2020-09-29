@@ -12,7 +12,7 @@ module.exports.run = async (client, input, args, con, arguments) => {
   }
 
 
-  if (isOwner(input) && (arg === "-i" || arg === "insert" || arg === "add")) {
+  if (funcHelper.isCool(input) && (arg === "-i" || arg === "insert" || arg === "add")) {
     dbHelper.insertItems('cozy',['link','addedBy'],["\'" + queryLink + "\'", "\'" + input.author.username + "\'"],con,input);
 
   }else if(isOwner(input) && (arg === "-l" || arg === "list")){

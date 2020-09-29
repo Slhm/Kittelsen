@@ -100,7 +100,10 @@ module.exports.isKittelsen = (input) => {
 module.exports.isOwner = (input) => {
   return input.author.id === ownerId
 };
-
+//cool people role
+module.exports.isCool = (input) => {
+  return input.member.roles.has('458031022563393536');
+}
 
 /*
 
