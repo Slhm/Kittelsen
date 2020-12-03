@@ -13,6 +13,8 @@ const funcHelper = require('./funcHelper.js');
 const config = require('./config');
 client.commands = new Discord.Collection();
 
+const rClient = new Discord.Client({partials: ['MESSAGE', 'REACTION']});
+
 let con;
 let banList = ['11'];
 
@@ -156,6 +158,27 @@ client.on('guildMemberRemove', member => {
     }
 });
 
+rClient.on('messageReactionAdd', async (reaction, user) => {
+ console.log("omg, someone reacted lol");
+    if(reaction.emoji.name === '🌟'){
+	//console.log("noen kom igjenonom først if\nreaction.message.partial: ", reaction.partial);
+        if(reaction.partial){
+	    await reaction.fetch();
+	    console.log("satan");
+	    const fetchedMsg = await reaction.message.fetch();
+	    const emb = new MessageEmbed()
+		.setAuthor(fetchedMsg.author.tag, fetchedMsg.author.displayAvatarURL())
+		.setURL(fetchedMsg.url)
+		.setDescription(fetchedMsg.content)
+		.setFooter(fetchedMsg.createTimestamp);
+	    client.channels.get('541209773148864526').send(emb);
+
+	    console.log("heyhey");
+	}
+    }
+
+});
+
 function handleCommands(input, inp, cmd, arguments, args, text) {
     switch (cmd) {
         case 'commands':
@@ -205,6 +228,7 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             break;
         case 'fullwidth':
         case 'aesthetic':
+	case 'ae':
             typeof args[1] === 'undefined' ? input.channel.send("you need an argument after the command, my dude") :
                 input.channel.send(fullW(text));
             funcHelper.logInfo(input);
@@ -322,8 +346,11 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             break;
         case 'send':
             //send(input, arguments[0], arguments[1]);
-	          if (isOwner(input)) send(input, arguments[0], arguments[1]);
-            funcHelper.logInfo(input);
+	    if (isOwner(input)) {
+		    if(arguments[1]) send(input, arguments[0], arguments[1]);
+		    else input.channel.send(args.slice(1,args.length).join(" "));
+	    }
+	    funcHelper.logInfo(input);
             break;
         case 'vegan-lb':
             if(isOwner(input)) getVegLeaderBoard(con, input);
@@ -760,3 +787,4 @@ let commandslol = "**MOST USEFUL COMMANDS: **\n" +
 
 
 client.login(tokenDaVoett);
+rClient.login(tokenDaVoett);
