@@ -374,10 +374,21 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
         case 'time':
             client.commands.get('time').run(client, input, args, arguments);
       	    break;
+	case 'letsgo':
+	    letsgo(input);
+	    funcHelper.logInfo(input);
+	    break;
 	case 'guilds':
       	    getAllServers(input);
       	    break;
     }
+}
+
+function letsgo(input){
+  let letsgoCount = fs.readdirSync('./resources/letsgo').length;
+  let imageString = "./resources/letsgo/letsgo" + (Math.floor(Math.random() * letsgoCount) + 1) + ".jpg";
+  //console.log("imageString: ", imageString);
+  input.channel.send({files: [imageString]});
 }
 
 function getAllServers(input){
