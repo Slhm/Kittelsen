@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const client = new Discord.Client();
+const client = new Discord.Client(); //{ws: { intents: ['GUILD_MEMBERS'] }});
 const winston = require('winston');
 const tokenDaVoett = require('./auth.json').token;
 const imgflip = require('./auth.json').imgflip;
@@ -13,7 +13,7 @@ const funcHelper = require('./funcHelper.js');
 const config = require('./config');
 client.commands = new Discord.Collection();
 
-const rClient = new Discord.Client({partials: ['MESSAGE', 'REACTION']});
+//const rClient = new Discord.Client({partials: ['MESSAGE', 'REACTION']});
 
 let con;
 let banList = ['11'];
@@ -147,6 +147,7 @@ client.on('error', (e) => {
 });
 
 client.on('guildMemberAdd', member => {
+    console.log("guildMember added: ", member.id);
     if (member.guild.id === '458029332141572120') {
         client.channels.get('458029595145404452').send("Hiiiiiiiiiiii " + "<@!" + member.id + ">" + ". Feel free to write something in " + client.channels.get('459007548247506965').toString() + "\nalso pronoun roles are in " + client.channels.get('534443945942581249').toString() + ". Cheers")
     }
@@ -157,7 +158,7 @@ client.on('guildMemberRemove', member => {
         client.channels.get('458029595145404452').send( member.user.username + " left :( \nprobably too much beer")
     }
 });
-
+/*
 rClient.on('messageReactionAdd', async (reaction, user) => {
  console.log("omg, someone reacted lol");
     if(reaction.emoji.name === '🌟'){
@@ -176,8 +177,8 @@ rClient.on('messageReactionAdd', async (reaction, user) => {
 	    console.log("heyhey");
 	}
     }
-
 });
+*/
 
 function handleCommands(input, inp, cmd, arguments, args, text) {
     switch (cmd) {
@@ -362,10 +363,11 @@ function handleCommands(input, inp, cmd, arguments, args, text) {
             bigEmojiFunc(input, text);
             funcHelper.logInfo(input);
             break;
-      	case 'megaping':
-      	    pingAll(input, args[1]);
+      	case 'megasend':
+	case 'megaping':
+      	    megaSend(input, args[1]);
       	    break;
-          	case 'def':
+        case 'def':
       	    input.channel.send(defEmb);
       	    break;
         case 'snow':
@@ -443,18 +445,20 @@ const ban = async(input, inp, arguments, args) => {
     else {
         dbHelper.getRandomItem('banlist', con, input, 'text')
             .then(b => {
-                input.channel.send(input.mentions.users.first() ? input.mentions.users.first().username + " " + b : funcHelper.makeArgument(args, 1) + " " + b);
+		if(input.mentions.users.first()) input.channel.send(funcHelper.getNickName(input, input.mentions.users.first().id) + " " + b);
+		else input.channel.send(funcHelper.makeArgument(args, 1) + " " + b);
             });
     }
     return 0;
 };
 
-let vcjChannels = ["678291214063370243", "586546242386001921", "586175313151787009", "587998803332694016", "586171104591216649", "586175275881070619", "586733352330067979", "588027872308887564", "597555146796302338", "597555146796302338", "657244967269564435", "665568111587491885", "665568111587491885", "666312737302904859", "586733442126053396"];
-function pingAll(input, text){
+function megaSend(input, text){
 
-	if(input.guild.id === "586171104591216643" && isOwner(input)){
-		for(let i = 0; i <=vcjChannels.length; i++){
-			send(input, vcjChannels[i],text);
+	if(isOwner(input)){
+		let allChannels = input.guild.channels.array(channel => channel.type === 'text');
+		console.log("allChannel: ", allChannels.length);
+		for(let i = 0; i <= allChannels.length - 1; i++){
+			send(input, allChannels[i].id, text);
 		}
 	}
 }
@@ -515,7 +519,7 @@ function send(input, channelId, msg) {
         client.channels.get(channelId).send(msg);
     } catch (e) {
         funcHelper.logError('!send error: ' + e);
-        input.channel.send("e: " + e);
+        //input.channel.send("e: " + e);
     }
 }
 
@@ -798,4 +802,4 @@ let commandslol = "**MOST USEFUL COMMANDS: **\n" +
 
 
 client.login(tokenDaVoett);
-rClient.login(tokenDaVoett);
+//rClient.login(tokenDaVoett);

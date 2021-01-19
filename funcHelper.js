@@ -105,6 +105,9 @@ module.exports.isCool = (input) => {
   return input.member.roles.has('458031022563393536');
 }
 
+module.exports.getNickName = (input, id) => {
+	return input.channel.members.find(user => user.id === id).displayName;
+}
 /*
 
 

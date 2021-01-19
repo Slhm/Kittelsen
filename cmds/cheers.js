@@ -11,7 +11,7 @@ module.exports.run = async (client, input, args, con, arguments) => {
       .then(amount => {
         dbHelper.getRandomItem('cheersList', con, input, 'text')
             .then(text => {
-              input.channel.send(input.author.username + " and " + input.mentions.users.first().username + " " +  text + "\n" + input.mentions.users.first() + " has received " + amount.toString() + " cheers so far!");
+              input.channel.send(funcHelper.getNickName(input, input.author.id) + " and " + funcHelper.getNickName(input, input.mentions.users.first().id) + " " +  text + "\n" + funcHelper.getNickName(input, input.mentions.users.first().id) + " has received " + amount.toString() + " cheers so far!");
             });
       });
   }else if (funcHelper.isOwner(input) && (flag === "-i" || flag === "--insert")) arguments[0] ? dbHelper.insertItems("cheersList", ["text"], ["'" + arguments[0] + "'"], con, input) : input.channel.send("no arguments given.");
