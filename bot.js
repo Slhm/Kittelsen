@@ -11,6 +11,18 @@ const mysql = require('mysql');
 const dbHelper = require('./dbHelper.js');
 const funcHelper = require('./funcHelper.js');
 const config = require('./config');
+
+//var rootCas = require('ssl-root-cas');
+
+// default for all https requests
+// (whether using https directly, request, or another module)
+//require('https').globalAgent.options.ca = rootCas;
+
+
+//var rootCas = require('ssl-root-cas').create();
+
+//rootCas.addFile(__dirname + '/node_modules/ssl-root-cas/00-company-root-ca.pem');
+
 client.commands = new Discord.Collection();
 
 //const rClient = new Discord.Client({partials: ['MESSAGE', 'REACTION']});
@@ -39,8 +51,8 @@ fs.readdir("./cmds/", (err, files) => {
 function handleDisconnect() {
 
     con = mysql.createConnection({
-        host: "localhost",
-        user: "ubuntu",
+        //host: "localhost",
+        user: "root",
         password: dbp.pass,
         database: dbp.database
     });
@@ -71,7 +83,14 @@ client.on('ready', () => {
 
     //fetches ban list from db
     updateBanList(banList);
-    client.user.setActivity("dead");
+    client.user.setPresence({
+	    game: {
+		    name: '!help',
+		    type: "STREAMING",
+		    url: "https://www.youtube.com/watch?v=aRsWk4JZa5k"
+	    }
+    });
+    //client.user.setActivity("dead");
 });
 
 client.on('message', async input => {
@@ -485,6 +504,8 @@ const getVegLeaderBoard = async (con, input) => {
     let d = new Date();
     let ut = Math.round(d.getTime() / 1000 * 10) / 10;
 
+    if(funcHelper.isOwner(input)) dbHelper.listHighScore('veg', 'vegoon', con, input);
+    else{
     await dbHelper.getOneItem('vegLB', 'time', '11', con, "time")
         .then(el => {
 
@@ -497,6 +518,7 @@ const getVegLeaderBoard = async (con, input) => {
                 input.channel.send("too early my dude. wait: " + (Math.round(((el + 900) - ut) / 60) + " minutes"));
             }
         });
+    }
 };
 
 //input: input object
@@ -697,7 +719,7 @@ const pp = async (input, args) => {
             await input.channel.send({
                 files: [
                     {
-                        attachment: user.displayAvatarURL,
+                        attachment: user.avatarURL,
                         name: "avatar.png"
                     }
                 ]
@@ -711,7 +733,7 @@ const pp = async (input, args) => {
         await input.channel.send({
             files: [
                 {
-                    attachment: input.author.displayAvatarURL,
+                    attachment: input.author.avatarURL,
                     name: "avatar.png"
                 }
             ]

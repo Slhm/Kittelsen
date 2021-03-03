@@ -1,5 +1,6 @@
 const dbHelper = require('../dbHelper');
 const funcHelper = require('../funcHelper');
+const Discord = require('discord.js');
 
 module.exports.run = async (client, input, args, con, arguments) => {
 
@@ -11,7 +12,13 @@ module.exports.run = async (client, input, args, con, arguments) => {
       .then(amount => {
         dbHelper.getRandomItem('cheersList', con, input, 'text')
             .then(text => {
-              input.channel.send(funcHelper.getNickName(input, input.author.id) + " and " + funcHelper.getNickName(input, input.mentions.users.first().id) + " " +  text + "\n" + funcHelper.getNickName(input, input.mentions.users.first().id) + " has received " + amount.toString() + " cheers so far!");
+	      const emb = new Discord.RichEmbed()
+		    .setFooter(funcHelper.getNickName(input, input.mentions.users.first().id) + " has received " + amount.toString() + " cheers for far!")
+		    //.setTitle("A cheers has happened!")
+		    .setDescription("🍻 " + "**" + funcHelper.getNickName(input, input.author.id) + "**" + " and " + "**" +  funcHelper.getNickName(input, input.mentions.users.first().id) + "**" + " 🍻" + " " +  text) 
+		    .setColor("#66ff90");
+	      input.channel.send(emb);
+              //input.channel.send("🍻 " + "**" + funcHelper.getNickName(input, input.author.id) + "**" + " and " + "**" +  funcHelper.getNickName(input, input.mentions.users.first().id) + "**" + " 🍻" + " " +  text + "\n" + "** " + funcHelper.getNickName(input, input.mentions.users.first().id) + " **"  + " has received " + amount.toString() + " cheers so far!");
             });
       });
   }else if (funcHelper.isOwner(input) && (flag === "-i" || flag === "--insert")) arguments[0] ? dbHelper.insertItems("cheersList", ["text"], ["'" + arguments[0] + "'"], con, input) : input.channel.send("no arguments given.");

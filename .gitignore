@@ -76,6 +76,7 @@ run_bot.sh
 
 .logs/*
 
+ssl/
 *.backup
 *.back
 CtD

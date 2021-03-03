@@ -1,6 +1,8 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 
+const currencyFilePath = "resources/currency.json";
+
   let curArray = ["usd", "nok", "cad", "eur", "nzd", "aud", "gbp"];
 module.exports.run = async (client, input, args) => {
   console.log("freedom my dude");
@@ -140,7 +142,7 @@ const toUpper = function(x){
 
 const currencyConvert = async (input, amount, currency) => {
 
-  fs.readFile("currency.json", (err, file) => {
+  fs.readFile(currencyFilePath, (err, file) => {
     if (err) console.error(err);
 
     if (!file) {
@@ -176,7 +178,7 @@ const currencyConvert = async (input, amount, currency) => {
 //if local currency json file is older than 24h it updates.
 const checkCurrencyList = async () => {
 
-  fs.readFile("currency.json", (err, file) => {
+  fs.readFile(currencyFilePath, (err, file) => {
     let d = new Date();
     let ut = Math.round(d.getTime()/1000 * 10) / 10;
 
@@ -196,7 +198,7 @@ const updateCurrencyList = async () => {
     .then(res => res.json())
     .then(j => {
       try{
-	      fs.writeFileSync("currency.json", JSON.stringify(j));
+	      fs.writeFileSync(currencyFilePath, JSON.stringify(j));
     	}catch(e){
 		console.log("currency error: " + e);
 	}

@@ -39,10 +39,10 @@ module.exports.run = async (client, input, args, arguments, con) => {
         //console.log("toLetters(args): " + toLetters(args[1]));
         if(el.name === args[1] && el.numText === 2) {
           f = true;
-          fetchMeme(input, el.link, arguments[0], arguments[1]);
+          fetchMeme(input, el.link, makeValid(arguments[0]), makeValid(arguments[1]));
         }
         else if(el.name === args[1] && el.numText === 3) {
-          fetchMeme(input, el.link, arguments[0], arguments[1], arguments[2]);
+          fetchMeme(input, el.link, makeValid(arguments[0]), makeValid(arguments[1]), makeValid(arguments[2]));
           f = true;
         }
       });
@@ -56,6 +56,9 @@ module.exports.help = {
   name: "memes"
 };
 
+function makeValid(text){
+	return text ? text : " ";
+}
 
 const fetchMeme = async (input, type, _text0, _text1, _text2) => {
   console.log("inne i fetch. link: " + type);

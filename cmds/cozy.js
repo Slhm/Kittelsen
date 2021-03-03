@@ -12,13 +12,13 @@ module.exports.run = async (client, input, args, con, arguments) => {
   }
 
 
-  if (funcHelper.isCool(input) && (arg === "-i" || arg === "insert" || arg === "add")) {
+  if (funcHelper.isOwner(input) && (arg === "-i" || arg === "insert" || arg === "add")) {
     dbHelper.insertItems('cozy',['link','addedBy'],["\'" + queryLink + "\'", "\'" + input.author.username + "\'"],con,input);
 
-  }else if(isOwner(input) && (arg === "-l" || arg === "list")){
+  }else if(funcHelper.isOwner(input) && (arg === "-l" || arg === "list")){
     dbHelper.listLinksInTable('cozy', ['link', 'addedBy'], con, input);
 
-  }else if(isOwner(input) && (arg === "rm" || arg === "delete")){
+  }else if(funcHelper.isOwner(input) && (arg === "rm" || arg === "delete")){
     dbHelper.deleteItem('cozy','id = ' + delIndex, con, input);
 
   } else {
@@ -35,6 +35,3 @@ module.exports.help = {
   name: "cozy"
 };
 
-function isOwner(input) {
-  return input.author.id === ownerId
-}
